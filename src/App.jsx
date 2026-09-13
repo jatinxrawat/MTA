@@ -19,11 +19,12 @@ import ContactPage from './pages/ContactPage';
 
 // Stylesheets
 import './styles/variables.css';
-import './styles/animations.css';
 import './styles/global.css';
 import './styles/sections.css';
 import './styles/cbse-disclosure.css';
 import './styles/contact-footer.css';
+import './styles/home.css';
+import './styles/animations.css';
 
 import { X, Send, CheckCircle } from 'lucide-react';
 

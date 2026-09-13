@@ -372,7 +372,6 @@
   display: flex;
   flex-direction: column;
   border-top: 4px solid var(--color-navy);
-  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
 }
 
 /* Understated lift without scale/zoom */
@@ -440,7 +439,6 @@
   padding: 1.25rem 1rem;
   text-align: center;
   border-top: 4px solid var(--house-color, var(--color-navy));
-  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 250ms ease;
 }
 
 .house-item-box:hover {
@@ -479,7 +477,6 @@
   display: flex;
   gap: 1.5rem;
   align-items: flex-start;
-  transition: border-color 280ms ease, border-left-color 280ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 280ms ease;
 }
 
 .event-card:hover {

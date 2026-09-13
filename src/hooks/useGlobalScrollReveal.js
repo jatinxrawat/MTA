@@ -49,6 +49,7 @@ export function useGlobalScrollReveal() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            console.log('[GlobalScrollReveal Triggered]', entry.target.className);
             entry.target.classList.add('is-revealed');
             observer.unobserve(entry.target);
           }

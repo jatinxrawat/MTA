@@ -3,7 +3,6 @@ import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
 import { schoolData } from '../data/schoolData';
 import { useScrollReveal } from '../hooks/useScrollReveal';
-import '../styles/home.css';
 
 import {
   Bell,

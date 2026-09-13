@@ -282,7 +282,7 @@
    - Repeating cards on subpages (Streams, Metrics, Leadership, Disclosure)
    ========================================================================== */
 
-/* 1. Base Card Entrance: Fade in + rise up ~24px + slight scale from 0.96 to 1.0 over 650ms */
+/* 1. Base Card Entrance: Fade in + rise up 56px + scale from 0.90 to 1.0 over 750ms */
 .pillar-feature-card,
 .house-item-box,
 .gallery-preview-card,
@@ -298,14 +298,14 @@
 .contact-card,
 .about-sidebar-column,
 .scroll-reveal-item {
-  opacity: 0;
-  transform: translateY(24px) scale(0.96);
+  opacity: 0 !important;
+  transform: translateY(56px) scale(0.90) !important;
   transition:
-    opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 650ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 750ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 750ms cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 300ms ease,
-    border-color 300ms ease;
-  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 135ms);
+    border-color 300ms ease !important;
+  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 160ms) !important;
   transform-origin: center bottom;
   will-change: opacity, transform;
   position: relative;
@@ -326,11 +326,11 @@
 .contact-card.is-revealed,
 .about-sidebar-column.is-revealed,
 .scroll-reveal-item.is-revealed {
-  opacity: 1;
-  transform: translateY(0) scale(1.0);
+  opacity: 1 !important;
+  transform: translateY(0) scale(1.0) !important;
 }
 
-/* 2. Secondary Delayed Elements: Top Accent Bar Drawing Left-to-Right (80-100ms delay) */
+/* 2. Secondary Delayed Elements: Top Accent Bar Drawing Left-to-Right over 500ms */
 .pillar-feature-card::before,
 .event-card::before,
 .stream-card::before {
@@ -341,18 +341,18 @@
   width: 0%;
   height: 3px;
   background: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-brass) 50%, var(--color-brass-light) 100%);
-  transition: width 520ms cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 135ms + 90ms);
+  transition: width 500ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 160ms + 100ms) !important;
   z-index: 2;
 }
 
 .pillar-feature-card.is-revealed::before,
 .event-card.is-revealed::before,
 .stream-card.is-revealed::before {
-  width: 100%;
+  width: 100% !important;
 }
 
-/* 3. Secondary Delayed Elements: Icon / Badge / Date Elastic Overshoot Pop (80-100ms delay) */
+/* 3. Secondary Delayed Elements: Icon / Badge / Date Elastic Overshoot Pop (scale 0.5 -> 1.1 -> 1.0) */
 .pillar-card-icon,
 .house-bob-icon,
 .event-date-badge,
@@ -361,12 +361,12 @@
 .notice-date-column,
 .infra-metric-val,
 .leadership-role-tag {
-  transform: scale(0.85);
+  transform: scale(0.5);
   opacity: 0;
   transition:
-    transform 480ms cubic-bezier(0.34, 1.4, 0.64, 1),
-    opacity 350ms ease;
-  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 135ms + 90ms);
+    transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 400ms ease !important;
+  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 160ms + 120ms) !important;
   will-change: transform, opacity;
 }
 
@@ -383,28 +383,32 @@
   opacity: 1;
 }
 
-/* 4. Desktop-Only Hover: Consistent Lift + Soft Shadow Increase */
+/* 4. Desktop-Only Hover: Consistent Lift + Soft Shadow Increase (Post-Entrance) */
 @media (hover: hover) and (pointer: fine) {
-  .pillar-feature-card:hover,
-  .house-item-box:hover,
-  .gallery-preview-card:hover,
-  .gallery-item:hover,
-  .gallery-card-item:hover,
-  .event-card:hover,
-  .event-editorial-card:hover,
-  .stream-card:hover,
-  .infra-metric-card:hover,
-  .leadership-card:hover,
-  .disclosure-card:hover,
-  .contact-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 14px 32px rgba(11, 27, 61, 0.12) !important;
+  .pillar-feature-card.is-revealed:hover,
+  .house-item-box.is-revealed:hover,
+  .gallery-preview-card.is-revealed:hover,
+  .gallery-item.is-revealed:hover,
+  .gallery-card-item.is-revealed:hover,
+  .event-card.is-revealed:hover,
+  .event-editorial-card.is-revealed:hover,
+  .stream-card.is-revealed:hover,
+  .infra-metric-card.is-revealed:hover,
+  .leadership-card.is-revealed:hover,
+  .disclosure-card.is-revealed:hover,
+  .contact-card.is-revealed:hover {
+    transform: translateY(-6px) scale(1.0) !important;
+    box-shadow: 0 16px 36px rgba(11, 27, 61, 0.14) !important;
+    transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 260ms ease !important;
+    transition-delay: 0ms !important;
   }
 
   /* Notice row hover */
-  .notice-item:hover {
-    transform: translateX(4px);
+  .notice-item.is-revealed:hover {
+    transform: translateX(4px) scale(1.0) !important;
     background-color: #fdfbf7 !important;
+    transition: transform 220ms ease, background-color 220ms ease !important;
+    transition-delay: 0ms !important;
   }
 
   .notice-item:hover .notice-action-btn,

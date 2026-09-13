@@ -20,6 +20,7 @@ export function useScrollReveal(options = { threshold: 0.18, rootMargin: '0px' }
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
+        console.log('[ScrollReveal Triggered]', element.className || element.id || element.tagName);
         setIsVisible(true);
         observer.unobserve(element);
       }
