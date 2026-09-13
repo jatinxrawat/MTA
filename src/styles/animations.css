@@ -1,0 +1,726 @@
+/* ==========================================================================
+   ACADEMIC & EDITORIAL ANIMATION SYSTEM — MOTHER TERESA ACADEMY
+   Restrained, purposeful, and cinematic motion across the entire institution site.
+   Respects prefers-reduced-motion across all keyframes and transitions.
+   ========================================================================== */
+
+/* 1. Global Reading / Scroll Progress Bar */
+.global-scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: transparent;
+  z-index: 1300;
+  pointer-events: none;
+}
+
+.global-scroll-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-brass) 65%, var(--color-brass-light) 100%);
+  box-shadow: 0 0 8px rgba(197, 151, 59, 0.65);
+  transition: width 90ms ease-out;
+  will-change: width;
+}
+
+/* 2. Page Route Transition (Fade & Gentle Rise) */
+.page-transition-wrapper {
+  animation: pageFadeUp 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes pageFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 3. Hero Section Cinematic Ken Burns Photo Motion */
+.hero-background-image {
+  animation: heroKenBurns 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes heroKenBurns {
+  0% {
+    transform: scale(1.01) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.05) translate(-0.5%, -0.5%);
+  }
+  100% {
+    transform: scale(1.08) translate(0.5%, 0.5%);
+  }
+}
+
+/* 4. Crest Logo Drawing & Ceremonial Reveal */
+.crest-draw-path {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: crestStrokeDraw 2.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.crest-draw-shield {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: crestStrokeDraw 2s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
+}
+
+.crest-draw-detail {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: crestStrokeDraw 1.8s cubic-bezier(0.25, 1, 0.5, 1) 0.6s forwards;
+}
+
+.crest-fill-in {
+  opacity: 0;
+  animation: crestFillFade 1.6s ease-out 1.2s forwards;
+}
+
+@keyframes crestStrokeDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes crestFillFade {
+  to {
+    opacity: 1;
+  }
+}
+
+.crest-official-reveal {
+  opacity: 0;
+  transform: scale(0.92);
+  animation: crestOfficialEntrance 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+@keyframes crestOfficialEntrance {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 5. Hero Typography Staggered Entrances */
+.hero-affiliation-badge {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: heroTextReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+
+.hero-stately-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: heroTextReveal 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
+}
+
+.hero-tagline-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: heroTextReveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.95s forwards;
+}
+
+.hero-scroll-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: heroTextReveal 1.4s ease-out 1.35s forwards;
+}
+
+@keyframes heroTextReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero Scroll Prompt Bouncing Line */
+.scroll-indicator-pulse {
+  animation: gentleScrollPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes gentleScrollPulse {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+}
+
+/* 6. Floating Navigation Pill & Sidebar Drawer Animations */
+.sidebar-toggle-pill {
+  animation: subtlePillPulse 4.5s ease-in-out infinite;
+}
+
+@keyframes subtlePillPulse {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(197, 151, 59, 0);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 12px 2px rgba(197, 151, 59, 0.32);
+  }
+}
+
+/* Sidebar Drawer Nav Links Staggered Slide In */
+.prospectus-sidebar.is-open .sidebar-nav-list li {
+  opacity: 0;
+  transform: translateX(-18px);
+  animation: navLinkSlideIn 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--nav-idx, 0) * 45ms + 100ms);
+}
+
+@keyframes navLinkSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebar-nav-link {
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.sidebar-nav-link:hover {
+  transform: translateX(6px);
+  background-color: rgba(223, 183, 92, 0.12) !important;
+}
+
+/* Admissions Button Shimmer Sweep */
+.btn-sidebar-admissions {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-sidebar-admissions::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -150%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.32) 50%,
+    transparent 80%
+  );
+  transform: rotate(25deg);
+  animation: buttonSweep 5.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes buttonSweep {
+  0%, 75% {
+    left: -150%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+/* 7. Universal Scroll-Triggered Reveal (Headers & Containers) */
+.editorial-section-header,
+.subpage-hero-header,
+.about-academy-column,
+.notice-board-compact-card,
+.scroll-reveal-auto,
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 360ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.editorial-section-header.is-revealed,
+.subpage-hero-header.is-revealed,
+.about-academy-column.is-revealed,
+.notice-board-compact-card.is-revealed,
+.scroll-reveal-auto.is-revealed,
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section Header Prospectus Gem Spin & Glow on Reveal */
+.editorial-section-header.is-revealed .prospectus-rule-gem,
+.subpage-hero-header.is-revealed .prospectus-rule-gem {
+  animation: gemSpinGlow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes gemSpinGlow {
+  0% {
+    transform: rotate(0deg) scale(0.5);
+    box-shadow: 0 0 0 rgba(197, 151, 59, 0);
+  }
+  65% {
+    transform: rotate(45deg) scale(1.25);
+    box-shadow: 0 0 14px 4px rgba(197, 151, 59, 0.6);
+  }
+  100% {
+    transform: rotate(45deg) scale(1);
+    box-shadow: 0 0 4px rgba(197, 151, 59, 0.25);
+  }
+}
+
+/* ==========================================================================
+   8. UNIFIED CARD SCROLL-TRIGGERED ENTRANCE SYSTEM (CONSISTENT SITE-WIDE)
+   Applied consistently across all card-based sections:
+   - The Cornerstones grid (6 institutional cards)
+   - The Four Institutional Houses row (4 house cards)
+   - The Campus Gallery preview cards & full gallery items
+   - The News & Upcoming Events cards
+   - Notice/circular rows in the Notice Board column
+   - Repeating cards on subpages (Streams, Metrics, Leadership, Disclosure)
+   ========================================================================== */
+
+/* 1. Base Card Entrance: Fade in + rise up ~24px + slight scale from 0.96 to 1.0 over 650ms */
+.pillar-feature-card,
+.house-item-box,
+.gallery-preview-card,
+.gallery-item,
+.gallery-card-item,
+.event-card,
+.event-editorial-card,
+.notice-item,
+.stream-card,
+.infra-metric-card,
+.leadership-card,
+.disclosure-card,
+.contact-card,
+.about-sidebar-column,
+.scroll-reveal-item {
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  transition:
+    opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 650ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 135ms);
+  transform-origin: center bottom;
+  will-change: opacity, transform;
+  position: relative;
+}
+
+.pillar-feature-card.is-revealed,
+.house-item-box.is-revealed,
+.gallery-preview-card.is-revealed,
+.gallery-item.is-revealed,
+.gallery-card-item.is-revealed,
+.event-card.is-revealed,
+.event-editorial-card.is-revealed,
+.notice-item.is-revealed,
+.stream-card.is-revealed,
+.infra-metric-card.is-revealed,
+.leadership-card.is-revealed,
+.disclosure-card.is-revealed,
+.contact-card.is-revealed,
+.about-sidebar-column.is-revealed,
+.scroll-reveal-item.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1.0);
+}
+
+/* 2. Secondary Delayed Elements: Top Accent Bar Drawing Left-to-Right (80-100ms delay) */
+.pillar-feature-card::before,
+.event-card::before,
+.stream-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-brass) 50%, var(--color-brass-light) 100%);
+  transition: width 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 135ms + 90ms);
+  z-index: 2;
+}
+
+.pillar-feature-card.is-revealed::before,
+.event-card.is-revealed::before,
+.stream-card.is-revealed::before {
+  width: 100%;
+}
+
+/* 3. Secondary Delayed Elements: Icon / Badge / Date Elastic Overshoot Pop (80-100ms delay) */
+.pillar-card-icon,
+.house-bob-icon,
+.event-date-badge,
+.gallery-zoom-badge,
+.notice-new-badge,
+.notice-date-column,
+.infra-metric-val,
+.leadership-role-tag {
+  transform: scale(0.85);
+  opacity: 0;
+  transition:
+    transform 480ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    opacity 350ms ease;
+  transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 135ms + 90ms);
+  will-change: transform, opacity;
+}
+
+.pillar-feature-card.is-revealed .pillar-card-icon,
+.house-item-box.is-revealed .house-bob-icon,
+.event-card.is-revealed .event-date-badge,
+.gallery-item.is-revealed .gallery-zoom-badge,
+.gallery-preview-card.is-revealed .gallery-zoom-badge,
+.notice-item.is-revealed .notice-new-badge,
+.notice-item.is-revealed .notice-date-column,
+.infra-metric-card.is-revealed .infra-metric-val,
+.leadership-card.is-revealed .leadership-role-tag {
+  transform: scale(1.0);
+  opacity: 1;
+}
+
+/* 4. Desktop-Only Hover: Consistent Lift + Soft Shadow Increase */
+@media (hover: hover) and (pointer: fine) {
+  .pillar-feature-card:hover,
+  .house-item-box:hover,
+  .gallery-preview-card:hover,
+  .gallery-item:hover,
+  .gallery-card-item:hover,
+  .event-card:hover,
+  .event-editorial-card:hover,
+  .stream-card:hover,
+  .infra-metric-card:hover,
+  .leadership-card:hover,
+  .disclosure-card:hover,
+  .contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 32px rgba(11, 27, 61, 0.12) !important;
+  }
+
+  /* Notice row hover */
+  .notice-item:hover {
+    transform: translateX(4px);
+    background-color: #fdfbf7 !important;
+  }
+
+  .notice-item:hover .notice-action-btn,
+  .notice-item:hover .notice-action-link {
+    border-color: var(--color-maroon) !important;
+    color: var(--color-maroon) !important;
+  }
+
+  /* View more / links arrow shift slightly */
+  .pillar-card-link svg,
+  .notice-action-link svg,
+  .event-card-link svg,
+  .view-more-link svg {
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pillar-feature-card:hover .pillar-card-link svg,
+  .notice-item:hover .notice-action-link svg,
+  .event-card:hover .event-card-link svg {
+    transform: translateX(4px);
+  }
+
+  /* Gallery card slow subtle zoom (scale 1 -> 1.04) contained within card */
+  .gallery-preview-card,
+  .gallery-item,
+  .gallery-card-item {
+    overflow: hidden;
+  }
+
+  .gallery-preview-card .gallery-image,
+  .gallery-preview-card img,
+  .gallery-item .gallery-image,
+  .gallery-item img,
+  .gallery-card-item img {
+    transform: scale(1);
+    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+    will-change: transform;
+  }
+
+  .gallery-preview-card:hover .gallery-image,
+  .gallery-preview-card:hover img,
+  .gallery-item:hover .gallery-image,
+  .gallery-item:hover img,
+  .gallery-card-item:hover img {
+    transform: scale(1.04);
+  }
+
+  /* Four Institutional Houses color glow */
+  .house-item-box.house-teresa:hover {
+    box-shadow: 0 14px 32px rgba(110, 21, 37, 0.22) !important;
+    border-color: var(--color-maroon) !important;
+  }
+
+  .house-item-box.house-vivekananda:hover {
+    box-shadow: 0 14px 32px rgba(11, 27, 61, 0.25) !important;
+    border-color: var(--color-navy) !important;
+  }
+
+  .house-item-box.house-kalam:hover {
+    box-shadow: 0 14px 32px rgba(197, 151, 59, 0.28) !important;
+    border-color: var(--color-brass) !important;
+  }
+
+  .house-item-box.house-tagore:hover {
+    box-shadow: 0 14px 32px rgba(46, 125, 50, 0.22) !important;
+    border-color: #2e7d32 !important;
+  }
+}
+
+/* Urgent Alert Beacon Ping */
+.notice-urgent-tag {
+  position: relative;
+}
+
+.notice-urgent-tag::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-maroon);
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  animation: beaconPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes beaconPing {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(110, 21, 37, 0.6);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(110, 21, 37, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(110, 21, 37, 0);
+  }
+}
+
+/* Notice Board Filter Pill Active Spring */
+.notice-filter-pill {
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.notice-filter-pill:active {
+  transform: scale(0.94);
+}
+
+/* Continuous House Icon Bob */
+@keyframes houseIconBob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.house-bob-icon {
+  display: inline-block;
+  animation: houseIconBob 3.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Lightbox Modal Animations */
+.modal-overlay {
+  animation: lightboxBackdropFade 280ms ease forwards;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@keyframes lightboxBackdropFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-card {
+  animation: modalScaleSpring 360ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes modalScaleSpring {
+  from {
+    opacity: 0;
+    transform: scale(0.93) translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Lightbox Close Button Rotation on Hover */
+.modal-close-btn,
+.sidebar-close-btn {
+  transition: all 220ms ease;
+}
+
+.modal-close-btn:hover,
+.sidebar-close-btn:hover {
+  transform: rotate(90deg);
+}
+
+/* 12. Floating Back to Top Button */
+.floating-back-to-top {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  z-index: 990;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background-color: var(--color-navy-deep);
+  color: var(--color-brass-light);
+  border: 1px solid var(--color-brass);
+  padding: 0.65rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(14px);
+  transition: opacity 320ms cubic-bezier(0.16, 1, 0.3, 1), transform 320ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+  border-radius: 2px;
+}
+
+.floating-back-to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.floating-back-to-top:hover {
+  background-color: var(--color-navy);
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 26px rgba(197, 151, 59, 0.4);
+}
+
+.floating-back-to-top:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 3px;
+}
+
+/* 13. Form Input Smooth Focus Ring & Loading Spinner */
+input, textarea, select {
+  transition: border-color 220ms ease, box-shadow 220ms ease !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--color-brass) !important;
+  box-shadow: 0 0 0 3px rgba(197, 151, 59, 0.22) !important;
+}
+
+.btn-submit-loading {
+  opacity: 0.85;
+  cursor: wait !important;
+  pointer-events: none;
+}
+
+@keyframes spinIcon {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-icon {
+  animation: spinIcon 0.85s linear infinite;
+  display: inline-block;
+}
+
+/* 14. Accessible Reduced Motion Overrides */
+@media (prefers-reduced-motion: reduce) {
+  .hero-background-image,
+  .scroll-indicator-pulse,
+  .sidebar-toggle-pill,
+  .house-bob-icon,
+  .spinner-icon,
+  .notice-urgent-tag::before,
+  .btn-sidebar-admissions::after {
+    animation: none !important;
+  }
+
+  .crest-draw-path,
+  .crest-draw-shield,
+  .crest-draw-detail {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+
+  .crest-fill-in,
+  .crest-official-reveal,
+  .hero-stately-reveal,
+  .hero-tagline-reveal,
+  .hero-scroll-reveal,
+  .hero-affiliation-badge,
+  .notice-row-animated,
+  .page-transition-wrapper,
+  .scroll-reveal-item,
+  .scroll-reveal-auto,
+  .editorial-section-header,
+  .subpage-hero-header,
+  .about-academy-column,
+  .notice-board-compact-card,
+  .pillar-feature-card,
+  .house-item-box,
+  .gallery-preview-card,
+  .gallery-item,
+  .gallery-card-item,
+  .event-card,
+  .event-editorial-card,
+  .notice-item,
+  .stream-card,
+  .infra-metric-card,
+  .leadership-card,
+  .disclosure-card,
+  .contact-card,
+  .about-sidebar-column,
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .pillar-feature-card::before,
+  .event-card::before,
+  .stream-card::before,
+  .pillar-card-icon,
+  .house-bob-icon,
+  .event-date-badge,
+  .gallery-zoom-badge,
+  .notice-new-badge,
+  .notice-date-column,
+  .infra-metric-val,
+  .leadership-role-tag {
+    opacity: 1 !important;
+    transform: none !important;
+    width: 100% !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .floating-back-to-top {
+    transition: none !important;
+  }
+}
+

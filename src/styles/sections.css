@@ -1,0 +1,454 @@
+/* Subpage Editorial Hero Header */
+.subpage-hero-header {
+  background: linear-gradient(180deg, var(--color-navy-deep) 0%, var(--color-navy) 100%);
+  color: #ffffff;
+  padding: 7rem 0 3.5rem;
+  border-bottom: 3px solid var(--color-brass);
+  position: relative;
+}
+
+.subpage-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.25rem;
+}
+
+.breadcrumb-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-brass-light);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb-link:hover {
+  color: #ffffff;
+}
+
+.breadcrumb-arrow {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.breadcrumb-current {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.subpage-badge-pill {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background-color: var(--color-maroon);
+  color: #ffffff;
+  padding: 0.35rem 0.85rem;
+  border-radius: 2px;
+  margin-bottom: 0.75rem;
+}
+
+.subpage-main-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.75rem;
+}
+
+.subpage-sub-lead {
+  font-size: 1.15rem;
+  color: rgba(246, 241, 229, 0.85);
+  max-width: 780px;
+  line-height: 1.6;
+}
+
+/* 1. About Section */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5rem;
+  align-items: start;
+}
+
+.about-editorial-column {
+  font-size: 1.05rem;
+}
+
+.about-founding-lead {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--ink-primary);
+  margin-bottom: 1.5rem;
+}
+
+.about-sidebar-column {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  box-shadow: var(--shadow-editorial);
+  padding: 2.25rem;
+  position: relative;
+}
+
+.about-sidebar-column::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-navy), var(--color-brass), var(--color-maroon));
+}
+
+.about-crest-watermark {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--bg-paper-rule);
+}
+
+.prospectus-card-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 0.75rem;
+}
+
+.core-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 3.5rem;
+}
+
+.pillar-item {
+  border-top: 2px solid var(--color-navy);
+  padding-top: 1rem;
+}
+
+.pillar-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--color-brass);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.pillar-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  margin-bottom: 0.5rem;
+}
+
+.pillar-desc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+}
+
+/* 2. Academics & Results Section */
+.academics-intro-box {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  padding: 2.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.streams-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin-top: 2rem;
+}
+
+.stream-card {
+  background-color: var(--bg-parchment-white);
+  border: 1px solid var(--bg-paper-rule);
+  padding: 1.5rem;
+  border-top: 3px solid var(--color-brass);
+}
+
+.stream-card-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 0.75rem;
+}
+
+.stream-subjects {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+}
+
+.results-table-wrapper {
+  margin-top: 3rem;
+}
+
+.results-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+
+.results-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--color-navy-deep);
+}
+
+.results-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-maroon);
+  font-weight: 600;
+}
+
+/* 3. Teaching Staff Section */
+.leadership-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+}
+
+.leadership-card {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  padding: 2rem 1.75rem;
+  box-shadow: var(--shadow-editorial);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.leadership-role-tag {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-maroon);
+  margin-bottom: 0.5rem;
+}
+
+.leadership-name {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  margin-bottom: 0.25rem;
+}
+
+.leadership-qual {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  margin-bottom: 0.75rem;
+}
+
+.leadership-exp {
+  font-size: 0.82rem;
+  color: var(--color-brass-deep);
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--bg-paper-rule);
+}
+
+.leadership-quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+  margin-top: auto;
+}
+
+.staff-stats-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  background-color: var(--color-navy-deep);
+  color: #ffffff;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.staff-stat-box {
+  text-align: center;
+  border-right: 1px solid rgba(223, 183, 92, 0.3);
+}
+
+.staff-stat-box:last-child {
+  border-right: none;
+}
+
+.staff-stat-num {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-brass-light);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.staff-stat-label {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 4. Infrastructure Section */
+.infra-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 3.5rem;
+}
+
+.infra-metric-card {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  padding: 1.5rem;
+  border-left: 3px solid var(--color-navy);
+}
+
+.infra-metric-val {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  margin-bottom: 0.25rem;
+}
+
+.infra-metric-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-maroon);
+  margin-bottom: 0.25rem;
+}
+
+.infra-metric-sub {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}
+
+.sanitation-table-box {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  padding: 2rem;
+  margin-bottom: 3.5rem;
+}
+
+/* Photo Gallery */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+.gallery-item {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  box-shadow: var(--shadow-editorial);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-4px);
+}
+
+.gallery-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background-color: var(--color-navy-deep);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.gallery-item:hover .gallery-image {
+  transform: scale(1.04);
+}
+
+.gallery-caption-box {
+  padding: 1.25rem;
+}
+
+.gallery-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 0.35rem;
+}
+
+.gallery-desc {
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 980px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .core-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+  .streams-grid {
+    grid-template-columns: 1fr;
+  }
+  .leadership-grid {
+    grid-template-columns: 1fr;
+  }
+  .infra-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .infra-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  .staff-stats-strip {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .staff-stat-box {
+    border-right: none;
+    border-bottom: 1px solid rgba(223, 183, 92, 0.3);
+    padding-bottom: 1rem;
+  }
+  .staff-stat-box:last-child {
+    border-bottom: none;
+  }
+}

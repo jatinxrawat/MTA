@@ -1,0 +1,52 @@
+:root {
+  /* Indian School Uniform / Blazer Palette */
+  --color-navy-deep: #071224;
+  --color-navy: #0b1b3d;
+  --color-navy-mid: #142854;
+  --color-navy-light: #203a74;
+  --color-navy-soft: #edf2fb;
+
+  --color-maroon-deep: #4a0c16;
+  --color-maroon: #6e1525;
+  --color-maroon-mid: #8a1d31;
+  --color-maroon-soft: #fcf0f2;
+
+  --color-brass-deep: #8a641a;
+  --color-brass: #c5973b;
+  --color-brass-light: #dfb75c;
+  --color-brass-pale: #f7eed9;
+
+  /* Editorial Paper / Parchment Surfaces */
+  --bg-parchment-white: #fdfbf7;
+  --bg-parchment: #f6f1e5;
+  --bg-parchment-deep: #ede4d1;
+  --bg-paper-rule: #dfd4be;
+
+  /* Ink & Typography */
+  --ink-primary: #1a202c;
+  --ink-secondary: #3c4656;
+  --ink-muted: #647082;
+  --ink-light: #f6f1e5;
+  --ink-accent-navy: #0b1b3d;
+  --ink-accent-maroon: #6e1525;
+
+  /* Typography Stacks */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Shadows - subtle and classical, not soft SaaS floating cards */
+  --shadow-editorial: 0 4px 20px -2px rgba(11, 27, 61, 0.08);
+  --shadow-elevated: 0 12px 30px -4px rgba(11, 27, 61, 0.14);
+  --shadow-inset-parchment: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  /* Borders & Rules */
+  --border-fine: 1px solid var(--bg-paper-rule);
+  --border-double: 3px double var(--color-brass);
+  --border-navy: 1px solid rgba(11, 27, 61, 0.15);
+  --border-brass: 1px solid var(--color-brass);
+
+  /* Container widths */
+  --container-max: 1240px;
+  --container-prospectus: 1080px;
+  --container-narrow: 840px;
+}

@@ -1,0 +1,225 @@
+import React, { useState } from 'react';
+import { schoolData } from '../data/schoolData';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
+import '../styles/contact-footer.css';
+
+export default function ContactSection() {
+  const { location, postalAddress, phonePrimary, phoneSecondary, emailPrimary, emailAdmissions, officeHours, visitingHoursPrincipal } =
+    schoolData.general;
+
+  const [formData, setFormData] = useState({
+    parentName: '',
+    contactNumber: '',
+    email: '',
+    gradeSeeking: 'Class XI - Science',
+    message: '',
+  });
+
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <section id="contact" className="contact-section" aria-label="Contact and Admissions Enquiry">
+      <div className="container">
+        {/* Section Header */}
+        <header className="editorial-section-header text-center">
+          <span className="prospectus-subhead">Admissions & Campus Liaison</span>
+          <h2 className="prospectus-title">Get in Touch with Administration</h2>
+          <div className="prospectus-rule centered">
+            <span className="prospectus-rule-gem" />
+          </div>
+        </header>
+
+        <div className="contact-layout-grid">
+          {/* Left Column: Campus Postal Address & Office Timings */}
+          <div className="contact-details-box">
+            <div className="contact-item-group">
+              <div className="contact-item-header">
+                <MapPin size={22} className="contact-icon" />
+                <h3 className="contact-label">Postal & Campus Address</h3>
+              </div>
+              <p className="contact-val">
+                <strong>Mother Teresa Academy</strong>
+                <br />
+                {postalAddress}
+                <br />
+                Western Uttar Pradesh, India
+              </p>
+            </div>
+
+            <div className="contact-item-group">
+              <div className="contact-item-header">
+                <Phone size={22} className="contact-icon" />
+                <h3 className="contact-label">Telephonic Helplines</h3>
+              </div>
+              <p className="contact-val">
+                General Inquiries: {phonePrimary}
+                <br />
+                Admissions Cell: {phoneSecondary}
+              </p>
+            </div>
+
+            <div className="contact-item-group">
+              <div className="contact-item-header">
+                <Mail size={22} className="contact-icon" />
+                <h3 className="contact-label">Electronic Mail</h3>
+              </div>
+              <p className="contact-val">
+                Official Secretarial Desk: {emailPrimary}
+                <br />
+                Admissions Registrar: {emailAdmissions}
+              </p>
+            </div>
+
+            <div className="contact-item-group">
+              <div className="contact-item-header">
+                <Clock size={22} className="contact-icon" />
+                <h3 className="contact-label">Institutional Timings</h3>
+              </div>
+              <p className="contact-val">
+                {officeHours}
+                <br />
+                <em>Principal's Office Hours: {visitingHoursPrincipal}</em>
+              </p>
+            </div>
+
+            {/* Stylized Baraut Map Placeholder */}
+            <div className="map-placeholder-box">
+              <div className="map-pin-pulse">
+                <MapPin size={24} />
+              </div>
+              <h4 className="map-location-title">Baraut, District Baghpat (U.P.)</h4>
+              <p style={{ fontSize: '0.86rem', color: 'var(--ink-secondary)', maxWidth: '340px', marginTop: '0.25rem' }}>
+                Conveniently located along Baghpat Road, connecting Delhi-NCR and Meerut highway corridor.
+              </p>
+              <div className="map-coords">GPS: 29.1004° N, 77.2606° E • Baraut</div>
+            </div>
+          </div>
+
+          {/* Right Column: Admission Inquiry Form */}
+          <div className="inquiry-form-card">
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--color-navy-deep)', marginBottom: '0.5rem' }}>
+              Academic Session 2025–26 Enquiry
+            </h3>
+            <p style={{ fontSize: '0.92rem', color: 'var(--ink-muted)', marginBottom: '2rem' }}>
+              Submit scholar credentials for registration guidelines, prospectus dispatch, or campus tour scheduling.
+            </p>
+
+            {submitted ? (
+              <div style={{ backgroundColor: 'var(--bg-parchment-white)', border: '1px solid var(--color-brass)', padding: '2.5rem', textAlign: 'center' }}>
+                <CheckCircle size={42} style={{ color: '#2e7d32', margin: '0 auto 1rem' }} />
+                <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--color-navy)', marginBottom: '0.5rem' }}>
+                  Enquiry Registered Successfully
+                </h4>
+                <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)' }}>
+                  Thank you, <strong>{formData.parentName}</strong>. The Admissions Secretariat will reach out to <strong>{formData.contactNumber}</strong> shortly.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSubmitted(false)}
+                  className="btn-academic btn-academic-outline"
+                  style={{ marginTop: '1.5rem' }}
+                >
+                  Submit Another Inquiry
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="parentName">
+                    Parent / Guardian Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="parentName"
+                    required
+                    className="form-input"
+                    placeholder="e.g. Dr. Rajesh Sharma"
+                    value={formData.parentName}
+                    onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-row-two">
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="contactNumber">
+                      Contact Mobile Number *
+                    </label>
+                    <input
+                      type="tel"
+                      id="contactNumber"
+                      required
+                      className="form-input"
+                      placeholder="+91 98765 XXXXX"
+                      value={formData.contactNumber}
+                      onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="email">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      className="form-input"
+                      placeholder="parent@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="gradeSeeking">
+                    Grade / Class Seeking Admission *
+                  </label>
+                  <select
+                    id="gradeSeeking"
+                    className="form-select"
+                    value={formData.gradeSeeking}
+                    onChange={(e) => setFormData({ ...formData, gradeSeeking: e.target.value })}
+                  >
+                    <option value="Pre-Primary / Kindergarten">Pre-Primary / Kindergarten</option>
+                    <option value="Primary (Class I - V)">Primary Wing (Class I - V)</option>
+                    <option value="Middle (Class VI - VIII)">Middle Wing (Class VI - VIII)</option>
+                    <option value="Secondary (Class IX - X)">Secondary Wing (Class IX - X)</option>
+                    <option value="Senior Secondary - Science (Class XI - XII)">Senior Secondary — Science (Class XI - XII)</option>
+                    <option value="Senior Secondary - Commerce (Class XI - XII)">Senior Secondary — Commerce (Class XI - XII)</option>
+                    <option value="Senior Secondary - Humanities (Class XI - XII)">Senior Secondary — Humanities (Class XI - XII)</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="message">
+                    Specific Query or Message (Optional)
+                  </label>
+                  <textarea
+                    id="message"
+                    className="form-textarea"
+                    placeholder="Mention any specific transport, scholarship, or boarding queries..."
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn-academic btn-academic-brass"
+                  style={{ width: '100%', padding: '1rem' }}
+                >
+                  <Send size={16} style={{ marginRight: '0.5rem' }} />
+                  Submit Official Admission Enquiry
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

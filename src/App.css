@@ -1,0 +1,6 @@
+/* App scoped root styles */
+.school-prospectus-app {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}

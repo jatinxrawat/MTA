@@ -1,0 +1,715 @@
+/* Home Page & Campus Showcase Styles */
+
+/* 1. Institutional Overview & Notice Board (Side-by-Side Two-Column Layout) */
+.notice-board-section {
+  background-color: var(--bg-parchment);
+  border-top: 1px solid var(--bg-paper-rule);
+  border-bottom: 1px solid var(--bg-paper-rule);
+  padding: 3.75rem 0;
+  position: relative;
+}
+
+.notice-overview-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 2.75rem;
+  align-items: flex-start;
+}
+
+/* LEFT COLUMN: About the Academy (Compact Prospectus Editorial) */
+.about-academy-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-academy-header {
+  margin-bottom: 0.5rem;
+}
+
+.about-column-heading {
+  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+  line-height: 1.2;
+  color: var(--color-navy-deep);
+  margin-top: 0.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.about-prospectus-lead {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--ink-primary);
+  margin-bottom: 0.85rem;
+}
+
+.about-prospectus-para {
+  font-size: 0.94rem;
+  line-height: 1.68;
+  color: var(--ink-secondary);
+  margin-bottom: 0.85rem;
+}
+
+.about-column-pullquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.12rem;
+  line-height: 1.4;
+  color: var(--color-navy-deep);
+  border-left: 3px solid var(--color-brass);
+  padding: 0.75rem 0 0.75rem 1.25rem;
+  margin: 1.25rem 0;
+  background-color: #fdfbf7;
+}
+
+.about-pullquote-footer {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  font-style: normal;
+  color: var(--color-maroon);
+  font-weight: 600;
+}
+
+/* Brief Quick Reference Block */
+.prospectus-quick-reference {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--bg-paper-rule);
+  margin-top: 1rem;
+}
+
+.quick-ref-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.quick-ref-label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-brass-deep);
+  margin-bottom: 0.15rem;
+}
+
+.quick-ref-val {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--color-navy-deep);
+  line-height: 1.3;
+}
+
+/* RIGHT COLUMN: Notice Board Compact Card */
+.notice-board-card-column {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.notice-board-compact-card {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  box-shadow: var(--shadow-editorial);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.notice-card-header {
+  padding: 1.15rem 1.35rem 0.9rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--bg-paper-rule);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.notice-card-heading {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Category Filter Pills */
+.notice-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  overflow-x: auto;
+  flex-wrap: wrap;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.notice-filter-pill {
+  background: transparent;
+  color: var(--color-navy);
+  border: 1px solid rgba(11, 27, 61, 0.2);
+  padding: 0.28rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  white-space: nowrap;
+}
+
+.notice-filter-pill:hover {
+  background: rgba(197, 151, 59, 0.1);
+  border-color: var(--color-brass);
+  color: var(--color-navy-deep);
+}
+
+.notice-filter-pill.active {
+  background: linear-gradient(135deg, var(--color-brass-light) 0%, var(--color-brass) 100%);
+  color: var(--color-navy-deep);
+  border-color: var(--color-brass-deep);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(197, 151, 59, 0.22);
+}
+
+/* Restrained Urgent Alert Banner: Maroon Left Border on Soft Ivory */
+.notice-urgent-ticker {
+  background-color: #fdfbf7;
+  border-left: 3px solid var(--color-maroon);
+  border-bottom: 1px solid var(--bg-paper-rule);
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+}
+
+.notice-urgent-tag {
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background-color: var(--color-maroon-soft);
+  color: var(--color-maroon);
+  border: 1px solid rgba(110, 21, 37, 0.22);
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.notice-urgent-text strong {
+  color: var(--color-maroon);
+  font-weight: 600;
+}
+
+/* Notice List with Compact Rows and Hairline Dividers */
+.notice-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notice-item {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--bg-paper-rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+  transition: background-color 220ms ease;
+}
+
+.notice-item:last-child {
+  border-bottom: none;
+}
+
+.notice-item:hover {
+  background-color: #fdfbf7;
+}
+
+.notice-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+/* Serif Date Treatment & Small Caps Category */
+.notice-date-column {
+  min-width: 85px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.notice-serif-date {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-maroon);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.notice-category-caps {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-brass-deep);
+  margin-top: 0.15rem;
+  display: block;
+}
+
+.notice-title-wrap {
+  flex: 1;
+}
+
+.notice-title-text {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-navy-deep);
+  line-height: 1.35;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+/* Restyled NEW Badge as Small Maroon Pill */
+.notice-new-badge {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background-color: var(--color-maroon-soft);
+  color: var(--color-maroon);
+  border: 1px solid rgba(110, 21, 37, 0.25);
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+/* Slim Outlined Action Link with Underline and Micro-Nudge on Hover */
+.notice-action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-navy);
+  text-decoration: none;
+  background-color: transparent;
+  border: 1px solid rgba(11, 27, 61, 0.2);
+  padding: 0.28rem 0.7rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  min-height: 32px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.notice-action-link:hover {
+  color: var(--color-maroon);
+  background-color: var(--color-maroon-soft);
+  border-color: var(--color-maroon);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transform: translateX(3px);
+}
+
+.notice-item:hover .notice-action-link {
+  border-color: var(--color-maroon);
+}
+
+.notice-card-footer {
+  padding: 0.7rem 1.25rem;
+  background-color: #fbf9f4;
+  border-top: 1px solid var(--bg-paper-rule);
+  text-align: center;
+}
+
+.notice-view-toggle-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-maroon);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 200ms ease;
+}
+
+.notice-view-toggle-btn:hover {
+  color: var(--color-navy);
+}
+
+/* 2. Key Institutional Pillars Showcase (Cornerstones) */
+.pillars-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.pillar-feature-card {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  box-shadow: var(--shadow-editorial);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  border-top: 4px solid var(--color-navy);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
+}
+
+/* Understated lift without scale/zoom */
+.pillar-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -4px rgba(11, 27, 61, 0.16);
+}
+
+.pillar-card-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-navy-soft);
+  color: var(--color-navy);
+  border-radius: 2px;
+  margin-bottom: 1.25rem;
+}
+
+.pillar-card-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  margin-bottom: 0.75rem;
+}
+
+.pillar-card-desc {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--ink-secondary);
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.pillar-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-navy);
+  text-decoration: none;
+  margin-top: auto;
+  transition: color 200ms ease;
+  min-height: 40px;
+}
+
+.pillar-card-link:hover {
+  color: var(--color-maroon);
+}
+
+/* Houses Sub-Grid */
+.houses-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.house-item-box {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  border-top: 4px solid var(--house-color, var(--color-navy));
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 250ms ease;
+}
+
+.house-item-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px -2px rgba(11, 27, 61, 0.12);
+}
+
+.house-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-top: 0.35rem;
+}
+
+.house-motto {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 0.2rem;
+}
+
+/* 3. News & Events Calendar Cards */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.event-card {
+  background-color: #ffffff;
+  border: 1px solid var(--bg-paper-rule);
+  border-left: 4px solid var(--color-navy);
+  box-shadow: var(--shadow-editorial);
+  padding: 1.75rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  transition: border-color 280ms ease, border-left-color 280ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 280ms ease;
+}
+
+.event-card:hover {
+  border-color: var(--color-brass);
+  border-left-color: var(--color-maroon);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -2px rgba(11, 27, 61, 0.14);
+}
+
+.event-date-badge {
+  background-color: var(--color-navy-deep);
+  color: #ffffff;
+  border: 1px solid var(--color-brass);
+  min-width: 76px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  flex-shrink: 0;
+  transition: background-color 250ms ease;
+}
+
+.event-card:hover .event-date-badge {
+  background-color: var(--color-navy);
+}
+
+.event-day {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-brass-light);
+}
+
+.event-month {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-top: 0.2rem;
+}
+
+.event-year {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.event-body {
+  flex: 1;
+}
+
+.event-category-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-maroon);
+  margin-bottom: 0.35rem;
+}
+
+.event-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+}
+
+.event-desc {
+  font-size: 0.88rem;
+  color: var(--ink-secondary);
+  line-height: 1.55;
+  margin-bottom: 0.75rem;
+}
+
+.event-venue {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* 4. Home Gallery Preview */
+.gallery-cta-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS (1024px, 768px, 640px, 428px, 375px)
+   ========================================================= */
+
+/* Tablet Viewport (768px - 1024px) */
+@media (max-width: 1024px) {
+  .notice-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+  .notice-board-card-column {
+    position: static;
+  }
+  .pillars-showcase-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+  .houses-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* Portrait Tablet & Large Phone (<768px) */
+@media (max-width: 768px) {
+  .notice-board-section {
+    padding: 4.5rem 0;
+  }
+  .notice-filter-bar {
+    gap: 0.45rem;
+  }
+  .notice-filter-pill {
+    padding: 0.4rem 0.95rem;
+    font-size: 0.78rem;
+  }
+  .notice-urgent-ticker {
+    padding: 0.85rem 1.25rem;
+    font-size: 0.86rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .notice-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.15rem;
+    padding: 1.35rem 1.25rem;
+  }
+  .notice-left {
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+  }
+  .notice-date-column {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .notice-category-caps {
+    margin-top: 0;
+  }
+  .notice-title-text {
+    font-size: 1.05rem;
+  }
+  .notice-action-link {
+    width: 100%;
+    min-height: 42px;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .pillars-showcase-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .event-card {
+    padding: 1.25rem;
+  }
+}
+
+/* Mobile Devices (375px - 640px) */
+@media (max-width: 640px) {
+  .prospectus-quick-reference {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .pillar-feature-card {
+    padding: 1.75rem 1.25rem;
+  }
+  .houses-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+  .house-item-box {
+    padding: 1rem 0.75rem;
+  }
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .event-card {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .event-date-badge {
+    min-width: 66px;
+    padding: 0.6rem 0.35rem;
+  }
+  .event-day {
+    font-size: 1.5rem;
+  }
+  .event-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* Small Phones (<=390px / 375px) */
+@media (max-width: 390px) {
+  .houses-strip {
+    grid-template-columns: 1fr;
+  }
+  .notice-title-text {
+    font-size: 0.92rem;
+  }
+  .event-card {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .event-date-badge {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  .event-month {
+    margin-top: 0;
+  }
+}

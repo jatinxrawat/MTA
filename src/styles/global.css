@@ -1,0 +1,339 @@
+/* Global Editorial & Prospectus Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  color: var(--ink-primary);
+  background-color: var(--bg-parchment-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+  color: var(--ink-primary);
+  background-color: var(--bg-parchment-white);
+}
+
+/* Accessible focus ring */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 3px;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-navy-deep);
+  letter-spacing: -0.01em;
+}
+
+p {
+  color: var(--ink-secondary);
+  font-size: 1.05rem;
+}
+
+/* Section Header (Prospectus Style - No ALL-CAPS SaaS eyebrow) */
+.editorial-section-header {
+  margin-bottom: 3.5rem;
+  position: relative;
+}
+
+.editorial-section-header.text-center {
+  text-align: center;
+}
+
+.prospectus-subhead {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--color-maroon);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.prospectus-title {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 600;
+  color: var(--color-navy-deep);
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+
+.prospectus-rule {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.prospectus-rule.centered {
+  justify-content: center;
+}
+
+.prospectus-rule::before,
+.prospectus-rule::after {
+  content: "";
+  height: 1px;
+  background: var(--bg-paper-rule);
+  flex: 1;
+  max-width: 140px;
+}
+
+.prospectus-rule-gem {
+  width: 9px;
+  height: 9px;
+  background-color: var(--color-brass);
+  transform: rotate(45deg);
+}
+
+/* Layout Containers */
+.container {
+  width: 92%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container-prospectus {
+  width: 90%;
+  max-width: var(--container-prospectus);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-padding {
+  padding: 6.5rem 0;
+}
+
+.section-parchment {
+  background-color: var(--bg-parchment);
+  border-top: 1px solid var(--bg-paper-rule);
+  border-bottom: 1px solid var(--bg-paper-rule);
+}
+
+.section-navy {
+  background-color: var(--color-navy);
+  color: var(--ink-light);
+  position: relative;
+}
+
+.section-navy h2,
+.section-navy h3,
+.section-navy h4 {
+  color: #ffffff;
+}
+
+.section-navy p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Real Academic Table Styling */
+.academic-table-container {
+  overflow-x: auto;
+  margin: 2rem 0;
+  border: 1px solid var(--bg-paper-rule);
+  background-color: #ffffff;
+  box-shadow: var(--shadow-editorial);
+}
+
+.academic-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.academic-table caption {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  text-align: left;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--color-navy);
+  color: #ffffff;
+  border-bottom: 2px solid var(--color-brass);
+}
+
+.academic-table th {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background-color: #f8f6f0;
+  color: var(--color-navy-deep);
+  padding: 1rem 1.25rem;
+  border-bottom: 2px solid var(--bg-paper-rule);
+  white-space: nowrap;
+}
+
+.academic-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--bg-paper-rule);
+  color: var(--ink-secondary);
+}
+
+.academic-table tr:last-child td {
+  border-bottom: none;
+}
+
+.academic-table tr:hover td {
+  background-color: #fdfbf7;
+}
+
+.table-badge-placeholder {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 0.82rem;
+  padding: 0.2rem 0.6rem;
+  background-color: #fff6e5;
+  color: #8c5b00;
+  border: 1px dashed #d99b26;
+  border-radius: 2px;
+}
+
+/* Editorial Buttons - Dignified Academic Styling (No generic SaaS '→' button) */
+.btn-academic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  padding: 0.85rem 1.75rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border-radius: 0;
+  border: none;
+}
+
+.btn-academic-brass {
+  background: linear-gradient(135deg, var(--color-brass-light) 0%, var(--color-brass) 100%);
+  color: var(--color-navy-deep);
+  box-shadow: 0 2px 10px rgba(197, 151, 59, 0.28);
+  border: 1px solid var(--color-brass-deep);
+}
+
+.btn-academic-brass:hover {
+  background: linear-gradient(135deg, #ebd07d 0%, var(--color-brass-light) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(197, 151, 59, 0.38);
+}
+
+.btn-academic-navy {
+  background-color: var(--color-navy);
+  color: #ffffff;
+  border: 1px solid var(--color-brass);
+}
+
+.btn-academic-navy:hover {
+  background-color: var(--color-navy-mid);
+  transform: translateY(-1px);
+}
+
+.btn-academic-outline {
+  background: transparent;
+  color: var(--color-navy);
+  border: 1px solid var(--color-navy);
+}
+
+.btn-academic-outline:hover {
+  background-color: var(--color-navy-soft);
+}
+
+.btn-academic-maroon {
+  background-color: var(--color-maroon);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-academic-maroon:hover {
+  background-color: var(--color-maroon-mid);
+  transform: translateY(-1px);
+}
+
+/* Drop cap for editorial story */
+.editorial-dropcap::first-letter {
+  font-family: var(--font-display);
+  font-size: 4.5rem;
+  float: left;
+  line-height: 0.75;
+  margin: 0.15rem 0.85rem 0.2rem 0;
+  color: var(--color-maroon);
+  font-weight: 700;
+}
+
+/* Pull quote */
+.editorial-pullquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.4;
+  color: var(--color-navy-deep);
+  border-left: 3px solid var(--color-brass);
+  padding: 1.25rem 0 1.25rem 2rem;
+  margin: 2.5rem 0;
+  background-color: #fbf9f4;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 4.5rem 0;
+  }
+  .prospectus-title {
+    font-size: 2.2rem;
+  }
+  .academic-table th,
+  .academic-table td {
+    padding: 0.85rem 0.95rem;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container,
+  .container-prospectus {
+    width: 93%;
+  }
+  .section-padding {
+    padding: 3.5rem 0;
+  }
+  .prospectus-title {
+    font-size: 1.85rem;
+  }
+  .prospectus-subhead {
+    font-size: 1.05rem;
+  }
+  .editorial-pullquote {
+    font-size: 1.25rem;
+    padding: 0.85rem 0 0.85rem 1.25rem;
+    margin: 1.75rem 0;
+  }
+  .academic-table th,
+  .academic-table td {
+    padding: 0.75rem 0.65rem;
+    font-size: 0.82rem;
+  }
+  .btn-academic {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.86rem;
+    min-height: 44px;
+  }
+}
