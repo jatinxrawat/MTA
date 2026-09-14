@@ -1,5 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { loadContent, saveAllContent, defaultContent, setNestedValue, getNestedValue } from '../lib/content';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { 
+  loadContent, 
+  saveAllContent, 
+  fetchContentFromCloud, 
+  subscribeToContent, 
+  defaultContent, 
+  setNestedValue, 
+  getNestedValue 
+} from '../lib/content';
 import { getCurrentUser, onAuthStateChanged, logout as authLogout } from '../lib/auth';
 
 const CMSContext = createContext(null);
@@ -15,6 +23,15 @@ export function CMSProvider({ children }) {
   const [isEditing, setIsEditing] = useState(true);
   // Active toast/notification message
   const [toast, setToast] = useState(null);
+  // Publishing status indicator
+  const [isPublishing, setIsPublishing] = useState(false);
+  // Cloud sync status
+  const [isCloudConnected, setIsCloudConnected] = useState(false);
+
+  // Check if draft has unsaved edits
+  const isDirty = JSON.stringify(content) !== JSON.stringify(savedContent);
+  const isDirtyRef = useRef(isDirty);
+  isDirtyRef.current = isDirty;
 
   // Sync auth state
   useEffect(() => {
@@ -24,7 +41,41 @@ export function CMSProvider({ children }) {
     return unsub;
   }, []);
 
-  // Listen for storage/content updates across tabs or windows
+  // Listen for real-time Firestore content updates across all devices/sessions
+  useEffect(() => {
+    // 1. Initial async fetch from Cloud Firestore
+    fetchContentFromCloud()
+      .then((cloudData) => {
+        if (cloudData) {
+          setIsCloudConnected(true);
+          setSavedContent(cloudData);
+          setContent((prev) => (isDirtyRef.current ? prev : cloudData));
+        }
+      })
+      .catch((err) => {
+        console.warn('Initial cloud content load error:', err);
+      });
+
+    // 2. Real-time subscription to Cloud Firestore document updates
+    const unsubscribe = subscribeToContent(
+      (cloudData) => {
+        if (cloudData) {
+          setIsCloudConnected(true);
+          setSavedContent(cloudData);
+          setContent((prev) => (isDirtyRef.current ? prev : cloudData));
+        }
+      },
+      (error) => {
+        console.warn('Firestore subscription status:', error);
+      }
+    );
+
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, []);
+
+  // Also listen for storage/content updates across tabs or windows
   useEffect(() => {
     const handleContentUpdate = (e) => {
       if (e.detail) {
@@ -44,9 +95,6 @@ export function CMSProvider({ children }) {
     }, 3800);
   }, []);
 
-  // Check if draft has unsaved edits
-  const isDirty = JSON.stringify(content) !== JSON.stringify(savedContent);
-
   // Update a nested property in the draft content
   const updateField = useCallback((path, value) => {
     setContent((prev) => {
@@ -57,8 +105,9 @@ export function CMSProvider({ children }) {
     });
   }, []);
 
-  // Commit all draft changes to storage (Publish)
+  // Commit all draft changes to storage (Publish to Firebase Firestore)
   const publishAll = useCallback(async () => {
+    setIsPublishing(true);
     try {
       await saveAllContent(content);
       setSavedContent(content);
@@ -68,6 +117,8 @@ export function CMSProvider({ children }) {
       console.error('Publish error:', err);
       showToast('Failed to publish changes: ' + err.message, 'error');
       return false;
+    } finally {
+      setIsPublishing(false);
     }
   }, [content, showToast]);
 
@@ -223,6 +274,9 @@ export function CMSProvider({ children }) {
     deletePhoto,
     togglePhotoVisibility,
     reorderGallery,
+    // Status
+    isPublishing,
+    isCloudConnected,
     // Auth
     logout,
   };
