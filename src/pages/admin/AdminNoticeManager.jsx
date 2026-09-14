@@ -29,7 +29,6 @@ export default function AdminNoticeManager() {
     urgent: false,
     isNew: true,
     isPublished: true,
-    contentType: 'text', // 'text' | 'pdf'
     bodyContent: '',
     pdfUrl: '',
     pdfName: '',
@@ -47,7 +46,6 @@ export default function AdminNoticeManager() {
       urgent: false,
       isNew: true,
       isPublished: true,
-      contentType: 'text',
       bodyContent: '',
       pdfUrl: '',
       pdfName: '',
@@ -65,7 +63,6 @@ export default function AdminNoticeManager() {
       urgent: !!notice.urgent,
       isNew: !!notice.isNew,
       isPublished: notice.isPublished !== false,
-      contentType: notice.pdfUrl ? 'pdf' : 'text',
       bodyContent: notice.bodyContent || '',
       pdfUrl: notice.pdfUrl || '',
       pdfName: notice.pdfName || (notice.pdfUrl ? 'Attached_Circular.pdf' : ''),
@@ -108,11 +105,11 @@ export default function AdminNoticeManager() {
       urgent: formState.urgent,
       isNew: formState.isNew,
       isPublished: formState.isPublished,
-      bodyContent: formState.contentType === 'text' ? formState.bodyContent : '',
-      pdfUrl: formState.contentType === 'pdf' ? formState.pdfUrl : '',
-      pdfName: formState.contentType === 'pdf' ? formState.pdfName : '',
-      linkText: formState.contentType === 'pdf' && formState.pdfUrl ? 'Download Circular (PDF)' : 'Read Notice',
-      ref: formState.contentType === 'pdf' && formState.pdfUrl ? formState.pdfUrl : '#',
+      bodyContent: formState.bodyContent ? formState.bodyContent.trim() : '',
+      pdfUrl: formState.pdfUrl ? formState.pdfUrl.trim() : '',
+      pdfName: formState.pdfName ? formState.pdfName.trim() : (formState.pdfUrl ? 'Official_Circular.pdf' : ''),
+      linkText: formState.pdfUrl ? 'Download Circular (PDF)' : 'Read Notice',
+      ref: formState.pdfUrl ? formState.pdfUrl.trim() : '#',
     };
 
     if (editingId) {
@@ -451,77 +448,94 @@ export default function AdminNoticeManager() {
                   </label>
                 </div>
 
-                {/* Content Type: Free-Text vs PDF Upload */}
+                {/* 1. Announcement Content Body */}
                 <div className="cms-form-group">
-                  <label>Notice Content Format</label>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                      type="button"
-                      className={`cms-btn ${formState.contentType === 'text' ? 'cms-btn-primary' : 'cms-btn-outline-dark'}`}
-                      style={{ flex: 1, padding: '8px' }}
-                      onClick={() => setFormState({ ...formState, contentType: 'text' })}
-                    >
-                      <span>Free-Text Announcement</span>
-                    </button>
-                    <button
-                      type="button"
-                      className={`cms-btn ${formState.contentType === 'pdf' ? 'cms-btn-primary' : 'cms-btn-outline-dark'}`}
-                      style={{ flex: 1, padding: '8px' }}
-                      onClick={() => setFormState({ ...formState, contentType: 'pdf' })}
-                    >
-                      <span>PDF Document Attachment</span>
-                    </button>
-                  </div>
+                  <label htmlFor="notice-body">
+                    Announcement Body / Notice Details
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'normal', marginLeft: '6px' }}>
+                      (Displays full explanation or circular summary)
+                    </span>
+                  </label>
+                  <textarea
+                    id="notice-body"
+                    rows={4}
+                    value={formState.bodyContent}
+                    onChange={(e) => setFormState({ ...formState, bodyContent: e.target.value })}
+                    placeholder="Enter announcement text, circular details, instructions for students/parents..."
+                    className="cms-input-field"
+                  />
                 </div>
 
-                {/* Text Body */}
-                {formState.contentType === 'text' ? (
-                  <div className="cms-form-group">
-                    <label htmlFor="notice-body">Announcement Body</label>
-                    <textarea
-                      id="notice-body"
-                      rows={4}
-                      value={formState.bodyContent}
-                      onChange={(e) => setFormState({ ...formState, bodyContent: e.target.value })}
-                      placeholder="Enter detailed notice text for parents, students, and staff..."
-                      className="cms-input-field"
-                    />
-                  </div>
-                ) : (
-                  /* PDF Document Upload */
-                  <div className="cms-form-group">
-                    <label>Official Circular PDF Document</label>
-                    <input
-                      ref={pdfInputRef}
-                      type="file"
-                      accept="application/pdf"
-                      style={{ display: 'none' }}
-                      onChange={handlePdfUpload}
-                    />
-                    <div
-                      className="cms-upload-dropzone"
-                      onClick={() => pdfInputRef.current?.click()}
-                    >
-                      <Upload size={22} className="cms-dropzone-icon" />
-                      <div>
-                        <strong>{formState.pdfName || 'Click to select and attach a PDF document'}</strong>
-                        <p>{isUploadingPdf ? 'Uploading PDF file...' : 'Supports official CBSE circulars, date sheets, forms'}</p>
-                      </div>
+                {/* 2. Official Circular PDF Attachment (Optional) */}
+                <div className="cms-form-group">
+                  <label>
+                    Attached Circular PDF Document
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'normal', marginLeft: '6px' }}>
+                      (Optional - Upload file or paste link)
+                    </span>
+                  </label>
+                  <input
+                    ref={pdfInputRef}
+                    type="file"
+                    accept="application/pdf"
+                    style={{ display: 'none' }}
+                    onChange={handlePdfUpload}
+                  />
+                  <div
+                    className="cms-upload-dropzone"
+                    onClick={() => pdfInputRef.current?.click()}
+                  >
+                    <Upload size={22} className="cms-dropzone-icon" />
+                    <div>
+                      <strong>{formState.pdfName || 'Click to select and attach a PDF document'}</strong>
+                      <p>{isUploadingPdf ? 'Uploading PDF file to Cloudinary...' : 'Upload official CBSE circular, date sheet, or admission form'}</p>
                     </div>
-                    {formState.pdfUrl && (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 12px', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '4px', fontSize: '0.82rem' }}>
-                        <span style={{ color: '#166534' }}>✓ Attached: {formState.pdfName || 'document.pdf'}</span>
-                        <button
-                          type="button"
-                          onClick={() => setFormState({ ...formState, pdfUrl: '', pdfName: '' })}
-                          style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontWeight: '600' }}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    )}
                   </div>
-                )}
+
+                  {/* Attached File confirmation & test link */}
+                  {formState.pdfUrl && (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '4px', fontSize: '0.84rem', marginTop: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
+                        <span style={{ color: '#166534', fontWeight: '600' }}>✓ Attached:</span>
+                        <a
+                          href={formState.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: '#2563eb', textDecoration: 'underline', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '280px' }}
+                          title="Open attached PDF in new tab"
+                        >
+                          {formState.pdfName || 'View Document'}
+                        </a>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFormState({ ...formState, pdfUrl: '', pdfName: '' })}
+                        style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontWeight: '600', padding: '4px 8px' }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Direct Link or Google Drive Fallback */}
+                  <div style={{ marginTop: '8px' }}>
+                    <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', marginBottom: '3px' }}>
+                      Or paste a Google Drive / PDF Web URL:
+                    </span>
+                    <input
+                      type="url"
+                      placeholder="https://drive.google.com/... or https://..."
+                      value={formState.pdfUrl}
+                      onChange={(e) => setFormState({
+                        ...formState,
+                        pdfUrl: e.target.value,
+                        pdfName: formState.pdfName || (e.target.value ? 'Circular_Document.pdf' : '')
+                      })}
+                      className="cms-input-field"
+                      style={{ fontSize: '0.85rem' }}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="cms-modal-footer">

@@ -290,20 +290,43 @@ export default function HomePage() {
                               {item.title}
                               {item.isNew && <span className="notice-new-badge">NEW</span>}
                             </h4>
+                            {item.bodyContent && (
+                              <p className="notice-body-excerpt" style={{ margin: '6px 0 0 0', fontSize: '0.86rem', color: '#475569', lineHeight: 1.5 }}>
+                                {item.bodyContent}
+                              </p>
+                            )}
                           </div>
                         </div>
 
-                        {item.ref && item.ref.startsWith('/') ? (
-                          <Link to={item.ref} className="notice-action-link" title={item.linkText || 'View Circular'}>
-                            <FileText size={14} />
-                            <span>{item.linkText || 'View Document'}</span>
-                          </Link>
-                        ) : (
-                          <a href={item.ref || '#'} className="notice-action-link" title={item.linkText || 'Download Circular'}>
+                        {item.pdfUrl ? (
+                          <a
+                            href={item.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            download={item.pdfName || 'school_circular.pdf'}
+                            className="notice-action-link"
+                            title={item.linkText || 'Download Official Circular (PDF)'}
+                          >
                             <Download size={14} />
                             <span>{item.linkText || 'Download PDF'}</span>
                           </a>
-                        )}
+                        ) : item.ref && item.ref !== '#' && item.ref.startsWith('/') ? (
+                          <Link to={item.ref} className="notice-action-link" title={item.linkText || 'View Document'}>
+                            <FileText size={14} />
+                            <span>{item.linkText || 'View Document'}</span>
+                          </Link>
+                        ) : item.ref && item.ref !== '#' ? (
+                          <a
+                            href={item.ref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="notice-action-link"
+                            title={item.linkText || 'View Circular'}
+                          >
+                            <Download size={14} />
+                            <span>{item.linkText || 'View Circular'}</span>
+                          </a>
+                        ) : null}
                       </li>
                     ))}
                   </ul>
