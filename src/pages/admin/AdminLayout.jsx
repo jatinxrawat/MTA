@@ -19,14 +19,14 @@ import Footer from '../../components/Footer';
 import { 
   FileEdit, Bell, Image as ImageIcon, Code2, LogOut, 
   ExternalLink, Check, Eye, Edit3, RotateCcw, Save, Shield, CheckCircle2,
-  Menu, X
+  Menu, X, Loader2
 } from 'lucide-react';
 import '../../styles/admin.css';
 
 export default function AdminLayout() {
   const { 
     isAdmin, currentUser, isEditing, setIsEditing, isDirty, 
-    publishAll, revertChanges, logout, toast 
+    publishAll, revertChanges, logout, toast, isPublishing, isCloudConnected 
   } = useCMS();
   const navigate = useNavigate();
 
@@ -148,11 +148,21 @@ export default function AdminLayout() {
           <button
             type="button"
             onClick={publishAll}
+            disabled={isPublishing}
             className="cms-btn cms-btn-primary cms-btn-compact"
-            title="Save and publish all modifications to live site"
+            title="Save and publish all modifications to Firebase live site"
           >
-            <Save size={14} />
-            <span className="cms-btn-label">Publish</span>
+            {isPublishing ? (
+              <>
+                <Loader2 size={14} className="cms-spinner" />
+                <span className="cms-btn-label">Publishing...</span>
+              </>
+            ) : (
+              <>
+                <Save size={14} />
+                <span className="cms-btn-label">Publish</span>
+              </>
+            )}
           </button>
 
           {/* Public Site Link */}
@@ -259,7 +269,9 @@ export default function AdminLayout() {
           {/* Sidebar Footer */}
           <div className="cms-sidebar-footer">
             <strong style={{ color: '#0f172a', display: 'block', marginBottom: '2px' }}>MTA CMS v1.0</strong>
-            <span>Mock Storage Active (Ready for Firebase & Cloudinary)</span>
+            <span style={{ color: isCloudConnected ? '#15803d' : '#64748b' }}>
+              {isCloudConnected ? '● Firebase Cloud Sync Active' : 'Connecting to Firebase...'}
+            </span>
           </div>
         </aside>
 

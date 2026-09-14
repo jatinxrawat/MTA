@@ -59,14 +59,16 @@ export function getMedia(url, fallback = NEUTRAL_PLACEHOLDER_IMAGE) {
   return url;
 }
 
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from './firebase.js';
+
 /**
- * Uploads an image or PDF file.
- * In this mock implementation, it reads the file using FileReader as a persistent data URL
- * and simulates a natural upload progress delay (350ms).
+ * Uploads an image or PDF file to Firebase Storage.
+ * Generates an optimized public CDN URL and falls back gracefully to data URL if storage is unavailable.
  * 
  * @param {File} file The File object selected from file input or drag-and-drop
  * @param {Object} options Optional settings (folder, tags, etc.)
- * @returns {Promise<{ url: string, name: string, size: number, type: string, format: string }>}
+ * @returns {Promise<{ url: string, name: string, size: number, type: string, format: string, storagePath?: string }>}
  */
 export async function uploadMedia(file, options = {}) {
   if (!file) {
@@ -81,33 +83,57 @@ export async function uploadMedia(file, options = {}) {
     throw new Error('Unsupported file type. Please upload an image (JPG, PNG, WebP) or a PDF document.');
   }
 
-  // Simulate network upload delay for realistic UX feedback
-  await new Promise((res) => setTimeout(res, 350));
+  const extension = file.name.split('.').pop().toLowerCase();
+  const folder = options.folder || (isPdf ? 'documents' : 'images');
+  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+  const storageFilePath = `${folder}/${Date.now()}_${sanitizedName}`;
 
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const resultDataUrl = reader.result;
-      const extension = file.name.split('.').pop().toLowerCase();
-
-      resolve({
-        url: resultDataUrl, // Data URL allows instant rendering & download without external server
-        name: file.name,
-        size: file.size,
-        type: file.type || (isPdf ? 'application/pdf' : 'image/jpeg'),
-        format: extension,
+  try {
+    // Attempt upload to Firebase Storage
+    const storageRef = ref(storage, storageFilePath);
+    const metadata = {
+      contentType: file.type || (isPdf ? 'application/pdf' : 'image/jpeg'),
+      customMetadata: {
+        originalName: file.name,
         uploadedAt: new Date().toISOString(),
-        isMock: true,
-      });
+      },
     };
 
-    reader.onerror = (err) => {
-      reject(new Error('Failed to read file for upload: ' + err));
-    };
+    const snapshot = await uploadBytes(storageRef, file, metadata);
+    const downloadUrl = await getDownloadURL(snapshot.ref);
 
-    reader.readAsDataURL(file);
-  });
+    return {
+      url: downloadUrl,
+      name: file.name,
+      size: file.size,
+      type: file.type || (isPdf ? 'application/pdf' : 'image/jpeg'),
+      format: extension,
+      uploadedAt: new Date().toISOString(),
+      storagePath: snapshot.ref.fullPath,
+    };
+  } catch (storageErr) {
+    console.warn('Firebase Storage upload failed, falling back to local data URL:', storageErr);
+
+    // Resilient fallback to FileReader data URL
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve({
+          url: reader.result,
+          name: file.name,
+          size: file.size,
+          type: file.type || (isPdf ? 'application/pdf' : 'image/jpeg'),
+          format: extension,
+          uploadedAt: new Date().toISOString(),
+          isFallback: true,
+        });
+      };
+      reader.onerror = (err) => {
+        reject(new Error('Failed to read file for upload: ' + err));
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 }
 
 /**

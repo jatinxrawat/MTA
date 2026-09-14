@@ -35,8 +35,12 @@
  */
 
 import { schoolData } from '../data/schoolData.js';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase.js';
 
 const STORAGE_KEY = 'mta_cms_site_content_v1';
+export const FIRESTORE_COLLECTION = 'site_content';
+export const FIRESTORE_DOC_ID = 'main';
 
 // Comprehensive default content model initialized from schoolData and page-level copy
 export const defaultContent = {
@@ -255,16 +259,89 @@ export async function updateContent(path, value) {
 }
 
 /**
- * Saves entire content map to persistent storage.
+ * Fetches the latest published content from Cloud Firestore.
+ * Automatically deep-merges with factory defaults and caches in localStorage.
+ * @returns {Promise<Object>} The resolved content model
+ */
+export async function fetchContentFromCloud() {
+  try {
+    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const cloudData = snap.data();
+      const merged = deepMerge(defaultContent, cloudData);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      } catch (err) {
+        console.warn('LocalStorage cache write error:', err);
+      }
+      return merged;
+    } else {
+      // First time initialization: seed Firestore with default school content
+      try {
+        await setDoc(docRef, defaultContent, { merge: true });
+      } catch (e) {
+        console.warn('Could not auto-seed Firestore default content:', e);
+      }
+      return loadContent();
+    }
+  } catch (err) {
+    console.warn('Could not fetch content from Firestore, using local cache:', err);
+    return loadContent();
+  }
+}
+
+/**
+ * Subscribes to real-time content changes from Cloud Firestore.
+ * When an admin publishes new content, all connected browsers update instantly.
+ * @param {Function} callback Callback with latest content
+ * @param {Function} onError Error callback
+ * @returns {Function} Unsubscribe function
+ */
+export function subscribeToContent(callback, onError) {
+  try {
+    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
+    return onSnapshot(
+      docRef,
+      (snap) => {
+        if (snap.exists()) {
+          const cloudData = snap.data();
+          const merged = deepMerge(defaultContent, cloudData);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          } catch (e) {
+            console.warn('LocalStorage cache write error:', e);
+          }
+          callback(merged);
+        }
+      },
+      (error) => {
+        console.warn('Firestore real-time subscription error:', error);
+        if (onError) onError(error);
+      }
+    );
+  } catch (err) {
+    console.warn('Failed to attach Firestore snapshot listener:', err);
+    return () => {};
+  }
+}
+
+/**
+ * Saves entire content map to persistent storage (both LocalStorage cache and Cloud Firestore).
  * @param {Object} contentMap Entire content model
  * @returns {Promise<void>}
  */
 export async function saveAllContent(contentMap) {
   try {
+    // 1. Immediately cache in localStorage for instant local responsiveness
     localStorage.setItem(STORAGE_KEY, JSON.stringify(contentMap));
     window.dispatchEvent(new CustomEvent('mta_cms_content_updated', { detail: contentMap }));
+
+    // 2. Persist to Cloud Firestore so all visitors across the world see it on the live site
+    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
+    await setDoc(docRef, contentMap, { merge: true });
   } catch (err) {
-    console.error('Failed to save CMS content to storage', err);
+    console.error('Failed to save CMS content to Firestore/storage', err);
     throw err;
   }
 }
@@ -275,6 +352,12 @@ export async function saveAllContent(contentMap) {
  */
 export async function resetContent() {
   localStorage.removeItem(STORAGE_KEY);
+  try {
+    const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOC_ID);
+    await setDoc(docRef, defaultContent);
+  } catch (e) {
+    console.warn('Failed to reset Firestore content:', e);
+  }
   window.dispatchEvent(new CustomEvent('mta_cms_content_updated', { detail: defaultContent }));
 }
 
