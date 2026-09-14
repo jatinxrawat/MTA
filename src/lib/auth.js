@@ -1,130 +1,115 @@
 /**
- * MOTHER TERESA ACADEMY - AUTHENTICATION LAYER ABSTRACTION
+ * MOTHER TERESA ACADEMY - SECURITY & AUTHENTICATION LAYER
  * 
- * Provides session management for the school administration area (/admin).
- * Currently uses localStorage for mock session persistence.
+ * Provides in-memory PIN verification and session management for the school CMS.
  * 
- * ============================================================================
- * HANDOFF NOTE FOR DEVELOPER (FIREBASE AUTH INTEGRATION):
- * ============================================================================
- * To connect this to real Firebase Authentication, follow these steps:
- * 
- * 1. Initialize Firebase Auth in `src/lib/firebase.js`:
- *    import { getAuth } from 'firebase/auth';
- *    export const auth = getAuth(app);
- * 
- * 2. In this file, replace the mock functions with Firebase Auth methods:
- *    import { 
- *      signInWithEmailAndPassword, 
- *      signOut, 
- *      onAuthStateChanged as firebaseOnAuthChanged 
- *    } from 'firebase/auth';
- *    import { auth } from './firebase';
- * 
- *    export async function login(email, password) {
- *      const userCred = await signInWithEmailAndPassword(auth, email, password);
- *      return {
- *        id: userCred.user.uid,
- *        email: userCred.user.email,
- *        displayName: userCred.user.displayName || "Staff Member",
- *        role: "admin",
- *      };
- *    }
- * 
- *    export async function logout() {
- *      await signOut(auth);
- *    }
- * 
- *    export function onAuthStateChanged(callback) {
- *      return firebaseOnAuthChanged(auth, (user) => {
- *        if (user) {
- *          callback({ id: user.uid, email: user.email, role: 'admin' });
- *        } else {
- *          callback(null);
- *        }
- *      });
- *    }
- * ============================================================================
+ * IMPORTANT REQUIREMENT:
+ * - NO SESSION CACHING: Authentication state is strictly held in memory.
+ * - On every browser reload, tab close, or navigation return, the PIN prompt is required.
+ * - The security PIN itself is stored persistently in Cloud Firestore (and locally)
+ *   so the administrator can change it anytime from inside the admin panel.
  */
 
-const SESSION_KEY = 'mta_cms_auth_session_v1';
+// In-memory session holder (ZERO persistence across page reloads/refreshes)
+let inMemoryUser = null;
 
-// Default staff credentials for demo / local access
-export const DEMO_ADMIN_CREDENTIALS = {
-  email: 'admin@motherteresaacademy.edu.in',
-  password: 'mta', // Simple staff password for ease of access
-  name: 'Staff Administrator',
-  role: 'admin',
-};
+// Storage key for persistent PIN setting (the PIN itself, NOT the login session)
+const PIN_STORAGE_KEY = 'mta_admin_pin_setting';
+
+// Initial factory default PIN
+export const DEFAULT_ADMIN_PIN = '2015';
 
 /**
- * Logs in a staff administrator.
- * @param {string} email Staff email
- * @param {string} password Staff password
- * @returns {Promise<Object>} Logged-in user object
+ * Retrieves the currently saved PIN setting (fallback before Firestore loads).
+ * @returns {string} The active PIN string
  */
-export async function login(email, password) {
-  // Simulate network latency (200ms)
+export function getStoredPin() {
+  try {
+    const pin = localStorage.getItem(PIN_STORAGE_KEY);
+    return pin ? String(pin).trim() : DEFAULT_ADMIN_PIN;
+  } catch {
+    return DEFAULT_ADMIN_PIN;
+  }
+}
+
+/**
+ * Persists the PIN setting to local storage as fallback.
+ * @param {string} newPin
+ */
+export function setStoredPin(newPin) {
+  try {
+    if (newPin) {
+      localStorage.setItem(PIN_STORAGE_KEY, String(newPin).trim());
+    }
+  } catch (err) {
+    console.warn('Failed to save PIN locally:', err);
+  }
+}
+
+/**
+ * Verifies if the entered PIN matches the active security PIN.
+ * @param {string} enteredPin The PIN entered by the user
+ * @param {string} activePin The current active PIN from content or storage
+ * @returns {boolean}
+ */
+export function verifyPin(enteredPin, activePin = null) {
+  const targetPin = String(activePin || getStoredPin() || DEFAULT_ADMIN_PIN).trim();
+  const inputPin = String(enteredPin || '').trim();
+  return inputPin.length > 0 && inputPin === targetPin;
+}
+
+/**
+ * Authenticates the admin in-memory using the PIN.
+ * @param {string} enteredPin
+ * @param {string} activePin
+ * @returns {Promise<Object>}
+ */
+export async function authenticateWithPin(enteredPin, activePin = null) {
+  // Small simulated latency for natural security feel
   await new Promise((res) => setTimeout(res, 200));
 
-  const cleanEmail = (email || '').trim().toLowerCase();
-  
-  // Allow demo credentials or any email containing 'admin' or 'mta' with password 'mta'
-  const isValid = 
-    (cleanEmail === DEMO_ADMIN_CREDENTIALS.email && password === DEMO_ADMIN_CREDENTIALS.password) ||
-    ((cleanEmail.includes('admin') || cleanEmail.includes('staff')) && (password === 'mta' || password === 'admin123'));
-
+  const isValid = verifyPin(enteredPin, activePin);
   if (!isValid) {
-    throw new Error('Invalid staff email or password. Hint: Use admin@motherteresaacademy.edu.in with password: mta');
+    throw new Error('Incorrect security PIN. Please enter the correct PIN code.');
   }
 
   const user = {
-    id: 'staff-admin-01',
-    email: cleanEmail,
-    displayName: cleanEmail.includes('admin') ? 'Senior Administrator' : 'Staff Editor',
+    id: 'mta-admin-session',
+    displayName: 'School Administrator',
     role: 'admin',
-    loginTimestamp: new Date().toISOString(),
+    authenticatedAt: new Date().toISOString(),
   };
 
-  try {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-    window.dispatchEvent(new CustomEvent('mta_cms_auth_changed', { detail: user }));
-  } catch (err) {
-    console.error('Failed to store auth session', err);
-  }
-
+  inMemoryUser = user;
+  window.dispatchEvent(new CustomEvent('mta_cms_auth_changed', { detail: user }));
   return user;
 }
 
 /**
- * Logs out the current administrator.
+ * Logs out the administrator and clears in-memory session.
  * @returns {Promise<void>}
  */
 export async function logout() {
-  localStorage.removeItem(SESSION_KEY);
+  inMemoryUser = null;
   window.dispatchEvent(new CustomEvent('mta_cms_auth_changed', { detail: null }));
 }
 
 /**
- * Retrieves the currently logged-in user synchronously.
+ * Retrieves the currently logged-in user in memory.
+ * Returns null whenever page is reloaded.
  * @returns {Object|null}
  */
 export function getCurrentUser() {
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
+  return inMemoryUser;
 }
 
 /**
- * Listens for auth state transitions.
- * @param {Function} callback (user | null) => void
- * @returns {Function} Unsubscribe cleanup function
+ * Listens for in-memory auth state changes.
+ * @param {Function} callback
+ * @returns {Function}
  */
 export function onAuthStateChanged(callback) {
-  callback(getCurrentUser());
+  callback(inMemoryUser);
 
   const listener = (event) => {
     callback(event.detail);

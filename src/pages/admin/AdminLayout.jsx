@@ -4,6 +4,7 @@ import { useCMS } from '../../context/CMSContext';
 import CrestLogo from '../../components/CrestLogo';
 import AdminNoticeManager from './AdminNoticeManager';
 import AdminGalleryManager from './AdminGalleryManager';
+import AdminPagesManager from './AdminPagesManager';
 import AdminCloudGuide from './AdminCloudGuide';
 
 // Live site page components for in-context mirror rendering
@@ -18,17 +19,27 @@ import Footer from '../../components/Footer';
 
 import { 
   FileEdit, Bell, Image as ImageIcon, Code2, LogOut, 
-  ExternalLink, Check, Eye, Edit3, RotateCcw, Save, Shield, CheckCircle2,
-  Menu, X, Loader2
+  ExternalLink, Eye, Edit3, RotateCcw, Save, CheckCircle2,
+  Menu, X, Loader2, Layers, KeyRound, Lock, ShieldCheck, EyeOff, AlertCircle
 } from 'lucide-react';
 import '../../styles/admin.css';
 
 export default function AdminLayout() {
   const { 
     isAdmin, currentUser, isEditing, setIsEditing, isDirty, 
-    publishAll, revertChanges, logout, toast, isPublishing, isCloudConnected 
+    publishAll, revertChanges, logout, lockAdmin, changePin, toast, isPublishing, isCloudConnected 
   } = useCMS();
   const navigate = useNavigate();
+
+  // Change PIN modal state
+  const [isChangePinModalOpen, setIsChangePinModalOpen] = useState(false);
+  const [currentPinInput, setCurrentPinInput] = useState('');
+  const [newPinInput, setNewPinInput] = useState('');
+  const [confirmPinInput, setConfirmPinInput] = useState('');
+  const [showCurrentPin, setShowCurrentPin] = useState(false);
+  const [showNewPin, setShowNewPin] = useState(false);
+  const [pinModalError, setPinModalError] = useState('');
+  const [pinModalLoading, setPinModalLoading] = useState(false);
 
   // Active section in admin sidebar: 'content' | 'notices' | 'gallery' | 'guide'
   const [activeSection, setActiveSection] = useState('content');
@@ -57,6 +68,45 @@ export default function AdminLayout() {
   const handleLogout = async () => {
     await logout();
     navigate('/admin/login');
+  };
+
+  const handleOpenChangePinModal = () => {
+    setCurrentPinInput('');
+    setNewPinInput('');
+    setConfirmPinInput('');
+    setPinModalError('');
+    setShowCurrentPin(false);
+    setShowNewPin(false);
+    setIsChangePinModalOpen(true);
+    setMobileSidebarOpen(false);
+  };
+
+  const handleChangePinSubmit = async (e) => {
+    e.preventDefault();
+    setPinModalError('');
+
+    if (!currentPinInput.trim()) {
+      setPinModalError('Please enter your current security PIN.');
+      return;
+    }
+    if (newPinInput.trim().length < 4) {
+      setPinModalError('New PIN must be at least 4 characters or digits.');
+      return;
+    }
+    if (newPinInput.trim() !== confirmPinInput.trim()) {
+      setPinModalError('New PIN and Confirm PIN do not match.');
+      return;
+    }
+
+    setPinModalLoading(true);
+    try {
+      await changePin(currentPinInput.trim(), newPinInput.trim());
+      setIsChangePinModalOpen(false);
+    } catch (err) {
+      setPinModalError(err.message || 'Failed to update PIN. Please verify your current PIN.');
+    } finally {
+      setPinModalLoading(false);
+    }
   };
 
   const handleNavSelect = (section) => {
@@ -177,19 +227,30 @@ export default function AdminLayout() {
             <span className="cms-btn-label">Live Site</span>
           </Link>
 
-          {/* Staff Info & Logout */}
+          {/* Change Security PIN Button */}
+          <button
+            type="button"
+            onClick={handleOpenChangePinModal}
+            className="cms-btn cms-btn-outline cms-btn-compact"
+            title="Change Admin Security PIN"
+          >
+            <KeyRound size={13} />
+            <span className="cms-btn-label">Change PIN</span>
+          </button>
+
+          {/* Lock Admin Panel */}
           <div className="cms-user-module">
-            <span className="cms-user-name">
-              {currentUser?.displayName || 'Admin'}
-            </span>
             <button
               type="button"
               onClick={handleLogout}
               className="cms-logout-btn"
-              title="Log out of CMS"
-              aria-label="Log out"
+              title="Lock Admin Panel (Security PIN required to re-enter)"
+              aria-label="Lock Admin Panel"
             >
-              <LogOut size={14} />
+              <Lock size={13} />
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, marginLeft: '4px' }} className="cms-btn-label">
+                Lock
+              </span>
             </button>
           </div>
         </div>
@@ -254,6 +315,15 @@ export default function AdminLayout() {
               <span>Photo Gallery</span>
             </button>
 
+            <button
+              type="button"
+              className={`cms-nav-item ${activeSection === 'pages' ? 'active' : ''}`}
+              onClick={() => handleNavSelect('pages')}
+            >
+              <Layers size={16} />
+              <span>Custom Pages</span>
+            </button>
+
             <span className="cms-sidebar-heading" style={{ marginTop: '1.25rem' }}>Configuration</span>
 
             <button
@@ -263,6 +333,27 @@ export default function AdminLayout() {
             >
               <Code2 size={16} />
               <span>Cloud Handoff Guide</span>
+            </button>
+
+            <button
+              type="button"
+              className="cms-nav-item"
+              onClick={handleOpenChangePinModal}
+              title="Change Admin Security PIN"
+            >
+              <KeyRound size={16} />
+              <span>Security PIN</span>
+            </button>
+
+            <button
+              type="button"
+              className="cms-nav-item"
+              style={{ color: '#b91c1c' }}
+              onClick={handleLogout}
+              title="Lock Admin Panel immediately"
+            >
+              <Lock size={16} />
+              <span>Lock Panel</span>
             </button>
           </div>
 
@@ -333,12 +424,146 @@ export default function AdminLayout() {
           {/* SECTION C: PHOTO GALLERY MANAGEMENT */}
           {activeSection === 'gallery' && <AdminGalleryManager />}
 
-          {/* SECTION D: CLOUD HANDOFF GUIDE */}
+          {/* SECTION D: CUSTOM PAGES MANAGEMENT */}
+          {activeSection === 'pages' && <AdminPagesManager />}
+
+          {/* SECTION E: CLOUD HANDOFF GUIDE */}
           {activeSection === 'guide' && <AdminCloudGuide />}
         </main>
       </div>
 
-      {/* 3. Global Notification Toast */}
+      {/* 3. Change Security PIN Modal */}
+      {isChangePinModalOpen && (
+        <div className="cms-modal-backdrop" onClick={() => setIsChangePinModalOpen(false)}>
+          <div className="cms-modal-card" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="cms-modal-header">
+              <div className="cms-modal-title-group">
+                <KeyRound size={20} style={{ color: '#c5973b' }} />
+                <h3>Change Security PIN</h3>
+              </div>
+              <button
+                type="button"
+                className="cms-close-icon-btn"
+                onClick={() => setIsChangePinModalOpen(false)}
+                aria-label="Close modal"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleChangePinSubmit}>
+              <div className="cms-modal-body" style={{ gap: '1rem' }}>
+                <div style={{ padding: '10px 12px', backgroundColor: '#fdfbf7', border: '1px solid #f1e6d0', borderRadius: '6px', fontSize: '0.82rem', color: '#64748b', display: 'flex', gap: '8px' }}>
+                  <ShieldCheck size={16} style={{ color: '#c5973b', flexShrink: 0, marginTop: '2px' }} />
+                  <span>
+                    The security PIN locks the administration dashboard. As per security protocol, no session is cached and this PIN is required on every reload.
+                  </span>
+                </div>
+
+                {pinModalError && (
+                  <div style={{ padding: '8px 12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', color: '#991b1b', fontSize: '0.83rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                    <span>{pinModalError}</span>
+                  </div>
+                )}
+
+                <div className="cms-form-group">
+                  <label htmlFor="current-pin">Current Security PIN *</label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      id="current-pin"
+                      type={showCurrentPin ? 'text' : 'password'}
+                      required
+                      value={currentPinInput}
+                      onChange={(e) => setCurrentPinInput(e.target.value)}
+                      placeholder="Enter current PIN"
+                      className="cms-input-field"
+                      style={{ paddingRight: '40px' }}
+                      autoComplete="off"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPin(!showCurrentPin)}
+                      style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '4px' }}
+                      aria-label={showCurrentPin ? 'Hide PIN' : 'Show PIN'}
+                    >
+                      {showCurrentPin ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="cms-form-group">
+                  <label htmlFor="new-pin">New Security PIN (Min. 4 Characters / Digits) *</label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      id="new-pin"
+                      type={showNewPin ? 'text' : 'password'}
+                      required
+                      value={newPinInput}
+                      onChange={(e) => setNewPinInput(e.target.value)}
+                      placeholder="Enter new PIN"
+                      className="cms-input-field"
+                      style={{ paddingRight: '40px' }}
+                      autoComplete="off"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPin(!showNewPin)}
+                      style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '4px' }}
+                      aria-label={showNewPin ? 'Hide PIN' : 'Show PIN'}
+                    >
+                      {showNewPin ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="cms-form-group">
+                  <label htmlFor="confirm-pin">Confirm New Security PIN *</label>
+                  <input
+                    id="confirm-pin"
+                    type={showNewPin ? 'text' : 'password'}
+                    required
+                    value={confirmPinInput}
+                    onChange={(e) => setConfirmPinInput(e.target.value)}
+                    placeholder="Re-enter new PIN to confirm"
+                    className="cms-input-field"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+
+              <div className="cms-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setIsChangePinModalOpen(false)}
+                  className="cms-btn cms-btn-outline-dark"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={pinModalLoading}
+                  className="cms-btn cms-btn-primary"
+                >
+                  {pinModalLoading ? (
+                    <>
+                      <Loader2 size={14} className="cms-spinner" />
+                      <span>Updating PIN...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} />
+                      <span>Update Security PIN</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Global Notification Toast */}
       {toast && (
         <div className="cms-toast-container">
           <div className={`cms-toast ${toast.type}`}>
