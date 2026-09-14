@@ -59,16 +59,37 @@ export function getMedia(url, fallback = NEUTRAL_PLACEHOLDER_IMAGE) {
   return url;
 }
 
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from './firebase.js';
+const CLOUDINARY_CLOUD_NAME = 'p6cec4mr';
+const CLOUDINARY_API_KEY = '622671185136636';
+const CLOUDINARY_API_SECRET = '0lGyeloxY0-gbw1DKsaoVvUo0oA';
 
 /**
- * Uploads an image or PDF file to Firebase Storage.
- * Generates an optimized public CDN URL and falls back gracefully to data URL if storage is unavailable.
+ * Computes a SHA-1 hexadecimal hash for Cloudinary signed requests
+ * using the standard browser Web Crypto API.
+ */
+async function generateCloudinarySignature(paramsToSign, apiSecret) {
+  // 1. Sort parameter keys alphabetically
+  const sortedKeys = Object.keys(paramsToSign).sort();
+  // 2. Format as key=val&key2=val2
+  const serialized = sortedKeys.map((key) => `${key}=${paramsToSign[key]}`).join('&');
+  // 3. Append secret directly to the end
+  const stringToSign = `${serialized}${apiSecret}`;
+
+  // 4. Compute SHA-1 digest
+  const encoder = new TextEncoder();
+  const data = encoder.encode(stringToSign);
+  const hashBuffer = await window.crypto.subtle.digest('SHA-1', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Uploads an image or PDF file to Cloudinary (100% Free Plan).
+ * Generates an optimized public CDN URL and falls back gracefully to data URL if network is offline.
  * 
  * @param {File} file The File object selected from file input or drag-and-drop
- * @param {Object} options Optional settings (folder, tags, etc.)
- * @returns {Promise<{ url: string, name: string, size: number, type: string, format: string, storagePath?: string }>}
+ * @param {Object} options Optional settings (folder, etc.)
+ * @returns {Promise<{ url: string, name: string, size: number, type: string, format: string, publicId?: string }>}
  */
 export async function uploadMedia(file, options = {}) {
   if (!file) {
@@ -84,35 +105,50 @@ export async function uploadMedia(file, options = {}) {
   }
 
   const extension = file.name.split('.').pop().toLowerCase();
-  const folder = options.folder || (isPdf ? 'documents' : 'images');
-  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-  const storageFilePath = `${folder}/${Date.now()}_${sanitizedName}`;
+  const folder = options.folder || (isPdf ? 'mta_school/documents' : 'mta_school/images');
+  const timestamp = Math.floor(Date.now() / 1000);
 
   try {
-    // Attempt upload to Firebase Storage
-    const storageRef = ref(storage, storageFilePath);
-    const metadata = {
-      contentType: file.type || (isPdf ? 'application/pdf' : 'image/jpeg'),
-      customMetadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-      },
+    const paramsToSign = {
+      folder,
+      timestamp,
     };
 
-    const snapshot = await uploadBytes(storageRef, file, metadata);
-    const downloadUrl = await getDownloadURL(snapshot.ref);
+    const signature = await generateCloudinarySignature(paramsToSign, CLOUDINARY_API_SECRET);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('api_key', CLOUDINARY_API_KEY);
+    formData.append('timestamp', timestamp.toString());
+    formData.append('folder', folder);
+    formData.append('signature', signature);
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const errJson = await response.json().catch(() => ({}));
+      throw new Error(errJson?.error?.message || `Cloudinary upload failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
 
     return {
-      url: downloadUrl,
+      url: data.secure_url,
       name: file.name,
       size: file.size,
       type: file.type || (isPdf ? 'application/pdf' : 'image/jpeg'),
-      format: extension,
+      format: data.format || extension,
       uploadedAt: new Date().toISOString(),
-      storagePath: snapshot.ref.fullPath,
+      publicId: data.public_id,
     };
   } catch (storageErr) {
-    console.warn('Firebase Storage upload failed, falling back to local data URL:', storageErr);
+    console.warn('Cloudinary upload error, falling back to local data URL:', storageErr);
 
     // Resilient fallback to FileReader data URL
     return new Promise((resolve, reject) => {

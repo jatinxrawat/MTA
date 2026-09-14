@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAidJEmii1XBYmMvamStixh2ZlJd4RrIbk",
@@ -14,6 +13,5 @@ const firebaseConfig = {
 // Initialize Firebase App
 export const app = initializeApp(firebaseConfig);
 
-// Initialize Cloud Firestore & Firebase Storage
+// Initialize Cloud Firestore (100% Free Tier)
 export const db = getFirestore(app);
-export const storage = getStorage(app);
