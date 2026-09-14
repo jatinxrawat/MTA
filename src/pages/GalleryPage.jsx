@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import PageHeader from '../components/PageHeader';
 import { schoolData } from '../data/schoolData';
+import { useCMS } from '../context/CMSContext';
 import { Image as ImageIcon, ZoomIn, X, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { NEUTRAL_PLACEHOLDER_IMAGE } from '../lib/media';
 
 export default function GalleryPage() {
-  const { gallery } = schoolData.infrastructure;
+  const { content } = useCMS();
+  const gallery = (content.gallery || schoolData.infrastructure.gallery).filter((p) => p.isVisible !== false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
@@ -92,21 +95,33 @@ export default function GalleryPage() {
           </div>
 
           {/* Photo Gallery Grid */}
-          <div className="gallery-grid">
-            {filteredPhotos.map((photo, idx) => (
-              <figure
-                key={idx}
-                className="gallery-item gallery-preview-card scroll-reveal-item"
-                onClick={() => openLightbox(idx)}
-                style={{ cursor: 'pointer', position: 'relative', '--reveal-delay': idx % 6 }}
-              >
-                <div className="gallery-image-wrapper">
-                  <img
-                    src={photo.image}
-                    alt={photo.title}
-                    className="gallery-image"
-                    loading="lazy"
-                  />
+          {filteredPhotos.length === 0 ? (
+            <div style={{ padding: '4rem 2rem', textAlign: 'center', background: '#ffffff', border: '1px dashed var(--bg-paper-rule)', borderRadius: '4px', margin: '2rem 0' }}>
+              <p style={{ margin: 0, color: 'var(--ink-secondary)', fontSize: '1.08rem' }}>
+                No photographs currently archived under category <strong>"{activeCategory}"</strong>.
+              </p>
+            </div>
+          ) : (
+            <div className="gallery-grid">
+              {filteredPhotos.map((photo, idx) => (
+                <figure
+                  key={photo.id || idx}
+                  className="gallery-item gallery-preview-card scroll-reveal-item"
+                  onClick={() => openLightbox(idx)}
+                  style={{ cursor: 'pointer', position: 'relative', '--reveal-delay': idx % 6 }}
+                >
+                  <div className="gallery-image-wrapper">
+                    <img
+                      src={photo.image || NEUTRAL_PLACEHOLDER_IMAGE}
+                      alt={photo.title || 'Mother Teresa Academy'}
+                      className="gallery-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
+                          e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
+                        }
+                      }}
+                    />
                   <div
                     style={{
                       position: 'absolute',
@@ -150,6 +165,7 @@ export default function GalleryPage() {
               </figure>
             ))}
           </div>
+        )}
 
           {/* Note for Administrators on Adding More Photos */}
           <div
@@ -230,9 +246,14 @@ export default function GalleryPage() {
             {/* Photo */}
             <div style={{ position: 'relative', width: '100%', maxHeight: '70vh', overflow: 'hidden', backgroundColor: '#071224' }}>
               <img
-                src={filteredPhotos[lightboxIndex].image}
-                alt={filteredPhotos[lightboxIndex].title}
+                src={filteredPhotos[lightboxIndex]?.image || NEUTRAL_PLACEHOLDER_IMAGE}
+                alt={filteredPhotos[lightboxIndex]?.title || 'Mother Teresa Academy'}
                 style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain', display: 'block', margin: '0 auto' }}
+                onError={(e) => {
+                  if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
+                    e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
+                  }
+                }}
               />
 
               {/* Prev Button */}

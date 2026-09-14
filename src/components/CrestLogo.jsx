@@ -52,6 +52,9 @@ export default function CrestLogo({ size = 120, animated = false, variant = "her
           backgroundColor: '#ffffff',
         }}
         loading={animated ? "eager" : "lazy"}
+        onError={(e) => {
+          e.target.style.display = 'none';
+        }}
       />
     </div>
   );

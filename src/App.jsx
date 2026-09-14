@@ -6,6 +6,7 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import { useGlobalScrollReveal } from './hooks/useGlobalScrollReveal';
+import { CMSProvider } from './context/CMSContext';
 
 // Specific Pages
 import HomePage from './pages/HomePage';
@@ -17,6 +18,10 @@ import GalleryPage from './pages/GalleryPage';
 import CbseDisclosurePage from './pages/CbseDisclosurePage';
 import ContactPage from './pages/ContactPage';
 
+// Admin CMS Pages
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminLayout from './pages/admin/AdminLayout';
+
 // Stylesheets
 import './styles/variables.css';
 import './styles/global.css';
@@ -25,6 +30,7 @@ import './styles/cbse-disclosure.css';
 import './styles/contact-footer.css';
 import './styles/home.css';
 import './styles/animations.css';
+import './styles/admin.css';
 
 import { X, Send, CheckCircle } from 'lucide-react';
 
@@ -42,11 +48,26 @@ function AppContent() {
   // Automatically reveals elements on scroll across all routes
   useGlobalScrollReveal();
   const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   const handleModalSubmit = (e) => {
     e.preventDefault();
     setModalSubmitted(true);
   };
+
+  // Dedicated Admin Route View (No prospectus navigation or footers)
+  if (isAdminRoute) {
+    return (
+      <div className="cms-app-wrapper">
+        <ScrollToTop />
+        <Routes>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/*" element={<AdminLayout />} />
+          <Route path="/admin" element={<AdminLayout />} />
+        </Routes>
+      </div>
+    );
+  }
 
   return (
     <div className="school-prospectus-app">
@@ -241,8 +262,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <CMSProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </CMSProvider>
   );
 }

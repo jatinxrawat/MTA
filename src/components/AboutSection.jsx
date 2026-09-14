@@ -1,18 +1,26 @@
 import React from 'react';
 import CrestLogo from './CrestLogo';
+import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
+import EditableText from './admin/EditableText';
 
 export default function AboutSection() {
-  const { foundingStory, missionStatement, visionStatement, corePillars } = schoolData.about;
-  const { name, affiliationStatus, location, establishedYear } = schoolData.general;
+  const { content } = useCMS();
+  const about = content.about || schoolData.about;
+  const general = content.general || schoolData.general;
+  const spirit = content.spirit || {};
 
   return (
     <section id="about" className="section-padding section-parchment" aria-label="About Mother Teresa Academy">
       <div className="container-prospectus">
         {/* Editorial Section Header */}
         <header className="editorial-section-header text-center">
-          <span className="prospectus-subhead">Institutional Heritage & Foundation</span>
-          <h2 className="prospectus-title">The Spirit of Mother Teresa Academy</h2>
+          <span className="prospectus-subhead">
+            <EditableText path="spirit.subhead" fallback="Institutional Heritage & Foundation" as="span" />
+          </span>
+          <h2 className="prospectus-title">
+            <EditableText path="spirit.title" fallback="The Spirit of Mother Teresa Academy" as="span" />
+          </h2>
           <div className="prospectus-rule centered">
             <span className="prospectus-rule-gem" />
           </div>
@@ -23,16 +31,32 @@ export default function AboutSection() {
           {/* Main Editorial Column */}
           <div className="about-editorial-column">
             <p className="about-founding-lead editorial-dropcap">
-              {foundingStory}
+              <EditableText
+                path="about.foundingStory"
+                multiline={true}
+                fallback={about.foundingStory}
+                as="span"
+              />
             </p>
             <p style={{ marginBottom: '1.5rem' }}>
               Situated in Baraut in the fertile plains of Western Uttar Pradesh, the institution serves as an intellectual sanctuary where young minds are nurtured away from metropolitan distraction, yet equipped with world-class pedagogical resources.
             </p>
 
             <blockquote className="editorial-pullquote">
-              "Not all of us can do great things. But we can do small things with great love."
+              "
+              <EditableText
+                path="spirit.pullquote"
+                multiline={true}
+                fallback={spirit.pullquote || "Not all of us can do great things. But we can do small things with great love."}
+                as="span"
+              />
+              "
               <footer style={{ marginTop: '0.5rem', fontSize: '0.95rem', fontStyle: 'normal', color: 'var(--color-maroon)', fontWeight: '600' }}>
-                — Saint Mother Teresa, Institutional Patron
+                <EditableText
+                  path="spirit.pullquoteAuthor"
+                  fallback={spirit.pullquoteAuthor || "— Saint Mother Teresa, Institutional Patron"}
+                  as="span"
+                />
               </footer>
             </blockquote>
 
@@ -56,14 +80,24 @@ export default function AboutSection() {
             <div style={{ marginBottom: '1.75rem' }}>
               <h4 className="prospectus-card-title">Our Sacred Mission</h4>
               <p style={{ fontSize: '0.92rem', lineHeight: '1.65' }}>
-                {missionStatement}
+                <EditableText
+                  path="about.missionStatement"
+                  multiline={true}
+                  fallback={about.missionStatement}
+                  as="span"
+                />
               </p>
             </div>
 
             <div style={{ borderTop: '1px solid var(--bg-paper-rule)', paddingTop: '1.5rem' }}>
               <h4 className="prospectus-card-title">Institutional Vision</h4>
               <p style={{ fontSize: '0.92rem', lineHeight: '1.65' }}>
-                {visionStatement}
+                <EditableText
+                  path="about.visionStatement"
+                  multiline={true}
+                  fallback={about.visionStatement}
+                  as="span"
+                />
               </p>
             </div>
 
@@ -72,11 +106,11 @@ export default function AboutSection() {
                 Quick Reference
               </span>
               <div style={{ fontSize: '0.86rem', marginTop: '0.4rem', color: 'var(--ink-secondary)' }}>
-                <strong>Campus:</strong> {location}
+                <strong>Campus:</strong> <EditableText path="general.location" fallback={general.location} as="span" />
                 <br />
                 <strong>Status:</strong> CBSE Co-Educational School
                 <br />
-                <strong>Est:</strong> {establishedYear}
+                <strong>Est:</strong> <EditableText path="general.establishedYear" fallback={general.establishedYear} as="span" />
               </div>
             </div>
           </aside>
@@ -84,11 +118,15 @@ export default function AboutSection() {
 
         {/* Four Core Pillars of MTA */}
         <div className="core-pillars-grid">
-          {corePillars.map((pillar) => (
-            <article key={pillar.num} className="pillar-item">
+          {(about.corePillars || []).map((pillar, idx) => (
+            <article key={pillar.num || idx} className="pillar-item">
               <div className="pillar-num">{pillar.num}</div>
-              <h3 className="pillar-title">{pillar.title}</h3>
-              <p className="pillar-desc">{pillar.description}</p>
+              <h3 className="pillar-title">
+                <EditableText path={`about.corePillars.${idx}.title`} fallback={pillar.title} as="span" />
+              </h3>
+              <p className="pillar-desc">
+                <EditableText path={`about.corePillars.${idx}.description`} multiline={true} fallback={pillar.description} as="span" />
+              </p>
             </article>
           ))}
         </div>

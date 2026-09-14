@@ -1,9 +1,16 @@
 import React from 'react';
+import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
+import EditableText from './admin/EditableText';
 import { GraduationCap, Award, BookOpen } from 'lucide-react';
 
 export default function AcademicsSection() {
-  const { overview, streams, classXResults, classXIISResults } = schoolData.academics;
+  const { content } = useCMS();
+  const academics = content.academics || schoolData.academics;
+  const overview = academics.overview || schoolData.academics.overview;
+  const streams = academics.streams || schoolData.academics.streams;
+  const classXResults = academics.classXResults || schoolData.academics.classXResults;
+  const classXIISResults = academics.classXIISResults || schoolData.academics.classXIISResults;
 
   return (
     <section id="academics" className="section-padding" aria-label="Academics & Board Examination Results">
@@ -21,7 +28,12 @@ export default function AcademicsSection() {
         <div className="academics-intro-box">
           <div style={{ maxWidth: '820px', margin: '0 auto', textAlign: 'center' }}>
             <p style={{ fontSize: '1.12rem', lineHeight: '1.8' }}>
-              {overview}
+              <EditableText
+                path="academics.overview"
+                multiline={true}
+                fallback={overview}
+                as="span"
+              />
             </p>
           </div>
 
@@ -29,9 +41,17 @@ export default function AcademicsSection() {
           <div className="streams-grid">
             {streams.map((stream, idx) => (
               <div key={idx} className="stream-card" style={{ '--reveal-delay': idx }}>
-                <h3 className="stream-card-title">{stream.name}</h3>
+                <h3 className="stream-card-title">
+                  <EditableText path={`academics.streams.${idx}.name`} fallback={stream.name} as="span" />
+                </h3>
                 <p className="stream-subjects">
-                  <strong>Subject Matrix:</strong> {stream.subjects}
+                  <strong>Subject Matrix:</strong>{' '}
+                  <EditableText
+                    path={`academics.streams.${idx}.subjects`}
+                    multiline={true}
+                    fallback={stream.subjects}
+                    as="span"
+                  />
                 </p>
               </div>
             ))}
@@ -68,12 +88,36 @@ export default function AcademicsSection() {
                 {classXResults.map((row, idx) => (
                   <tr key={idx}>
                     <td><strong>{row.year}</strong></td>
-                    <td><span className="table-badge-placeholder">{row.registered}</span></td>
-                    <td><span className="table-badge-placeholder">{row.appeared}</span></td>
-                    <td><span className="table-badge-placeholder">{row.passed}</span></td>
-                    <td><strong style={{ color: 'var(--color-navy)' }}>{row.passPercentage}</strong></td>
-                    <td><span className="table-badge-placeholder">{row.distinctions}</span></td>
-                    <td><strong style={{ color: 'var(--color-maroon)' }}>{row.highestScore}</strong></td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXResults.${idx}.registered`} fallback={row.registered} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXResults.${idx}.appeared`} fallback={row.appeared} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXResults.${idx}.passed`} fallback={row.passed} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <strong style={{ color: 'var(--color-navy)' }}>
+                        <EditableText path={`academics.classXResults.${idx}.passPercentage`} fallback={row.passPercentage} as="span" />
+                      </strong>
+                    </td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXResults.${idx}.distinctions`} fallback={row.distinctions} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <strong style={{ color: 'var(--color-maroon)' }}>
+                        <EditableText path={`academics.classXResults.${idx}.highestScore`} fallback={row.highestScore} as="span" />
+                      </strong>
+                    </td>
                     <td style={{ fontSize: '0.84rem' }}>{row.remarks}</td>
                   </tr>
                 ))}
@@ -88,10 +132,10 @@ export default function AcademicsSection() {
             <div>
               <h3 className="results-title">Class XII (AISSCE) — Three-Year Performance Record</h3>
               <p style={{ fontSize: '0.9rem', color: 'var(--ink-muted)' }}>
-                Senior School Certificate Examination across Science, Commerce & Humanities faculties.
+                Senior Secondary graduation outcomes across Science, Commerce, and Humanities.
               </p>
             </div>
-            <span className="results-subtitle">CBSE Senior Secondary Examination</span>
+            <span className="results-subtitle">CBSE Senior School Certificate Examination</span>
           </div>
 
           <div className="academic-table-container">
@@ -103,7 +147,7 @@ export default function AcademicsSection() {
                   <th scope="col">No. of Students Appeared</th>
                   <th scope="col">No. of Students Passed</th>
                   <th scope="col">Pass Percentage (%)</th>
-                  <th scope="col">Distinction Holders</th>
+                  <th scope="col">90%+ Distinctions</th>
                   <th scope="col">School Highest Score</th>
                   <th scope="col">Examination Ref</th>
                 </tr>
@@ -112,12 +156,36 @@ export default function AcademicsSection() {
                 {classXIISResults.map((row, idx) => (
                   <tr key={idx}>
                     <td><strong>{row.year}</strong></td>
-                    <td><span className="table-badge-placeholder">{row.registered}</span></td>
-                    <td><span className="table-badge-placeholder">{row.appeared}</span></td>
-                    <td><span className="table-badge-placeholder">{row.passed}</span></td>
-                    <td><strong style={{ color: 'var(--color-navy)' }}>{row.passPercentage}</strong></td>
-                    <td><span className="table-badge-placeholder">{row.distinctions}</span></td>
-                    <td><strong style={{ color: 'var(--color-maroon)' }}>{row.highestScore}</strong></td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXIISResults.${idx}.registered`} fallback={row.registered} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXIISResults.${idx}.appeared`} fallback={row.appeared} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXIISResults.${idx}.passed`} fallback={row.passed} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <strong style={{ color: 'var(--color-navy)' }}>
+                        <EditableText path={`academics.classXIISResults.${idx}.passPercentage`} fallback={row.passPercentage} as="span" />
+                      </strong>
+                    </td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`academics.classXIISResults.${idx}.distinctions`} fallback={row.distinctions} as="span" />
+                      </span>
+                    </td>
+                    <td>
+                      <strong style={{ color: 'var(--color-maroon)' }}>
+                        <EditableText path={`academics.classXIISResults.${idx}.highestScore`} fallback={row.highestScore} as="span" />
+                      </strong>
+                    </td>
                     <td style={{ fontSize: '0.84rem' }}>{row.remarks}</td>
                   </tr>
                 ))}

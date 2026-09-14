@@ -3,6 +3,10 @@ import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
 import { schoolData } from '../data/schoolData';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useCMS } from '../context/CMSContext';
+import EditableText from '../components/admin/EditableText';
+import EditableImage from '../components/admin/EditableImage';
+import { NEUTRAL_PLACEHOLDER_IMAGE } from '../lib/media';
 
 import {
   Bell,
@@ -49,9 +53,14 @@ function getHouseIcon(iconType, props = {}) {
 }
 
 export default function HomePage() {
-  const { name, postalAddress, phonePrimary, phoneSecondary, emailPrimary, emailAdmissions, officeHours, visitingHoursPrincipal } =
-    schoolData.general;
-  const { notices, newsAndEvents, studentLeadership, sports, coCurricular, infrastructure } = schoolData;
+  const { content } = useCMS();
+  const general = content.general || schoolData.general;
+  const { postalAddress, phonePrimary, phoneSecondary, emailPrimary, emailAdmissions, officeHours, visitingHoursPrincipal } =
+    general;
+  const notices = (content.notices || schoolData.notices).filter((n) => n.isPublished !== false);
+  const houses = content.houses || schoolData.studentLeadership.houses;
+  const galleryItems = (content.gallery || schoolData.infrastructure.gallery).filter((g) => g.isVisible !== false);
+  const { newsAndEvents, studentLeadership, sports, coCurricular } = schoolData;
 
   // Scroll reveal observers for each section
   const [noticesRef, noticesRevealed] = useScrollReveal();
@@ -119,7 +128,7 @@ export default function HomePage() {
   const displayedNotices = showAllNotices ? filteredNotices : filteredNotices.slice(0, 4);
 
   // Exactly 6 photos for preview
-  const galleryPreviewPhotos = infrastructure.gallery.slice(0, 6);
+  const galleryPreviewPhotos = galleryItems.slice(0, 6);
 
   return (
     <div className="home-page-view">
@@ -140,9 +149,11 @@ export default function HomePage() {
             {/* LEFT COLUMN: About the Academy (roughly 45% width) */}
             <article className="about-academy-column">
               <header className="about-academy-header">
-                <span className="prospectus-subhead">Institutional Heritage & Foundation</span>
+                <span className="prospectus-subhead">
+                  <EditableText path="spirit.subhead" fallback="Institutional Heritage & Foundation" as="span" />
+                </span>
                 <h2 className="prospectus-title about-column-heading">
-                  The Spirit of Mother Teresa Academy
+                  <EditableText path="spirit.title" fallback="The Spirit of Mother Teresa Academy" as="span" />
                 </h2>
                 <div className="prospectus-rule" style={{ margin: '0.65rem 0 1.15rem' }}>
                   <span className="prospectus-rule-gem" />
@@ -151,18 +162,39 @@ export default function HomePage() {
 
               <div className="about-prospectus-body">
                 <p className="about-prospectus-lead">
-                  Founded with the enduring vision of Saint Mother Teresa’s selfless dedication, Mother Teresa Academy stands as a premier seat of school education along Baghpat Road in Baraut, Western Uttar Pradesh—synthesizing rigorous CBSE academic discipline with a profound moral conscience.
+                  <EditableText
+                    path="spirit.lead"
+                    multiline={true}
+                    fallback="Founded with the enduring vision of Saint Mother Teresa’s selfless dedication, Mother Teresa Academy stands as a premier seat of school education along Baghpat Road in Baraut, Western Uttar Pradesh—synthesizing rigorous CBSE academic discipline with a profound moral conscience."
+                    as="span"
+                  />
                 </p>
 
                 <p className="about-prospectus-para">
-                  Our pedagogical framework balances scholastic distinction with character formation. Pupils are guided from formative curiosity towards scholarly mastery—fostering bilingual eloquence, experimental science inquiry in dedicated laboratories, and athletic vigor on our tournament grounds.
+                  <EditableText
+                    path="spirit.paragraph"
+                    multiline={true}
+                    fallback="Our pedagogical framework balances scholastic distinction with character formation. Pupils are guided from formative curiosity towards scholarly mastery—fostering bilingual eloquence, experimental science inquiry in dedicated laboratories, and athletic vigor on our tournament grounds."
+                    as="span"
+                  />
                 </p>
 
                 {/* Compact Pull-Quote Treatment */}
                 <blockquote className="editorial-pullquote about-column-pullquote">
-                  "Not all of us can do great things. But we can do small things with great love."
+                  "
+                  <EditableText
+                    path="spirit.pullquote"
+                    multiline={true}
+                    fallback="Not all of us can do great things. But we can do small things with great love."
+                    as="span"
+                  />
+                  "
                   <footer className="about-pullquote-footer">
-                    — Saint Mother Teresa, Institutional Patron
+                    <EditableText
+                      path="spirit.pullquoteAuthor"
+                      fallback="— Saint Mother Teresa, Institutional Patron"
+                      as="span"
+                    />
                   </footer>
                 </blockquote>
 
@@ -170,19 +202,27 @@ export default function HomePage() {
                 <div className="prospectus-quick-reference">
                   <div className="quick-ref-item">
                     <span className="quick-ref-label">Location</span>
-                    <strong className="quick-ref-val">Baraut, Baghpat (U.P.)</strong>
+                    <strong className="quick-ref-val">
+                      <EditableText path="spirit.locationQuickRef" fallback="Baraut, Baghpat (U.P.)" as="span" />
+                    </strong>
                   </div>
                   <div className="quick-ref-item">
                     <span className="quick-ref-label">Affiliation</span>
-                    <strong className="quick-ref-val">CBSE Senior Secondary (K–XII)</strong>
+                    <strong className="quick-ref-val">
+                      <EditableText path="spirit.affiliationQuickRef" fallback="CBSE Senior Secondary (K–XII)" as="span" />
+                    </strong>
                   </div>
                   <div className="quick-ref-item">
                     <span className="quick-ref-label">Established</span>
-                    <strong className="quick-ref-val">2015</strong>
+                    <strong className="quick-ref-val">
+                      <EditableText path="spirit.establishedQuickRef" fallback="2015" as="span" />
+                    </strong>
                   </div>
                   <div className="quick-ref-item">
                     <span className="quick-ref-label">Motto</span>
-                    <strong className="quick-ref-val">"Laborare est Orare"</strong>
+                    <strong className="quick-ref-val">
+                      <EditableText path="spirit.mottoQuickRef" fallback='"Laborare est Orare"' as="span" />
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -226,42 +266,48 @@ export default function HomePage() {
                 </div>
 
                 {/* List of Active Notices (Compact rows with Hairline Dividers) */}
-                <ul ref={noticesRef} className="notice-list">
-                  {displayedNotices.map((item, idx) => (
-                    <li
-                      key={item.id}
-                      className={`notice-item scroll-reveal-item ${noticesRevealed ? 'is-revealed' : ''}`}
-                      style={{ '--reveal-delay': idx }}
-                    >
-                      <div className="notice-left">
-                        {/* Simple Serif Date Treatment & Small Caps Category */}
-                        <div className="notice-date-column">
-                          <span className="notice-serif-date">{item.date}</span>
-                          <span className="notice-category-caps">{item.category}</span>
+                {displayedNotices.length === 0 ? (
+                  <div style={{ padding: '2.5rem 1.5rem', textAlign: 'center', color: 'var(--ink-secondary)' }}>
+                    <p style={{ margin: 0, fontSize: '0.92rem' }}>No official circulars currently published under {noticeFilter}.</p>
+                  </div>
+                ) : (
+                  <ul ref={noticesRef} className="notice-list">
+                    {displayedNotices.map((item, idx) => (
+                      <li
+                        key={item.id}
+                        className={`notice-item scroll-reveal-item ${noticesRevealed ? 'is-revealed' : ''}`}
+                        style={{ '--reveal-delay': idx }}
+                      >
+                        <div className="notice-left">
+                          {/* Simple Serif Date Treatment & Small Caps Category */}
+                          <div className="notice-date-column">
+                            <span className="notice-serif-date">{item.date}</span>
+                            <span className="notice-category-caps">{item.category}</span>
+                          </div>
+
+                          <div className="notice-title-wrap">
+                            <h4 className="notice-title-text">
+                              {item.title}
+                              {item.isNew && <span className="notice-new-badge">NEW</span>}
+                            </h4>
+                          </div>
                         </div>
 
-                        <div className="notice-title-wrap">
-                          <h4 className="notice-title-text">
-                            {item.title}
-                            {item.isNew && <span className="notice-new-badge">NEW</span>}
-                          </h4>
-                        </div>
-                      </div>
-
-                      {item.ref.startsWith('/') ? (
-                        <Link to={item.ref} className="notice-action-link" title={item.linkText}>
-                          <FileText size={14} />
-                          <span>{item.linkText}</span>
-                        </Link>
-                      ) : (
-                        <a href={item.ref} className="notice-action-link" title={item.linkText}>
-                          <Download size={14} />
-                          <span>{item.linkText}</span>
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                        {item.ref && item.ref.startsWith('/') ? (
+                          <Link to={item.ref} className="notice-action-link" title={item.linkText || 'View Circular'}>
+                            <FileText size={14} />
+                            <span>{item.linkText || 'View Document'}</span>
+                          </Link>
+                        ) : (
+                          <a href={item.ref || '#'} className="notice-action-link" title={item.linkText || 'Download Circular'}>
+                            <Download size={14} />
+                            <span>{item.linkText || 'Download PDF'}</span>
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 {/* Card Footer: View All Toggle if > 4 notices */}
                 {filteredNotices.length > 4 && (
@@ -304,12 +350,33 @@ export default function HomePage() {
               className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 0 }}
             >
+              <div className="pillar-card-bg" aria-hidden="true">
+                <EditableImage
+                  path="cornerstones.0.image"
+                  defaultSrc="/gallery/chemistry-lab-titration.jpg"
+                  alt=""
+                  className="pillar-card-bg-img"
+                  loading="lazy"
+                />
+                <div className="pillar-card-bg-scrim" />
+              </div>
               <div className="pillar-card-icon" style={{ backgroundColor: '#edf2fb', color: 'var(--color-navy)' }}>
                 <GraduationCap size={26} />
               </div>
-              <h3 className="pillar-card-title">CBSE Academic Excellence</h3>
+              <h3 className="pillar-card-title">
+                <EditableText
+                  path="cornerstones.0.title"
+                  fallback="CBSE Academic Excellence"
+                  as="span"
+                />
+              </h3>
               <p className="pillar-card-desc">
-                Affiliated with the Central Board of Secondary Education, offering Senior Secondary Science, Commerce, and Humanities faculties with dedicated focus on NCERT benchmarks and national competitive exam readiness.
+                <EditableText
+                  path="cornerstones.0.description"
+                  multiline={true}
+                  fallback="Affiliated with the Central Board of Secondary Education, offering Senior Secondary Science, Commerce, and Humanities faculties with dedicated focus on NCERT benchmarks and national competitive exam readiness."
+                  as="span"
+                />
               </p>
               <Link to="/academics" className="pillar-card-link">
                 <span>View 3-Year Board Results & Streams</span>
@@ -322,12 +389,33 @@ export default function HomePage() {
               className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 1 }}
             >
+              <div className="pillar-card-bg" aria-hidden="true">
+                <EditableImage
+                  path="cornerstones.1.image"
+                  defaultSrc="/science-maths-composite-lab.jpg"
+                  alt=""
+                  className="pillar-card-bg-img"
+                  loading="lazy"
+                />
+                <div className="pillar-card-bg-scrim" />
+              </div>
               <div className="pillar-card-icon" style={{ backgroundColor: '#fff8eb', color: 'var(--color-brass-deep)' }}>
                 <Building2 size={26} />
               </div>
-              <h3 className="pillar-card-title">Best-in-Class Infrastructure</h3>
+              <h3 className="pillar-card-title">
+                <EditableText
+                  path="cornerstones.1.title"
+                  fallback="Best-in-Class Infrastructure"
+                  as="span"
+                />
+              </h3>
               <p className="pillar-card-desc">
-                Dedicated physics and composite science laboratories with Ohm's law apparatus, 3D mathematics geometric models, high-speed IT terminals, and spacious smart classrooms across our central lawn campus.
+                <EditableText
+                  path="cornerstones.1.description"
+                  multiline={true}
+                  fallback="Dedicated physics and composite science laboratories with Ohm's law apparatus, 3D mathematics geometric models, high-speed IT terminals, and spacious smart classrooms across our central lawn campus."
+                  as="span"
+                />
               </p>
               <Link to="/infrastructure" className="pillar-card-link">
                 <span>Explore Campus Estates & Labs</span>
@@ -340,12 +428,33 @@ export default function HomePage() {
               className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 2 }}
             >
+              <div className="pillar-card-bg" aria-hidden="true">
+                <EditableImage
+                  path="cornerstones.2.image"
+                  defaultSrc="/gallery/championship-trophy-presentation.jpg"
+                  alt=""
+                  className="pillar-card-bg-img"
+                  loading="lazy"
+                />
+                <div className="pillar-card-bg-scrim" />
+              </div>
               <div className="pillar-card-icon" style={{ backgroundColor: '#fcf0f2', color: 'var(--color-maroon)' }}>
                 <Users size={26} />
               </div>
-              <h3 className="pillar-card-title">Student Leadership & Houses</h3>
+              <h3 className="pillar-card-title">
+                <EditableText
+                  path="cornerstones.2.title"
+                  fallback="Student Leadership & Houses"
+                  as="span"
+                />
+              </h3>
               <p className="pillar-card-desc">
-                An active Prefectorial Board led by Head Boy and Head Girl, instilling civic responsibility and democratic leadership across our four distinguished houses: Teresa, Vivekananda, Kalam, and Tagore.
+                <EditableText
+                  path="cornerstones.2.description"
+                  multiline={true}
+                  fallback="An active Prefectorial Board led by Head Boy and Head Girl, instilling civic responsibility and democratic leadership across our four distinguished houses: Teresa, Vivekananda, Kalam, and Tagore."
+                  as="span"
+                />
               </p>
               <Link to="/staff" className="pillar-card-link">
                 <span>Meet Faculty & Prefects</span>
@@ -358,12 +467,33 @@ export default function HomePage() {
               className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 3 }}
             >
+              <div className="pillar-card-bg" aria-hidden="true">
+                <EditableImage
+                  path="cornerstones.3.image"
+                  defaultSrc="/kabaddi-sports-tournament.jpg"
+                  alt=""
+                  className="pillar-card-bg-img"
+                  loading="lazy"
+                />
+                <div className="pillar-card-bg-scrim" />
+              </div>
               <div className="pillar-card-icon" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}>
                 <Trophy size={26} />
               </div>
-              <h3 className="pillar-card-title">Sports & Physical Vigor</h3>
+              <h3 className="pillar-card-title">
+                <EditableText
+                  path="cornerstones.3.title"
+                  fallback="Sports & Physical Vigor"
+                  as="span"
+                />
+              </h3>
               <p className="pillar-card-desc">
-                Tournament-grade mat arena for high-intensity Inter-House Kabaddi championships, cricket practice nets, basketball arena, athletic sprint tracks, morning yoga, and physical self-defense training.
+                <EditableText
+                  path="cornerstones.3.description"
+                  multiline={true}
+                  fallback="Tournament-grade mat arena for high-intensity Inter-House Kabaddi championships, cricket practice nets, basketball arena, athletic sprint tracks, morning yoga, and physical self-defense training."
+                  as="span"
+                />
               </p>
               <Link to="/infrastructure" className="pillar-card-link">
                 <span>View Sports Facilities</span>
@@ -376,12 +506,33 @@ export default function HomePage() {
               className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 4 }}
             >
+              <div className="pillar-card-bg" aria-hidden="true">
+                <EditableImage
+                  path="cornerstones.4.image"
+                  defaultSrc="/gallery/cultural-celebrations-diya-lighting.jpg"
+                  alt=""
+                  className="pillar-card-bg-img"
+                  loading="lazy"
+                />
+                <div className="pillar-card-bg-scrim" />
+              </div>
               <div className="pillar-card-icon" style={{ backgroundColor: '#f3e5f5', color: '#6a1b9a' }}>
                 <Palette size={26} />
               </div>
-              <h3 className="pillar-card-title">Co-Curricular & Arts</h3>
+              <h3 className="pillar-card-title">
+                <EditableText
+                  path="cornerstones.4.title"
+                  fallback="Co-Curricular & Arts"
+                  as="span"
+                />
+              </h3>
               <p className="pillar-card-desc">
-                Robotics and STEM tinkering club, bilingual debating society (Hindi & English), classical music choir, environmental eco-warriors, and visual arts studios fostering holistic individual creativity.
+                <EditableText
+                  path="cornerstones.4.description"
+                  multiline={true}
+                  fallback="Robotics and STEM tinkering club, bilingual debating society (Hindi & English), classical music choir, environmental eco-warriors, and visual arts studios fostering holistic individual creativity."
+                  as="span"
+                />
               </p>
               <Link to="/about" className="pillar-card-link">
                 <span>Discover Co-Curricular Life</span>
@@ -394,12 +545,33 @@ export default function HomePage() {
               className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 5, borderTopColor: 'var(--color-maroon)' }}
             >
+              <div className="pillar-card-bg" aria-hidden="true">
+                <EditableImage
+                  path="cornerstones.5.image"
+                  defaultSrc="/campus-facade.jpg"
+                  alt=""
+                  className="pillar-card-bg-img"
+                  loading="lazy"
+                />
+                <div className="pillar-card-bg-scrim" />
+              </div>
               <div className="pillar-card-icon" style={{ backgroundColor: 'var(--color-maroon-soft)', color: 'var(--color-maroon)' }}>
                 <ShieldCheck size={26} />
               </div>
-              <h3 className="pillar-card-title">CBSE Mandatory Disclosure</h3>
+              <h3 className="pillar-card-title">
+                <EditableText
+                  path="cornerstones.5.title"
+                  fallback="CBSE Mandatory Disclosure"
+                  as="span"
+                />
+              </h3>
               <p className="pillar-card-desc">
-                Complete institutional transparency under CBSE Appendix-IX norms. Complete publication of building safety, fire safety, recognition certificates, and academic governance registers.
+                <EditableText
+                  path="cornerstones.5.description"
+                  multiline={true}
+                  fallback="Complete institutional transparency under CBSE Appendix-IX norms. Complete publication of building safety, fire safety, recognition certificates, and academic governance registers."
+                  as="span"
+                />
               </p>
               <Link to="/cbse-disclosure" className="pillar-card-link" style={{ color: 'var(--color-maroon)' }}>
                 <span>Access Statutory Appendix-IX</span>
@@ -439,8 +611,8 @@ export default function HomePage() {
             </div>
 
             <div ref={housesRef} className="houses-strip">
-              {studentLeadership.houses.map((house, idx) => {
-                const houseClass = `house-${house.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+              {houses.map((house, idx) => {
+                const houseClass = `house-${(house.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 const isToggled = !!toggledHouses[idx];
                 return (
                   <div
@@ -503,13 +675,21 @@ export default function HomePage() {
                     {/* Dual-View Animated Content */}
                     <div className="house-card-content">
                       <div className={`house-view-panel ${!isToggled ? 'is-active' : 'is-hidden'}`}>
-                        <h4 className="house-name">{house.name}</h4>
-                        <p className="house-motto">"{house.motto}"</p>
+                        <h4 className="house-name">
+                          <EditableText path={`houses.${idx}.name`} fallback={house.name} as="span" />
+                        </h4>
+                        <p className="house-motto">
+                          "
+                          <EditableText path={`houses.${idx}.motto`} fallback={house.motto} as="span" />
+                          "
+                        </p>
                       </div>
 
                       <div className={`house-view-panel ${isToggled ? 'is-active' : 'is-hidden'}`}>
                         <h4 className="house-patron-title">{house.patron || house.name}</h4>
-                        <p className="house-virtues-text">{house.virtues}</p>
+                        <p className="house-virtues-text">
+                          <EditableText path={`houses.${idx}.virtues`} fallback={house.virtues} as="span" />
+                        </p>
                         <span className="house-mascot-pill">Mascot: {house.mascot}</span>
                       </div>
                     </div>
@@ -536,29 +716,40 @@ export default function HomePage() {
           </header>
 
           {/* 6 Photo Preview Grid: Stagger in on scroll, subtle hover crop zoom (scale 1.04) */}
-          <div ref={galleryRef} className="gallery-grid">
-            {galleryPreviewPhotos.map((photo, idx) => (
-              <figure
-                key={idx}
-                className={`gallery-item scroll-reveal-item ${galleryRevealed ? 'is-revealed' : ''}`}
-                style={{ '--reveal-delay': idx, cursor: 'pointer' }}
-                onClick={() => setActivePhoto(photo)}
-              >
-                <div className="gallery-image-wrapper">
-                  <img
-                    src={photo.image}
-                    alt={photo.title}
-                    className="gallery-image"
-                    loading="lazy"
-                  />
-                </div>
-                <figcaption className="gallery-caption-box">
-                  <h4 className="gallery-title">{photo.title}</h4>
-                  <p className="gallery-desc">{photo.caption}</p>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          {galleryPreviewPhotos.length === 0 ? (
+            <div style={{ padding: '3.5rem 1.5rem', textAlign: 'center', background: '#ffffff', border: '1px dashed var(--bg-paper-rule)', borderRadius: '4px', margin: '2rem 0' }}>
+              <p style={{ margin: 0, color: 'var(--ink-secondary)', fontSize: '1.05rem' }}>Photographs are being curated and will appear here once published.</p>
+            </div>
+          ) : (
+            <div ref={galleryRef} className="gallery-grid">
+              {galleryPreviewPhotos.map((photo, idx) => (
+                <figure
+                  key={photo.id || idx}
+                  className={`gallery-item scroll-reveal-item ${galleryRevealed ? 'is-revealed' : ''}`}
+                  style={{ '--reveal-delay': idx, cursor: 'pointer' }}
+                  onClick={() => setActivePhoto(photo)}
+                >
+                  <div className="gallery-image-wrapper">
+                    <img
+                      src={photo.image || NEUTRAL_PLACEHOLDER_IMAGE}
+                      alt={photo.title || 'Mother Teresa Academy Campus Photo'}
+                      className="gallery-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
+                          e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
+                        }
+                      }}
+                    />
+                  </div>
+                  <figcaption className="gallery-caption-box">
+                    <h4 className="gallery-title">{photo.title}</h4>
+                    <p className="gallery-desc">{photo.caption}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          )}
 
           {/* "View Full Gallery" CTA Button */}
           <div className="gallery-cta-bar">
@@ -903,9 +1094,14 @@ export default function HomePage() {
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={activePhoto.image}
-              alt={activePhoto.title}
+              src={activePhoto.image || NEUTRAL_PLACEHOLDER_IMAGE}
+              alt={activePhoto.title || 'Mother Teresa Academy'}
               style={{ width: '100%', maxHeight: '65vh', objectFit: 'cover', display: 'block' }}
+              onError={(e) => {
+                if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
+                  e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
+                }
+              }}
             />
             <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-parchment-white)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

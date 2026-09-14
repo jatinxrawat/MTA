@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { schoolData } from '../data/schoolData';
+import { useCMS } from '../context/CMSContext';
+import EditableText from './admin/EditableText';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Navigation, ExternalLink, Map } from 'lucide-react';
 import '../styles/contact-footer.css';
 
 export default function ContactSection() {
+  const { content } = useCMS();
+  const general = content.general || schoolData.general;
   const { location, postalAddress, phonePrimary, phoneSecondary, emailPrimary, emailAdmissions, officeHours, visitingHoursPrincipal } =
-    schoolData.general;
+    general;
 
   const [showInteractiveMap, setShowInteractiveMap] = useState(false);
 
@@ -123,9 +127,9 @@ export default function ContactSection() {
                 <h3 className="contact-label">Telephonic Helplines</h3>
               </div>
               <p className="contact-val">
-                General Inquiries: {phonePrimary}
+                General Inquiries: <EditableText path="general.phonePrimary" fallback={phonePrimary} as="span" />
                 <br />
-                Admissions Cell: {phoneSecondary}
+                Admissions Cell: <EditableText path="general.phoneSecondary" fallback={phoneSecondary} as="span" />
               </p>
             </div>
 
@@ -135,9 +139,9 @@ export default function ContactSection() {
                 <h3 className="contact-label">Electronic Mail</h3>
               </div>
               <p className="contact-val">
-                Official Secretarial Desk: {emailPrimary}
+                Official Secretarial Desk: <EditableText path="general.emailPrimary" fallback={emailPrimary} as="span" />
                 <br />
-                Admissions Registrar: {emailAdmissions}
+                Admissions Registrar: <EditableText path="general.emailAdmissions" fallback={emailAdmissions} as="span" />
               </p>
             </div>
 
@@ -147,9 +151,9 @@ export default function ContactSection() {
                 <h3 className="contact-label">Institutional Timings</h3>
               </div>
               <p className="contact-val">
-                {officeHours}
+                <EditableText path="general.officeHours" fallback={officeHours} as="span" />
                 <br />
-                <em>Principal's Office Hours: {visitingHoursPrincipal}</em>
+                <em>Principal's Office Hours: <EditableText path="general.visitingHoursPrincipal" fallback={visitingHoursPrincipal} as="span" /></em>
               </p>
             </div>
           </div>

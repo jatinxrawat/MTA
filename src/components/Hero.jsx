@@ -1,25 +1,23 @@
 import React from 'react';
 import CrestLogo from './CrestLogo';
-import { schoolData } from '../data/schoolData';
+import { useCMS } from '../context/CMSContext';
+import EditableText from './admin/EditableText';
+import EditableImage from './admin/EditableImage';
 import '../styles/hero.css';
 
 /**
  * Full-Screen Opening Photo (100vh):
- * Pure photograph opening with no navbar clutter and no cards.
- * Features:
- * - Edge-to-edge photograph of the school exterior
- * - Official crest with animated SVG draw on load
- * - School name & tagline
- * - Subtle scroll cue
+ * Pure photograph opening with live-editable content affordances.
  */
 export default function Hero({ onScrollClick }) {
-  const { name, mottoTranslation, affiliationStatus, location } = schoolData.general;
+  const { content } = useCMS();
+  const hero = content.hero || {};
 
   const handleScrollDown = () => {
     if (onScrollClick) {
       onScrollClick();
     } else {
-      const target = document.getElementById('about');
+      const target = document.getElementById('about') || document.getElementById('notice-board');
       if (target) {
         target.scrollIntoView({ behavior: 'smooth' });
       }
@@ -28,13 +26,14 @@ export default function Hero({ onScrollClick }) {
 
   return (
     <section className="hero-viewport" aria-label="School Entrance Hero">
-      {/* Edge-to-Edge School Exterior Photo */}
-      <img
-        src="/school-hero.jpg"
+      {/* Edge-to-Edge School Exterior Photo - Editable */}
+      <EditableImage
+        path="hero.backgroundImage"
+        defaultSrc={hero.backgroundImage || "/school-hero.jpg"}
         alt="Mother Teresa Academy Campus Architecture, Baraut"
         className="hero-background-image"
         loading="eager"
-        fetchpriority="high"
+        fetchPriority="high"
       />
 
       {/* Atmospheric Vignette & Scrim */}
@@ -47,24 +46,42 @@ export default function Hero({ onScrollClick }) {
           <CrestLogo size={200} animated={true} variant="brass" />
         </div>
 
-        {/* Affiliation Bar */}
+        {/* Affiliation Bar - Editable */}
         <div className="hero-affiliation-badge hero-tagline-reveal">
-          CBSE Senior Secondary Co-Educational Institution
+          <EditableText
+            path="hero.badge"
+            fallback="CBSE Senior Secondary Co-Educational Institution"
+            as="span"
+          />
         </div>
 
-        {/* School Name */}
+        {/* School Name - Editable */}
         <h1 className="hero-school-name hero-stately-reveal">
-          {name}
+          <EditableText
+            path="hero.headline"
+            fallback="Mother Teresa Academy"
+            as="span"
+          />
         </h1>
 
-        {/* School Tagline / Motto */}
+        {/* School Tagline / Motto - Editable */}
         <p className="hero-tagline hero-tagline-reveal">
-          "{mottoTranslation}"
+          "
+          <EditableText
+            path="hero.motto"
+            fallback="Your Child Is Our Concern"
+            as="span"
+          />
+          "
         </p>
 
-        {/* Location Subtext */}
+        {/* Location Subtext - Editable */}
         <div className="hero-location-sub hero-scroll-reveal">
-          Baraut, District Baghpat, Uttar Pradesh
+          <EditableText
+            path="hero.location"
+            fallback="Baraut, District Baghpat, Uttar Pradesh"
+            as="span"
+          />
         </div>
       </div>
 

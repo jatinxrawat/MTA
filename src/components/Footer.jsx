@@ -2,12 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import CrestLogo from './CrestLogo';
 import { schoolData } from '../data/schoolData';
-import { ArrowUp } from 'lucide-react';
+import { useCMS } from '../context/CMSContext';
+import { ArrowUp, Lock } from 'lucide-react';
 import '../styles/contact-footer.css';
 
 export default function Footer() {
-  const { name, mottoTranslation, affiliationNo, schoolCode, postalAddress, phonePrimary, emailPrimary } =
-    schoolData.general;
+  const { content } = useCMS();
+  const general = content.general || schoolData.general;
+  const { name, mottoTranslation, affiliationNo, schoolCode, postalAddress, phonePrimary, emailPrimary } = general;
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -33,13 +35,13 @@ export default function Footer() {
           <div>
             <h4 className="footer-column-title">Prospectus Pages</h4>
             <ul className="footer-nav-list">
-              <li className="footer-nav-item"><Link to="/">Home Overview</Link></li>
-              <li className="footer-nav-item"><Link to="/about">About the Academy</Link></li>
-              <li className="footer-nav-item"><Link to="/academics">Curriculum & 3-Yr Results</Link></li>
-              <li className="footer-nav-item"><Link to="/staff">Faculty & Leadership</Link></li>
-              <li className="footer-nav-item"><Link to="/infrastructure">Campus Infrastructure</Link></li>
-              <li className="footer-nav-item"><Link to="/gallery" style={{ color: 'var(--color-brass-light)' }}>★ Our Photo Gallery</Link></li>
-              <li className="footer-nav-item"><Link to="/contact">Contact & Admissions</Link></li>
+              <li className="footer-nav-item"><Link to="/">Home & Opening Overview</Link></li>
+              <li className="footer-nav-item"><Link to="/about">About & Institutional Heritage</Link></li>
+              <li className="footer-nav-item"><Link to="/academics">CBSE Academic Curriculum</Link></li>
+              <li className="footer-nav-item"><Link to="/staff">Pedagogical Leadership & Faculty</Link></li>
+              <li className="footer-nav-item"><Link to="/infrastructure">Campus Estates & Laboratories</Link></li>
+              <li className="footer-nav-item"><Link to="/gallery">Campus Photo Gallery</Link></li>
+              <li className="footer-nav-item"><Link to="/contact">Admissions Enquiry & Contact</Link></li>
             </ul>
           </div>
 
@@ -84,8 +86,26 @@ export default function Footer() {
           <div>
             © {new Date().getFullYear()} Mother Teresa Academy, Baraut (Baghpat, U.P.). All statutory rights reserved.
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
             <span>CBSE Affiliated Senior Secondary Institution</span>
+            <Link
+              to="/admin"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                color: 'rgba(255, 255, 255, 0.65)',
+                fontSize: '0.78rem',
+                textDecoration: 'none',
+                padding: '0.2rem 0.5rem',
+                borderRadius: '3px',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+              }}
+              title="Staff Administration Portal"
+            >
+              <Lock size={12} />
+              <span>Staff CMS</span>
+            </Link>
             <button
               type="button"
               onClick={scrollToTop}

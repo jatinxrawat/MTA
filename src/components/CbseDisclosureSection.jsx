@@ -1,11 +1,14 @@
 import React from 'react';
+import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
+import EditableText from './admin/EditableText';
 import { FileText, Download, Printer, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import '../styles/cbse-disclosure.css';
 
 export default function CbseDisclosureSection() {
-  const { annexure, title, instructions, sectionA, sectionB, sectionC, sectionD, sectionE } =
-    schoolData.cbseDisclosure;
+  const { content } = useCMS();
+  const cbseData = content.cbseDisclosure || schoolData.cbseDisclosure;
+  const { annexure, title, instructions, sectionA, sectionB, sectionC, sectionD, sectionE } = cbseData;
 
   const handlePrint = () => {
     window.print();
@@ -64,16 +67,16 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {sectionA.fields.map((field) => (
-                  <tr key={field.sNo}>
-                    <td>0{field.sNo}</td>
+                {sectionA.fields.map((field, idx) => (
+                  <tr key={field.sNo || idx}>
+                    <td>0{field.sNo || idx + 1}</td>
                     <td><strong>{field.information}</strong></td>
                     <td>
-                      {field.details.includes('[—') ? (
-                        <span className="table-badge-placeholder">{field.details}</span>
-                      ) : (
-                        <strong>{field.details}</strong>
-                      )}
+                      <EditableText
+                        path={`cbseDisclosure.sectionA.fields.${idx}.details`}
+                        fallback={field.details}
+                        as="span"
+                      />
                     </td>
                   </tr>
                 ))}
@@ -98,19 +101,17 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {sectionB.documents.map((doc) => (
-                  <tr key={doc.sNo}>
-                    <td>0{doc.sNo}</td>
+                {sectionB.documents.map((doc, idx) => (
+                  <tr key={doc.sNo || idx}>
+                    <td>0{doc.sNo || idx + 1}</td>
+                    <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                        <FileText size={16} style={{ color: 'var(--color-navy)', flexShrink: 0, marginTop: '3px' }} />
-                        <span>{doc.documentName}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="doc-link-placeholder">
-                        <Download size={13} />
-                        {doc.status}
+                      <span className="table-badge-placeholder">
+                        <EditableText
+                          path={`cbseDisclosure.sectionB.documents.${idx}.status`}
+                          fallback={doc.status}
+                          as="span"
+                        />
                       </span>
                     </td>
                   </tr>
@@ -124,35 +125,30 @@ export default function CbseDisclosureSection() {
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionC.sectionTitle}</h3>
-            <span className="disclosure-norm-tag">Academic Schedules & Governance</span>
+            <span className="disclosure-norm-tag">Academic Records & Governance</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
             <table className="academic-table" aria-label="CBSE Disclosure Section C Result and Academics">
               <thead>
                 <tr>
                   <th scope="col" style={{ width: '80px' }}>S.No.</th>
-                  <th scope="col" style={{ width: '54%' }}>Academic & Governance Head</th>
-                  <th scope="col">Upload Reference / Location</th>
+                  <th scope="col" style={{ width: '54%' }}>Statutory Institutional Document</th>
+                  <th scope="col">Publication Link / Verification Status</th>
                 </tr>
               </thead>
               <tbody>
-                {sectionC.documents.map((item) => (
-                  <tr key={item.sNo}>
-                    <td>0{item.sNo}</td>
+                {sectionC.documents.map((doc, idx) => (
+                  <tr key={doc.sNo || idx}>
+                    <td>0{doc.sNo || idx + 1}</td>
+                    <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <strong>{item.documentName}</strong>
-                    </td>
-                    <td>
-                      {item.docRef.startsWith('#') ? (
-                        <a href={item.docRef} className="doc-link-btn">
-                          {item.status}
-                        </a>
-                      ) : (
-                        <span className="doc-link-placeholder">
-                          <FileText size={13} />
-                          {item.status}
-                        </span>
-                      )}
+                      <span className="table-badge-placeholder">
+                        <EditableText
+                          path={`cbseDisclosure.sectionC.documents.${idx}.status`}
+                          fallback={doc.status}
+                          as="span"
+                        />
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -165,28 +161,28 @@ export default function CbseDisclosureSection() {
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionD.sectionTitle}</h3>
-            <span className="disclosure-norm-tag">Faculty Register Metrics</span>
+            <span className="disclosure-norm-tag">Affiliation Bye-Laws Staffing Ratio</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
-            <table className="academic-table" aria-label="CBSE Disclosure Section D Staff Teaching">
+            <table className="academic-table" aria-label="CBSE Disclosure Section D Staff">
               <thead>
                 <tr>
                   <th scope="col" style={{ width: '80px' }}>S.No.</th>
-                  <th scope="col" style={{ width: '45%' }}>Staff Head / Classification</th>
-                  <th scope="col">Mandated Details & Sanctioned Headcount</th>
+                  <th scope="col" style={{ width: '45%' }}>Staff Head / Designation</th>
+                  <th scope="col">Statutory Deployment Record</th>
                 </tr>
               </thead>
               <tbody>
                 {sectionD.fields.map((field, idx) => (
                   <tr key={idx}>
-                    <td>{field.sNo ? `0${field.sNo}` : ''}</td>
+                    <td>{field.sNo ? `0${field.sNo}` : '—'}</td>
                     <td><strong>{field.parameter}</strong></td>
                     <td>
-                      {field.details.includes('[—') ? (
-                        <span className="table-badge-placeholder">{field.details}</span>
-                      ) : (
-                        field.details
-                      )}
+                      <EditableText
+                        path={`cbseDisclosure.sectionD.fields.${idx}.details`}
+                        fallback={field.details}
+                        as="span"
+                      />
                     </td>
                   </tr>
                 ))}
@@ -199,41 +195,33 @@ export default function CbseDisclosureSection() {
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionE.sectionTitle}</h3>
-            <span className="disclosure-norm-tag">Physical Plant & Safety Standards</span>
+            <span className="disclosure-norm-tag">Physical Estate Verification Norms</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
-            <table className="academic-table" aria-label="CBSE Disclosure Section E School Infrastructure">
+            <table className="academic-table" aria-label="CBSE Disclosure Section E Infrastructure">
               <thead>
                 <tr>
                   <th scope="col" style={{ width: '80px' }}>S.No.</th>
-                  <th scope="col" style={{ width: '45%' }}>Infrastructure Parameter</th>
-                  <th scope="col">Provision Details & Dimensions</th>
+                  <th scope="col" style={{ width: '48%' }}>Infrastructure Metric Head</th>
+                  <th scope="col">Certified Measurement / Inspection Record</th>
                 </tr>
               </thead>
               <tbody>
-                {sectionE.fields.map((field) => (
-                  <tr key={field.sNo}>
-                    <td>0{field.sNo}</td>
+                {sectionE.fields.map((field, idx) => (
+                  <tr key={field.sNo || idx}>
+                    <td>0{field.sNo || idx + 1}</td>
                     <td><strong>{field.parameter}</strong></td>
                     <td>
-                      {field.details.includes('[—') ? (
-                        <span className="table-badge-placeholder">{field.details}</span>
-                      ) : (
-                        field.details
-                      )}
+                      <EditableText
+                        path={`cbseDisclosure.sectionE.fields.${idx}.details`}
+                        fallback={field.details}
+                        as="span"
+                      />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
-          <div className="disclosure-print-bar">
-            <span>
-              * Official certification: All certificates maintained at the administrative office, Mother Teresa Academy, Baraut (UP).
-            </span>
-            <span style={{ fontWeight: '600', color: 'var(--color-maroon)' }}>
-              Last Audited: Current Academic Year
-            </span>
           </div>
         </div>
       </div>

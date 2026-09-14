@@ -365,6 +365,8 @@
 }
 
 .pillar-feature-card {
+  position: relative;
+  overflow: hidden;
   background-color: #ffffff;
   border: 1px solid var(--bg-paper-rule);
   box-shadow: var(--shadow-editorial);
@@ -372,15 +374,63 @@
   display: flex;
   flex-direction: column;
   border-top: 4px solid var(--color-navy);
+  isolation: isolate;
+}
+
+/* Atmospheric school photograph background layer */
+.pillar-card-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.pillar-card-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.0);
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1), filter 500ms ease;
+  will-change: transform;
+}
+
+/* Refined editorial translucent scrim ensuring AAA typography contrast */
+.pillar-card-bg-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.76) 0%,
+    rgba(255, 255, 255, 0.88) 42%,
+    rgba(255, 255, 255, 0.96) 100%
+  );
+  transition: background 400ms ease;
 }
 
 /* Understated lift without scale/zoom */
 .pillar-feature-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px -4px rgba(11, 27, 61, 0.16);
+  box-shadow: 0 14px 34px -4px rgba(11, 27, 61, 0.16);
+}
+
+.pillar-feature-card:hover .pillar-card-bg-img {
+  transform: scale(1.06);
+}
+
+.pillar-feature-card:hover .pillar-card-bg-scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.68) 0%,
+    rgba(255, 255, 255, 0.82) 42%,
+    rgba(255, 255, 255, 0.94) 100%
+  );
 }
 
 .pillar-card-icon {
+  position: relative;
+  z-index: 1;
   width: 50px;
   height: 50px;
   display: flex;
@@ -388,11 +438,14 @@
   justify-content: center;
   background-color: var(--color-navy-soft);
   color: var(--color-navy);
-  border-radius: 2px;
+  border-radius: 4px;
   margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(11, 27, 61, 0.08);
 }
 
 .pillar-card-title {
+  position: relative;
+  z-index: 1;
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
@@ -401,6 +454,8 @@
 }
 
 .pillar-card-desc {
+  position: relative;
+  z-index: 1;
   font-size: 0.92rem;
   line-height: 1.65;
   color: var(--ink-secondary);
@@ -409,6 +464,8 @@
 }
 
 .pillar-card-link {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;

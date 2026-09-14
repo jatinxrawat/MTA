@@ -1,8 +1,15 @@
 import React from 'react';
+import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
+import EditableText from './admin/EditableText';
+import EditableImage from './admin/EditableImage';
 
 export default function StaffSection() {
-  const { leadership, cadreBreakdown, metrics } = schoolData.staff;
+  const { content } = useCMS();
+  const staff = content.staff || schoolData.staff;
+  const leadership = staff.leadership || schoolData.staff.leadership;
+  const cadreBreakdown = staff.cadreBreakdown || schoolData.staff.cadreBreakdown;
+  const metrics = staff.metrics || schoolData.staff.metrics;
 
   return (
     <section id="staff" className="section-padding section-parchment" aria-label="Teaching Staff & Leadership">
@@ -18,8 +25,9 @@ export default function StaffSection() {
 
         {/* Authentic Faculty Group Photo & Assembly Banner */}
         <div style={{ marginBottom: '3.5rem', background: '#ffffff', border: '1px solid var(--bg-paper-rule)', padding: '0.75rem', boxShadow: 'var(--shadow-editorial)' }}>
-          <img
-            src="/faculty-cbp-training.jpg"
+          <EditableImage
+            path="staff.assemblyPhoto"
+            defaultSrc="/faculty-cbp-training.jpg"
             alt="Mother Teresa Academy Teaching Faculty & Leadership at CBSE Capacity Building Programme"
             style={{ width: '100%', height: 'auto', maxHeight: '520px', objectFit: 'cover', display: 'block' }}
             loading="lazy"
@@ -38,36 +46,52 @@ export default function StaffSection() {
         </div>
 
         {/* Leadership Triptych (Principal, Vice Principal, Headmaster/Headmistress) */}
-        <div className="leadership-grid">
-          {leadership.map((leader, idx) => (
-            <article key={idx} className="leadership-card" style={{ '--reveal-delay': idx }}>
-              <span className="leadership-role-tag">{leader.role}</span>
-              <h3 className="leadership-name">{leader.name}</h3>
-              <p className="leadership-qual">
-                <strong>Qualifications:</strong> {leader.qualifications}
-              </p>
-              <div className="leadership-exp">
-                {leader.experience}
-              </div>
-              <blockquote className="leadership-quote">
-                {leader.messageExcerpt}
-              </blockquote>
-            </article>
-          ))}
-        </div>
+        {/* Leadership Triptych (Principal, Vice Principal, Headmaster/Headmistress) */}
+        {leadership.length === 0 ? (
+          <div style={{ padding: '2.5rem', textAlign: 'center', background: '#fff', border: '1px dashed var(--bg-paper-rule)', marginBottom: '2.5rem' }}>
+            <p style={{ margin: 0, color: 'var(--ink-secondary)' }}>Staff leadership roster will appear here once added.</p>
+          </div>
+        ) : (
+          <div className="leadership-grid">
+            {leadership.map((leader, idx) => (
+              <article key={idx} className="leadership-card" style={{ '--reveal-delay': idx }}>
+                <span className="leadership-role-tag">{leader.role}</span>
+                <h3 className="leadership-name">
+                  <EditableText path={`staff.leadership.${idx}.name`} fallback={leader.name} as="span" />
+                </h3>
+                <p className="leadership-qual">
+                  <strong>Qualifications:</strong>{' '}
+                  <EditableText path={`staff.leadership.${idx}.qualifications`} fallback={leader.qualifications} as="span" />
+                </p>
+                <div className="leadership-exp">
+                  <EditableText path={`staff.leadership.${idx}.experience`} fallback={leader.experience} as="span" />
+                </div>
+                <blockquote className="leadership-quote">
+                  <EditableText path={`staff.leadership.${idx}.messageExcerpt`} multiline={true} fallback={leader.messageExcerpt} as="span" />
+                </blockquote>
+              </article>
+            ))}
+          </div>
+        )}
 
         {/* Cadre Metrics Strip */}
         <div className="staff-stats-strip">
           <div className="staff-stat-box">
-            <div className="staff-stat-num">{metrics.totalTeachingStaff}</div>
+            <div className="staff-stat-num">
+              <EditableText path="staff.metrics.totalTeachingStaff" fallback={metrics.totalTeachingStaff} as="span" />
+            </div>
             <div className="staff-stat-label">Total Teaching Faculty</div>
           </div>
           <div className="staff-stat-box">
-            <div className="staff-stat-num">{metrics.studentTeacherRatio}</div>
+            <div className="staff-stat-num">
+              <EditableText path="staff.metrics.studentTeacherRatio" fallback={metrics.studentTeacherRatio} as="span" />
+            </div>
             <div className="staff-stat-label">Teacher : Student Ratio</div>
           </div>
           <div className="staff-stat-box">
-            <div className="staff-stat-num">{metrics.teachersWithPostGraduation}</div>
+            <div className="staff-stat-num">
+              <EditableText path="staff.metrics.teachersWithPostGraduation" fallback={metrics.teachersWithPostGraduation} as="span" />
+            </div>
             <div className="staff-stat-label">Post-Graduate / B.Ed. Qualified</div>
           </div>
         </div>
@@ -96,15 +120,31 @@ export default function StaffSection() {
                 </tr>
               </thead>
               <tbody>
-                {cadreBreakdown.map((row, idx) => (
-                  <tr key={idx}>
-                    <td>0{idx + 1}</td>
-                    <td><strong>{row.category}</strong></td>
-                    <td><span className="table-badge-placeholder">{row.count}</span></td>
-                    <td>{row.qualificationRequirement}</td>
-                    <td style={{ fontSize: '0.86rem', color: 'var(--color-navy)' }}>Regular / Full-Time Appointee</td>
+                {cadreBreakdown.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--ink-secondary)' }}>
+                      No staff designations currently recorded.
+                    </td>
                   </tr>
-                ))}
+                ) : (
+                  cadreBreakdown.map((row, idx) => (
+                    <tr key={idx}>
+                      <td style={{ fontWeight: 600, color: 'var(--color-navy)' }}>{String(idx + 1).padStart(2, '0')}</td>
+                      <td style={{ fontWeight: 600, color: 'var(--color-navy-deep)' }}>{row.category}</td>
+                      <td>
+                        <span className="status-badge-inline" style={{ fontWeight: 700 }}>
+                          <EditableText path={`staff.cadreBreakdown.${idx}.count`} fallback={row.count} as="span" />
+                        </span>
+                      </td>
+                      <td style={{ color: 'var(--ink-secondary)', fontSize: '0.88rem' }}>
+                        <EditableText path={`staff.cadreBreakdown.${idx}.qualificationRequirement`} fallback={row.qualificationRequirement} as="span" />
+                      </td>
+                      <td>
+                        <span className="status-badge-inline status-confirmed">Regular Appointed</span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

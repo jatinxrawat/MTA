@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
+import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
+import EditableText from './admin/EditableText';
 import { Building2, Microscope, BookOpen, Wifi, ShieldCheck, HeartPulse } from 'lucide-react';
+import { NEUTRAL_PLACEHOLDER_IMAGE } from '../lib/media';
 
 export default function InfrastructureSection() {
-  const { campusOverview, metrics, sanitation, gallery } = schoolData.infrastructure;
+  const { content } = useCMS();
+  const infraData = content.infrastructure || schoolData.infrastructure;
+  const campusOverview = infraData.campusOverview || schoolData.infrastructure.campusOverview;
+  const metrics = infraData.metrics || schoolData.infrastructure.metrics;
+  const sanitation = infraData.sanitation || schoolData.infrastructure.sanitation;
+  const gallery = (content.gallery || schoolData.infrastructure.gallery).filter((g) => g.isVisible !== false);
   const [activePhoto, setActivePhoto] = useState(null);
 
   return (
@@ -21,7 +29,12 @@ export default function InfrastructureSection() {
         {/* Narrative Overview */}
         <div style={{ maxWidth: '820px', margin: '0 auto 3.5rem', textAlign: 'center' }}>
           <p style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-            {campusOverview}
+            <EditableText
+              path="infrastructure.campusOverview"
+              multiline={true}
+              fallback={campusOverview}
+              as="span"
+            />
           </p>
         </div>
 
@@ -29,9 +42,13 @@ export default function InfrastructureSection() {
         <div className="infra-metrics-grid">
           {metrics.map((item, idx) => (
             <div key={idx} className="infra-metric-card" style={{ '--reveal-delay': idx % 4 }}>
-              <div className="infra-metric-val">{item.value}</div>
+              <div className="infra-metric-val">
+                <EditableText path={`infrastructure.metrics.${idx}.value`} fallback={item.value} as="span" />
+              </div>
               <div className="infra-metric-label">{item.label}</div>
-              <div className="infra-metric-sub">{item.sub}</div>
+              <div className="infra-metric-sub">
+                <EditableText path={`infrastructure.metrics.${idx}.sub`} fallback={item.sub} as="span" />
+              </div>
             </div>
           ))}
         </div>
@@ -59,7 +76,11 @@ export default function InfrastructureSection() {
                 {sanitation.map((item, idx) => (
                   <tr key={idx}>
                     <td><strong>{item.facility}</strong></td>
-                    <td><span className="table-badge-placeholder">{item.count}</span></td>
+                    <td>
+                      <span className="table-badge-placeholder">
+                        <EditableText path={`infrastructure.sanitation.${idx}.count`} fallback={item.count} as="span" />
+                      </span>
+                    </td>
                     <td>{item.norm}</td>
                     <td style={{ color: '#2e7d32', fontWeight: '600' }}>✓ Inspected & Certified</td>
                   </tr>
@@ -81,88 +102,78 @@ export default function InfrastructureSection() {
             <span className="results-subtitle">Baraut Campus Views</span>
           </div>
 
-          <div className="gallery-grid">
-            {gallery.map((photo, idx) => (
-              <figure
-                key={idx}
-                className="gallery-item"
-                onClick={() => setActivePhoto(photo)}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className="gallery-image-wrapper">
-                  <img
-                    src={photo.image}
-                    alt={photo.title}
-                    className="gallery-image"
-                    loading="lazy"
-                  />
-                </div>
-                <figcaption className="gallery-caption-box">
-                  <h4 className="gallery-title">{photo.title}</h4>
-                  <p className="gallery-desc">{photo.caption}</p>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          {gallery.length === 0 ? (
+            <div style={{ padding: '3.5rem 1.5rem', textAlign: 'center', background: '#ffffff', border: '1px dashed var(--bg-paper-rule)', borderRadius: '4px', margin: '2rem 0' }}>
+              <p style={{ margin: 0, color: 'var(--ink-secondary)', fontSize: '1.05rem' }}>Campus estate photographs will appear here once published.</p>
+            </div>
+          ) : (
+            <div className="gallery-grid">
+              {gallery.map((photo, idx) => (
+                <figure
+                  key={photo.id || idx}
+                  className="gallery-item"
+                  onClick={() => setActivePhoto(photo)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="gallery-image-wrapper">
+                    <img
+                      src={photo.image || NEUTRAL_PLACEHOLDER_IMAGE}
+                      alt={photo.title || 'Mother Teresa Academy Campus'}
+                      className="gallery-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
+                          e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
+                        }
+                      }}
+                    />
+                  </div>
+                  <figcaption className="gallery-caption-box">
+                    <h4 className="gallery-title">{photo.title}</h4>
+                    <p className="gallery-desc">{photo.caption}</p>
+                    <span className="gallery-category-pill">{photo.category || 'Campus'}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* Lightbox Modal for Gallery Photo View */}
-        {activePhoto && (
-          <div
-            style={{
-              position: 'fixed',
-              inset: 0,
-              backgroundColor: 'rgba(7, 18, 36, 0.92)',
-              zIndex: 9999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '2rem',
-            }}
-            onClick={() => setActivePhoto(null)}
-          >
-            <div
-              style={{
-                maxWidth: '900px',
-                width: '100%',
-                backgroundColor: '#ffffff',
-                border: '2px solid var(--color-brass)',
-                overflow: 'hidden',
-              }}
-              onClick={(e) => e.stopPropagation()}
+      {/* Lightbox Modal */}
+      {activePhoto && (
+        <div
+          className="lightbox-overlay"
+          onClick={() => setActivePhoto(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="lightbox-close-btn"
+              onClick={() => setActivePhoto(null)}
+              aria-label="Close Preview"
             >
-              <img
-                src={activePhoto.image}
-                alt={activePhoto.title}
-                style={{ width: '100%', maxHeight: '65vh', objectFit: 'cover', display: 'block' }}
-              />
-              <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-parchment-white)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--color-navy)' }}>
-                    {activePhoto.title}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => setActivePhoto(null)}
-                    style={{
-                      background: 'none',
-                      border: '1px solid var(--bg-paper-rule)',
-                      padding: '0.4rem 0.8rem',
-                      cursor: 'pointer',
-                      fontWeight: '600',
-                    }}
-                  >
-                    Close [ESC]
-                  </button>
-                </div>
-                <p style={{ marginTop: '0.5rem', fontSize: '0.92rem', color: 'var(--ink-secondary)' }}>
-                  {activePhoto.caption}
-                </p>
-              </div>
+              ×
+            </button>
+            <img
+              src={activePhoto.image || NEUTRAL_PLACEHOLDER_IMAGE}
+              alt={activePhoto.title || 'Mother Teresa Academy'}
+              className="lightbox-img"
+              onError={(e) => {
+                if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
+                  e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
+                }
+              }}
+            />
+            <div className="lightbox-caption">
+              <h3>{activePhoto.title}</h3>
+              <p>{activePhoto.caption}</p>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
