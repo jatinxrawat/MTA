@@ -17,6 +17,7 @@ import InfrastructurePage from './pages/InfrastructurePage';
 import GalleryPage from './pages/GalleryPage';
 import CbseDisclosurePage from './pages/CbseDisclosurePage';
 import ContactPage from './pages/ContactPage';
+import CustomPageView from './pages/CustomPageView';
 
 // Admin CMS Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -95,6 +96,7 @@ function AppContent() {
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/cbse-disclosure" element={<CbseDisclosurePage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/pages/:slug" element={<CustomPageView />} />
           {/* Catch-all fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

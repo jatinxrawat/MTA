@@ -172,6 +172,14 @@ export const defaultContent = {
     ...item,
     isVisible: true,
   })),
+
+  // Dynamic Custom Pages created via Admin Panel
+  customPages: [],
+
+  // Security configuration (Admin PIN lock)
+  security: {
+    adminPin: '2015',
+  },
 };
 
 /**

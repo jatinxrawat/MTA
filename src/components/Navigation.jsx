@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import CrestLogo from './CrestLogo';
+import { useCMS } from '../context/CMSContext';
 import {
   Menu,
   X,
@@ -13,14 +14,21 @@ import {
   MapPin,
   Send,
   Image as ImageIcon,
+  Bookmark,
 } from 'lucide-react';
 import '../styles/navigation.css';
 
 export default function Navigation({ onOpenInquiry }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const { content } = useCMS();
 
-  const navLinks = [
+  // Retrieve published custom pages configured to appear in menu
+  const customPages = (content.customPages || []).filter(
+    (p) => p.isPublished !== false && p.showInMenu !== false
+  );
+
+  const baseNavLinks = [
     { label: 'Home Page', path: '/', icon: Home },
     { label: 'About MTA', path: '/about', icon: BookOpen },
     { label: 'Academics & Results', path: '/academics', icon: GraduationCap },
@@ -33,6 +41,18 @@ export default function Navigation({ onOpenInquiry }) {
       icon: FileCheck,
       badge: 'CBSE IX',
     },
+  ];
+
+  const dynamicCustomLinks = customPages.map((page) => ({
+    label: page.menuLabel || page.title,
+    path: `/pages/${page.slug}`,
+    icon: Bookmark,
+    badge: page.menuBadge || null,
+  }));
+
+  const navLinks = [
+    ...baseNavLinks,
+    ...dynamicCustomLinks,
     { label: 'Contact & Location', path: '/contact', icon: MapPin },
   ];
 

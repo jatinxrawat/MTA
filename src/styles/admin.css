@@ -554,10 +554,13 @@
 }
 
 .cms-image-modal-card,
-.cms-form-modal-card {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+.cms-form-modal-card,
+.cms-modal-card,
+.cms-page-builder-card {
+  background-color: #ffffff !important;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 25px 60px -15px rgba(11, 27, 61, 0.35), 0 0 1px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 620px;
   max-height: 90vh;
@@ -565,6 +568,12 @@
   flex-direction: column;
   overflow: hidden;
   animation: scaleInModal 200ms ease;
+  position: relative;
+  z-index: 2001;
+}
+
+.cms-page-builder-card {
+  max-width: 880px !important;
 }
 
 @keyframes scaleInModal {
@@ -573,11 +582,12 @@
 }
 
 .cms-modal-header {
-  padding: 1.2rem 1.5rem;
+  padding: 1.25rem 1.75rem;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: #ffffff;
 }
 
 .cms-modal-title-group {
@@ -587,23 +597,105 @@
 }
 
 .cms-modal-title-group h3 {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
 
+.cms-close-btn,
 .cms-close-icon-btn {
-  background: transparent;
-  border: none;
+  background: transparent !important;
+  border: none !important;
   color: #64748b;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+  line-height: 1;
 }
+
+.cms-close-btn:hover,
 .cms-close-icon-btn:hover {
   color: #0f172a;
+  background-color: #f1f5f9 !important;
+}
+
+.cms-builder-section {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.35rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cms-builder-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.25rem;
+}
+
+.cms-builder-section-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   background-color: #f1f5f9;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cms-builder-section-title h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cms-builder-section-title span {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.cms-quick-nav-bar {
+  display: flex;
+  gap: 6px;
+  padding: 10px 1.5rem;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cms-quick-nav-pill {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 150ms ease;
+}
+
+.cms-quick-nav-pill:hover {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
 }
 
 .cms-modal-body {
@@ -989,6 +1081,18 @@
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
   overflow: hidden;
   border-top: 4px solid #c5973b;
+  transition: transform 150ms ease;
+}
+
+.cms-login-card.cms-card-shake {
+  animation: cardShake 450ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes cardShake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
 .cms-login-header {

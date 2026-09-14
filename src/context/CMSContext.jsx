@@ -8,7 +8,15 @@ import {
   setNestedValue, 
   getNestedValue 
 } from '../lib/content';
-import { getCurrentUser, onAuthStateChanged, logout as authLogout } from '../lib/auth';
+import { 
+  getCurrentUser, 
+  onAuthStateChanged, 
+  logout as authLogout,
+  authenticateWithPin,
+  getStoredPin,
+  setStoredPin,
+  DEFAULT_ADMIN_PIN
+} from '../lib/auth';
 
 const CMSContext = createContext(null);
 
@@ -242,11 +250,121 @@ export function CMSProvider({ children }) {
     setContent((prev) => ({ ...prev, gallery: reorderedList }));
   }, []);
 
-  const logout = useCallback(async () => {
+  // --- CUSTOM PAGES HELPERS ---
+  const addCustomPage = useCallback((newPage) => {
+    const pageId = newPage.id || `page_${Date.now()}`;
+    const slug = (newPage.slug || newPage.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')) || `page-${Date.now()}`;
+
+    setContent((prev) => {
+      const currentPages = prev.customPages || [];
+      const updated = [
+        {
+          id: pageId,
+          slug,
+          title: newPage.title || 'Untitled Page',
+          subtitle: '',
+          badge: '',
+          category: 'General',
+          heroImage: '',
+          heroImageCaption: '',
+          bodyText: '',
+          pullquote: '',
+          pullquoteAuthor: '',
+          highlightCards: [], // [{ title: '...', desc: '...', icon?: '...' }]
+          attachedPdfUrl: '',
+          attachedPdfName: '',
+          actionButtonText: '',
+          actionButtonUrl: '',
+          showInMenu: true,
+          menuLabel: newPage.title || 'Untitled Page',
+          menuBadge: '',
+          isPublished: true,
+          createdAt: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+          ...newPage,
+        },
+        ...currentPages,
+      ];
+      return { ...prev, customPages: updated };
+    });
+    showToast('New page drafted! Click "Publish" when ready to make it live.', 'info');
+  }, [showToast]);
+
+  const updateCustomPage = useCallback((id, updatedFields) => {
+    setContent((prev) => {
+      const currentPages = prev.customPages || [];
+      const updated = currentPages.map((p) => (p.id === id ? { ...p, ...updatedFields } : p));
+      return { ...prev, customPages: updated };
+    });
+  }, []);
+
+  const deleteCustomPage = useCallback((id) => {
+    setContent((prev) => {
+      const currentPages = prev.customPages || [];
+      const updated = currentPages.filter((p) => p.id !== id);
+      return { ...prev, customPages: updated };
+    });
+    showToast('Page removed from draft list.', 'info');
+  }, [showToast]);
+
+  const toggleCustomPagePublish = useCallback((id) => {
+    setContent((prev) => {
+      const currentPages = prev.customPages || [];
+      const updated = currentPages.map((p) => (p.id === id ? { ...p, isPublished: !p.isPublished } : p));
+      return { ...prev, customPages: updated };
+    });
+  }, []);
+
+  const reorderCustomPages = useCallback((reorderedList) => {
+    setContent((prev) => ({ ...prev, customPages: reorderedList }));
+  }, []);
+
+  // --- PIN AUTHENTICATION & SECURITY (IN-MEMORY SESSION, PERSISTENT PIN) ---
+  const activePin = content?.security?.adminPin || getStoredPin() || DEFAULT_ADMIN_PIN;
+
+  const verifyAndLogin = useCallback(async (enteredPin) => {
+    const currentPin = content?.security?.adminPin || getStoredPin() || DEFAULT_ADMIN_PIN;
+    const user = await authenticateWithPin(enteredPin, currentPin);
+    setCurrentUser(user);
+    return user;
+  }, [content]);
+
+  const changePin = useCallback(async (currentPinInput, newPinInput) => {
+    const currentTargetPin = content?.security?.adminPin || getStoredPin() || DEFAULT_ADMIN_PIN;
+    if (String(currentPinInput || '').trim() !== String(currentTargetPin).trim()) {
+      throw new Error('Current security PIN is incorrect.');
+    }
+    const cleanNewPin = String(newPinInput || '').trim();
+    if (cleanNewPin.length < 4) {
+      throw new Error('New security PIN must be at least 4 characters or digits.');
+    }
+
+    // 1. Immediately cache locally for instant responsiveness
+    setStoredPin(cleanNewPin);
+
+    // 2. Persist to Firestore site_content/main
+    const updatedContent = {
+      ...content,
+      security: {
+        ...(content.security || {}),
+        adminPin: cleanNewPin,
+      },
+    };
+    setContent(updatedContent);
+    await saveAllContent(updatedContent);
+    setSavedContent(updatedContent);
+    showToast('Admin security PIN changed successfully!', 'success');
+    return true;
+  }, [content, showToast]);
+
+  const lockAdmin = useCallback(async () => {
     await authLogout();
     setCurrentUser(null);
-    showToast('Logged out of administration panel.', 'info');
+    showToast('Admin panel locked. Security PIN required to re-enter.', 'info');
   }, [showToast]);
+
+  const logout = useCallback(async () => {
+    await lockAdmin();
+  }, [lockAdmin]);
 
   const value = {
     content,
@@ -274,6 +392,17 @@ export function CMSProvider({ children }) {
     deletePhoto,
     togglePhotoVisibility,
     reorderGallery,
+    // Custom Page helpers
+    addCustomPage,
+    updateCustomPage,
+    deleteCustomPage,
+    toggleCustomPagePublish,
+    reorderCustomPages,
+    // Security & PIN Auth
+    activePin,
+    verifyAndLogin,
+    changePin,
+    lockAdmin,
     // Status
     isPublishing,
     isCloudConnected,
