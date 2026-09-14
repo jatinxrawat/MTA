@@ -57,7 +57,7 @@ export default function CustomPageView() {
         title={page.title}
         subtitle={page.subtitle}
         breadcrumb={page.menuLabel || page.title}
-        badge={page.badge || page.category || 'Official Portal'}
+        badge={page.badge || ''}
       />
 
       {/* Admin Draft Indicator if viewing an unpublished page */}

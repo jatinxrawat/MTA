@@ -58,7 +58,7 @@ export default function AdminPagesManager() {
       title: '',
       slug: '',
       subtitle: '',
-      badge: 'Special Initiative',
+      badge: '',
       category: 'Student Life',
       heroImage: '',
       heroImageCaption: '',

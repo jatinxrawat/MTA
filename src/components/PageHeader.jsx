@@ -18,8 +18,10 @@ export default function PageHeader({ title, subtitle, breadcrumb, badge }) {
 
         {/* Optional Badge */}
         {badge && (
-          <div className="subpage-badge-pill">
-            {badge}
+          <div className="subpage-badge-wrap">
+            <span className="subpage-badge-pill">
+              {badge}
+            </span>
           </div>
         )}
 

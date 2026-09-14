@@ -8,13 +8,15 @@
 }
 
 .subpage-breadcrumb {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   font-family: var(--font-body);
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 1.25rem;
+  width: 100%;
 }
 
 .breadcrumb-link {
@@ -38,8 +40,15 @@
   font-weight: 600;
 }
 
+.subpage-badge-wrap {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.85rem;
+}
+
 .subpage-badge-pill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-body);
   font-size: 0.76rem;
   font-weight: 700;
@@ -48,8 +57,9 @@
   background-color: var(--color-maroon);
   color: #ffffff;
   padding: 0.35rem 0.85rem;
-  border-radius: 2px;
-  margin-bottom: 0.75rem;
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0;
 }
 
 .subpage-main-title {
