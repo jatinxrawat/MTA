@@ -7,7 +7,7 @@ export default function ContactPage() {
     <div className="subpage-view">
       <PageHeader
         title="Contact & Admissions Liaison"
-        subtitle="Baraut campus coordinates, administrative office hours, contact helplines, and 2025–26 admission enquiry submission."
+        subtitle="Baraut campus coordinates, administrative office hours, contact helplines, and official admission enquiry submission."
         breadcrumb="Contact & Location"
         badge="Administration Desk"
       />

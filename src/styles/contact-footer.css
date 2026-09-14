@@ -56,51 +56,309 @@
   line-height: 1.6;
 }
 
-/* Stylized Map Placeholder */
+/* ==========================================================================
+   MERGED CAMPUS LOCATION & GOOGLE MAPS CARD
+   ========================================================================== */
+.contact-location-merged-card {
+  position: relative;
+  background-color: #f7f4ed;
+  border: 1px solid var(--bg-paper-rule);
+  border-left: 4px solid var(--color-maroon);
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 1.6rem 1.5rem 1.5rem;
+  background-image: 
+    linear-gradient(rgba(11, 27, 61, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 27, 61, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  box-shadow: 0 4px 16px rgba(11, 27, 61, 0.05);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 260ms ease,
+              border-color 260ms ease;
+  margin-bottom: 2rem;
+}
+
+.contact-location-merged-card:hover {
+  border-color: var(--color-maroon);
+  box-shadow: 0 10px 26px -4px rgba(110, 21, 37, 0.14);
+}
+
+.merged-card-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(11, 27, 61, 0.08);
+}
+
+.merged-location-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.merged-location-header .contact-icon {
+  color: var(--color-maroon);
+  flex-shrink: 0;
+}
+
+.merged-location-header .contact-label {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin: 0;
+}
+
+.merged-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.merged-location-school-name {
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  margin-top: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.merged-location-address {
+  font-size: 0.92rem;
+  color: var(--ink-primary);
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.merged-location-region {
+  font-size: 0.84rem;
+  color: var(--ink-secondary);
+  display: block;
+  margin-top: 0.2rem;
+}
+
+/* Interactive Baraut Google Maps Card */
 .map-placeholder-box {
   position: relative;
-  height: 240px;
-  background-color: #e8e3d8;
+  background-color: #f7f4ed;
   border: 1px solid var(--bg-paper-rule);
   margin-top: 2rem;
+  border-radius: 6px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 1.5rem;
+  padding: 2rem 1.5rem 1.75rem;
   background-image: 
     linear-gradient(rgba(11, 27, 61, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(11, 27, 61, 0.05) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-size: 20px 20px;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 260ms ease,
+              border-color 260ms ease;
+}
+
+.map-placeholder-box:hover {
+  border-color: var(--color-maroon);
+  box-shadow: 0 10px 26px -4px rgba(110, 21, 37, 0.14);
+}
+
+.map-live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(11, 27, 61, 0.12);
+  color: var(--color-navy);
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(11, 27, 61, 0.05);
+}
+
+.live-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2e7d32;
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.25);
+  animation: liveStatusPulse 2s infinite ease-in-out;
+}
+
+@keyframes liveStatusPulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.5);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(46, 125, 50, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(46, 125, 50, 0);
+  }
 }
 
 .map-pin-pulse {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: var(--color-maroon);
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, var(--color-maroon) 0%, #8b1c31 100%);
   color: #ffffff;
   border-radius: 50%;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 4px 14px rgba(110, 21, 37, 0.35);
+  margin-bottom: 0.85rem;
+  box-shadow: 0 4px 16px rgba(110, 21, 37, 0.38);
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 260ms ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.map-pin-pulse:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 8px 22px rgba(110, 21, 37, 0.48);
 }
 
 .map-location-title {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-navy);
+  color: var(--color-navy-deep);
+  margin-bottom: 0.25rem;
+}
+
+.map-location-address {
+  font-size: 0.88rem;
+  color: var(--ink-secondary);
+  max-width: 380px;
+  margin: 0.25rem auto 0;
+  line-height: 1.45;
 }
 
 .map-coords {
-  font-family: monospace;
-  font-size: 0.8rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.78rem;
   color: var(--ink-muted);
-  margin-top: 0.25rem;
+  margin-top: 0.35rem;
+  background: rgba(11, 27, 61, 0.04);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.map-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 4px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.map-btn-primary {
+  background-color: var(--color-maroon);
+  color: #ffffff;
+  border: 1px solid var(--color-maroon);
+  box-shadow: 0 3px 10px rgba(110, 21, 37, 0.25);
+}
+
+.map-btn-primary:hover {
+  background-color: var(--color-maroon-dark, #540f1c);
+  border-color: var(--color-maroon-dark, #540f1c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(110, 21, 37, 0.35);
+  color: #ffffff;
+}
+
+.map-btn-secondary {
+  background-color: #ffffff;
+  color: var(--color-navy);
+  border: 1px solid rgba(11, 27, 61, 0.18);
+}
+
+.map-btn-secondary:hover {
+  border-color: var(--color-navy);
+  background-color: #faf8f5;
+  transform: translateY(-1px);
+}
+
+.map-embed-container {
+  width: 100%;
+  margin-top: 1.25rem;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--bg-paper-rule);
+  box-shadow: 0 4px 14px rgba(11, 27, 61, 0.08);
+  animation: mapEmbedFade 260ms ease forwards;
+}
+
+@keyframes mapEmbedFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.map-iframe {
+  width: 100%;
+  height: 240px;
+  border: none;
+  display: block;
+}
+
+.map-embed-overlay-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.85rem;
+  background: #ffffff;
+  border-top: 1px solid var(--bg-paper-rule);
+  font-size: 0.78rem;
+  color: var(--ink-secondary);
+}
+
+.map-embed-link {
+  font-weight: 600;
+  color: var(--color-maroon);
+  text-decoration: none;
+}
+
+.map-embed-link:hover {
+  text-decoration: underline;
 }
 
 /* Admission Inquiry Form */

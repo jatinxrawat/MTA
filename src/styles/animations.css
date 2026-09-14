@@ -355,6 +355,7 @@
 /* 3. Secondary Delayed Elements: Icon / Badge / Date Elastic Overshoot Pop (scale 0.5 -> 1.1 -> 1.0) */
 .pillar-card-icon,
 .house-bob-icon,
+.house-cool-toggle,
 .event-date-badge,
 .gallery-zoom-badge,
 .notice-new-badge,
@@ -372,6 +373,7 @@
 
 .pillar-feature-card.is-revealed .pillar-card-icon,
 .house-item-box.is-revealed .house-bob-icon,
+.house-item-box.is-revealed .house-cool-toggle,
 .event-card.is-revealed .event-date-badge,
 .gallery-item.is-revealed .gallery-zoom-badge,
 .gallery-preview-card.is-revealed .gallery-zoom-badge,
@@ -710,6 +712,7 @@ input:focus, textarea:focus, select:focus {
   .stream-card::before,
   .pillar-card-icon,
   .house-bob-icon,
+  .house-cool-toggle,
   .event-date-badge,
   .gallery-zoom-badge,
   .notice-new-badge,

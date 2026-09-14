@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { schoolData } from '../data/schoolData';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Navigation, ExternalLink, Map } from 'lucide-react';
 import '../styles/contact-footer.css';
 
 export default function ContactSection() {
   const { location, postalAddress, phonePrimary, phoneSecondary, emailPrimary, emailAdmissions, officeHours, visitingHoursPrincipal } =
     schoolData.general;
+
+  const [showInteractiveMap, setShowInteractiveMap] = useState(false);
 
   const [formData, setFormData] = useState({
     parentName: '',
@@ -37,18 +39,82 @@ export default function ContactSection() {
         <div className="contact-layout-grid">
           {/* Left Column: Campus Postal Address & Office Timings */}
           <div className="contact-details-box">
-            <div className="contact-item-group">
-              <div className="contact-item-header">
-                <MapPin size={22} className="contact-icon" />
-                <h3 className="contact-label">Postal & Campus Address</h3>
+            {/* Unified Campus Location & Interactive Google Maps Card */}
+            <div className="contact-location-merged-card">
+              <div className="merged-card-top-bar">
+                <div className="merged-location-header">
+                  <MapPin size={22} className="contact-icon" />
+                  <h3 className="merged-location-title">Campus Location</h3>
+                </div>
+                <div className="map-live-status-pill" style={{ marginBottom: 0 }}>
+                  <span className="live-status-dot" />
+                  <span>Verified Location</span>
+                </div>
               </div>
-              <p className="contact-val">
-                <strong>Mother Teresa Academy</strong>
-                <br />
-                {postalAddress}
-                <br />
-                Western Uttar Pradesh, India
-              </p>
+
+              <div className="merged-card-body">
+                <a
+                  href="https://maps.app.goo.gl/LXHxYsqPKy6rnrNo9?g_st=ic"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="map-pin-pulse"
+                  aria-label="Open Mother Teresa Academy in Google Maps"
+                  title="Click to navigate on Google Maps"
+                >
+                  <MapPin size={26} />
+                </a>
+
+                <h4 className="merged-location-school-name">Mother Teresa Academy</h4>
+                <p className="merged-location-address">
+                  {postalAddress}
+                  <span className="merged-location-region">Baraut, Western Uttar Pradesh, India</span>
+                </p>
+                <div className="map-coords">GPS: 29.1004° N, 77.2606° E • Baraut</div>
+
+                <div className="map-actions-row">
+                  <a
+                    href="https://maps.app.goo.gl/LXHxYsqPKy6rnrNo9?g_st=ic"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="map-btn map-btn-primary"
+                  >
+                    <Navigation size={14} />
+                    <span>Open in Google Maps</span>
+                    <ExternalLink size={13} />
+                  </a>
+
+                  <button
+                    type="button"
+                    className="map-btn map-btn-secondary"
+                    onClick={() => setShowInteractiveMap(!showInteractiveMap)}
+                  >
+                    <Map size={14} />
+                    <span>{showInteractiveMap ? 'Hide Map' : 'View Live Map'}</span>
+                  </button>
+                </div>
+
+                {showInteractiveMap && (
+                  <div className="map-embed-container">
+                    <iframe
+                      title="Mother Teresa Academy Campus Location Map"
+                      src="https://www.openstreetmap.org/export/embed.html?bbox=77.2306%2C29.0804%2C77.2906%2C29.1204&layer=mapnik&marker=29.1004%2C77.2606"
+                      className="map-iframe"
+                      loading="lazy"
+                    />
+                    <div className="map-embed-overlay-bar">
+                      <span>Mother Teresa Academy, Chhaprauli Rd, Baraut</span>
+                      <a
+                        href="https://maps.app.goo.gl/LXHxYsqPKy6rnrNo9?g_st=ic"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="map-embed-link"
+                      >
+                        Get Directions on Google Maps ↗
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="contact-item-group">
@@ -86,24 +152,12 @@ export default function ContactSection() {
                 <em>Principal's Office Hours: {visitingHoursPrincipal}</em>
               </p>
             </div>
-
-            {/* Stylized Baraut Map Placeholder */}
-            <div className="map-placeholder-box">
-              <div className="map-pin-pulse">
-                <MapPin size={24} />
-              </div>
-              <h4 className="map-location-title">Baraut, District Baghpat (U.P.)</h4>
-              <p style={{ fontSize: '0.86rem', color: 'var(--ink-secondary)', maxWidth: '340px', marginTop: '0.25rem' }}>
-                Conveniently located along Baghpat Road, connecting Delhi-NCR and Meerut highway corridor.
-              </p>
-              <div className="map-coords">GPS: 29.1004° N, 77.2606° E • Baraut</div>
-            </div>
           </div>
 
           {/* Right Column: Admission Inquiry Form */}
           <div className="inquiry-form-card">
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--color-navy-deep)', marginBottom: '0.5rem' }}>
-              Academic Session 2025–26 Enquiry
+              Admission &amp; School Enquiry
             </h3>
             <p style={{ fontSize: '0.92rem', color: 'var(--ink-muted)', marginBottom: '2rem' }}>
               Submit scholar credentials for registration guidelines, prospectus dispatch, or campus tour scheduling.
@@ -196,12 +250,12 @@ export default function ContactSection() {
 
                 <div className="form-group">
                   <label className="form-label" htmlFor="message">
-                    Specific Query or Message (Optional)
+                    Specific Query / Custom Problem (Optional)
                   </label>
                   <textarea
                     id="message"
                     className="form-textarea"
-                    placeholder="Mention any specific transport, scholarship, or boarding queries..."
+                    placeholder="Mention any specific problem, queries regarding transport, scholarship, or campus visit..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   />

@@ -34,6 +34,7 @@ function AppContent() {
   const [modalForm, setModalForm] = useState({
     name: '',
     phone: '',
+    email: '',
     grade: 'Class XI',
     notes: '',
   });
@@ -103,7 +104,7 @@ function AppContent() {
               <div className="modal-header">
                 <div>
                   <span style={{ fontSize: '0.74rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-brass-light)' }}>
-                    Session 2025–2026
+                    Official Admissions Desk
                   </span>
                   <h3 id="modal-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1.45rem', color: '#ffffff', margin: 0 }}>
                     Admissions Consultation Desk
@@ -179,6 +180,18 @@ function AppContent() {
                     </div>
 
                     <div className="form-group">
+                      <label className="form-label" htmlFor="modal-email">Email Address</label>
+                      <input
+                        type="email"
+                        id="modal-email"
+                        className="form-input"
+                        placeholder="parent@example.com"
+                        value={modalForm.email}
+                        onChange={(e) => setModalForm({ ...modalForm, email: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="form-group">
                       <label className="form-label" htmlFor="modal-grade">Grade / Stream of Interest</label>
                       <select
                         id="modal-grade"
@@ -197,7 +210,7 @@ function AppContent() {
                     </div>
 
                     <div className="form-group">
-                      <label className="form-label" htmlFor="modal-notes">Specific Question / Notes</label>
+                      <label className="form-label" htmlFor="modal-notes">Specific Query / Custom Problem (Optional)</label>
                       <textarea
                         id="modal-notes"
                         className="form-textarea"

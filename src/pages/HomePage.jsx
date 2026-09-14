@@ -26,7 +26,27 @@ import {
   CheckCircle,
   Loader2,
   Image as ImageIcon,
+  Heart,
+  Sun,
+  Rocket,
+  Sparkles,
+  Navigation,
+  Map,
 } from 'lucide-react';
+
+function getHouseIcon(iconType, props = {}) {
+  switch (iconType) {
+    case 'heart':
+      return <Heart {...props} />;
+    case 'sun':
+      return <Sun {...props} />;
+    case 'rocket':
+      return <Rocket {...props} />;
+    case 'palette':
+    default:
+      return <Palette {...props} />;
+  }
+}
 
 export default function HomePage() {
   const { name, postalAddress, phonePrimary, phoneSecondary, emailPrimary, emailAdmissions, officeHours, visitingHoursPrincipal } =
@@ -44,14 +64,38 @@ export default function HomePage() {
   const [noticeFilter, setNoticeFilter] = useState('All');
   const [showAllNotices, setShowAllNotices] = useState(false);
 
+  // House interactive card toggle states
+  const [toggledHouses, setToggledHouses] = useState({});
+  const [allHousesToggled, setAllHousesToggled] = useState(false);
+
+  const handleToggleHouse = (idx) => {
+    setToggledHouses((prev) => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
+
+  const handleToggleAllHouses = (active) => {
+    setAllHousesToggled(active);
+    const nextState = {};
+    studentLeadership.houses.forEach((_, idx) => {
+      nextState[idx] = active;
+    });
+    setToggledHouses(nextState);
+  };
+
   // Lightbox state for gallery preview
   const [activePhoto, setActivePhoto] = useState(null);
+
+  // Interactive map state for home contact section
+  const [showHomeInteractiveMap, setShowHomeInteractiveMap] = useState(false);
 
   // Home page quick inquiry form state
   const [inquiryData, setInquiryData] = useState({
     parentName: '',
     phone: '',
-    grade: 'Class XI - Science',
+    email: '',
+    grade: 'Pre-Primary (Nursery - UKG)',
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -364,32 +408,114 @@ export default function HomePage() {
             </article>
           </div>
 
-          {/* Four Noble Houses Showcase: Fade up on scroll with subtle continuous 2-3px bobbing icons */}
+          {/* Four Noble Houses Showcase: Interactive Cool Toggles & Dual-View Cards */}
           <div style={{ marginTop: '4.5rem' }}>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--color-navy-deep)', textAlign: 'center', marginBottom: '0.5rem' }}>
               The Four Institutional Houses
             </h3>
-            <p style={{ textAlign: 'center', color: 'var(--ink-muted)', fontSize: '0.92rem', marginBottom: '1.75rem' }}>
+            <p style={{ textAlign: 'center', color: 'var(--ink-muted)', fontSize: '0.92rem', marginBottom: '1.5rem' }}>
               Every scholar belongs to a house, participating in weekly academic debates, sports derbies, and cultural competitions.
             </p>
+
+            {/* Master Toggle Bar: Switch all houses between Motto and Heritage */}
+            <div className="houses-master-toggle-container">
+              <button
+                type="button"
+                className={`houses-master-pill-btn ${!allHousesToggled ? 'is-active' : ''}`}
+                onClick={() => handleToggleAllHouses(false)}
+                aria-label="View all house mottos"
+              >
+                <span>Motto Overview</span>
+              </button>
+              <button
+                type="button"
+                className={`houses-master-pill-btn ${allHousesToggled ? 'is-active' : ''}`}
+                onClick={() => handleToggleAllHouses(true)}
+                aria-label="View all house profiles and heritage"
+              >
+                <Sparkles size={13} />
+                <span>Heritage & Profiles</span>
+              </button>
+            </div>
 
             <div ref={housesRef} className="houses-strip">
               {studentLeadership.houses.map((house, idx) => {
                 const houseClass = `house-${house.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+                const isToggled = !!toggledHouses[idx];
                 return (
                   <div
                     key={idx}
-                    className={`house-item-box ${houseClass} scroll-reveal-item ${housesRevealed ? 'is-revealed' : ''}`}
-                    style={{ '--house-color': house.color, '--reveal-delay': idx }}
+                    className={`house-item-box ${houseClass} ${isToggled ? 'is-toggled' : ''} scroll-reveal-item ${housesRevealed ? 'is-revealed' : ''}`}
+                    style={{
+                      '--house-color': house.color,
+                      '--house-color-rgb': house.colorRgb || '11, 27, 61',
+                      '--reveal-delay': idx,
+                    }}
+                    onClick={() => handleToggleHouse(idx)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleToggleHouse(idx);
+                      }
+                    }}
+                    title="Click card or toggle switch to flip between Motto and House Profile"
                   >
-                  <span className="house-bob-icon" style={{ fontSize: '1.8rem' }} role="img" aria-label={house.name}>
-                    {house.icon}
-                  </span>
-                  <h4 className="house-name">{house.name}</h4>
-                  <p className="house-motto">"{house.motto}"</p>
-                </div>
-              );
-            })}
+                    {/* Cool Interactive Pill Toggle replacing static emoji */}
+                    <div className="house-toggle-wrapper">
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={isToggled}
+                        aria-label={`Toggle ${house.name} view mode`}
+                        className={`house-cool-toggle ${isToggled ? 'is-active' : ''}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleHouse(idx);
+                        }}
+                      >
+                        {/* Track Left: House Symbol */}
+                        <span className="toggle-track-icon left">
+                          {getHouseIcon(house.iconType, { size: 12, strokeWidth: 2.6 })}
+                        </span>
+                        {/* Track Right: Sparkles / Heritage Indicator */}
+                        <span className="toggle-track-icon right">
+                          <Sparkles size={11} strokeWidth={2.4} />
+                        </span>
+                        {/* Smooth Gliding Thumb */}
+                        <span className="toggle-thumb">
+                          {isToggled ? (
+                            <Sparkles size={12} strokeWidth={2.4} />
+                          ) : (
+                            getHouseIcon(house.iconType, { size: 12, strokeWidth: 2.6 })
+                          )}
+                        </span>
+                      </button>
+
+                      {/* Micro Status Mode Badge */}
+                      <div className="toggle-status-pill">
+                        <span className="toggle-status-dot" />
+                        <span>{isToggled ? 'Profile' : 'Motto'}</span>
+                      </div>
+                    </div>
+
+                    {/* Dual-View Animated Content */}
+                    <div className="house-card-content">
+                      <div className={`house-view-panel ${!isToggled ? 'is-active' : 'is-hidden'}`}>
+                        <h4 className="house-name">{house.name}</h4>
+                        <p className="house-motto">"{house.motto}"</p>
+                      </div>
+
+                      <div className={`house-view-panel ${isToggled ? 'is-active' : 'is-hidden'}`}>
+                        <h4 className="house-patron-title">{house.patron || house.name}</h4>
+                        <p className="house-virtues-text">{house.virtues}</p>
+                        <span className="house-mascot-pill">Mascot: {house.mascot}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -505,18 +631,82 @@ export default function HomePage() {
           <div className="contact-layout-grid">
             {/* Campus Coordinates & Visiting Hours */}
             <div className="contact-details-box">
-              <div className="contact-item-group">
-                <div className="contact-item-header">
-                  <MapPin size={22} className="contact-icon" />
-                  <h3 className="contact-label">Campus Location</h3>
+              {/* Unified Campus Location & Interactive Google Maps Card */}
+              <div className="contact-location-merged-card">
+                <div className="merged-card-top-bar">
+                  <div className="merged-location-header">
+                    <MapPin size={22} className="contact-icon" />
+                    <h3 className="merged-location-title">Campus Location</h3>
+                  </div>
+                  <div className="map-live-status-pill" style={{ marginBottom: 0 }}>
+                    <span className="live-status-dot" />
+                    <span>Verified Location</span>
+                  </div>
                 </div>
-                <p className="contact-val">
-                  <strong>Mother Teresa Academy</strong>
-                  <br />
-                  {postalAddress}
-                  <br />
-                  Baraut, Western Uttar Pradesh, India
-                </p>
+
+                <div className="merged-card-body">
+                  <a
+                    href="https://maps.app.goo.gl/LXHxYsqPKy6rnrNo9?g_st=ic"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="map-pin-pulse"
+                    aria-label="Open Mother Teresa Academy in Google Maps"
+                    title="Click to navigate on Google Maps"
+                  >
+                    <MapPin size={26} />
+                  </a>
+
+                  <h4 className="merged-location-school-name">Mother Teresa Academy</h4>
+                  <p className="merged-location-address">
+                    {postalAddress}
+                    <span className="merged-location-region">Baraut, Western Uttar Pradesh, India</span>
+                  </p>
+                  <div className="map-coords">GPS: 29.1004° N, 77.2606° E • Baraut</div>
+
+                  <div className="map-actions-row">
+                    <a
+                      href="https://maps.app.goo.gl/LXHxYsqPKy6rnrNo9?g_st=ic"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="map-btn map-btn-primary"
+                    >
+                      <Navigation size={14} />
+                      <span>Open in Google Maps</span>
+                      <ExternalLink size={13} />
+                    </a>
+
+                    <button
+                      type="button"
+                      className="map-btn map-btn-secondary"
+                      onClick={() => setShowHomeInteractiveMap(!showHomeInteractiveMap)}
+                    >
+                      <Map size={14} />
+                      <span>{showHomeInteractiveMap ? 'Hide Map' : 'View Live Map'}</span>
+                    </button>
+                  </div>
+
+                  {showHomeInteractiveMap && (
+                    <div className="map-embed-container">
+                      <iframe
+                        title="Mother Teresa Academy Campus Location Map"
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=77.2306%2C29.0804%2C77.2906%2C29.1204&layer=mapnik&marker=29.1004%2C77.2606"
+                        className="map-iframe"
+                        loading="lazy"
+                      />
+                      <div className="map-embed-overlay-bar">
+                        <span>Mother Teresa Academy, Chhaprauli Rd, Baraut</span>
+                        <a
+                          href="https://maps.app.goo.gl/LXHxYsqPKy6rnrNo9?g_st=ic"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="map-embed-link"
+                        >
+                          Get Directions on Google Maps ↗
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="contact-item-group">
@@ -559,10 +749,10 @@ export default function HomePage() {
             {/* Quick Admission Enquiry Card with Smooth Focus and Button Micro-Interaction */}
             <div className="inquiry-form-card">
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--color-navy-deep)', marginBottom: '0.5rem' }}>
-                Academic Session 2025–26 Enquiry
+                Admission &amp; School Enquiry
               </h3>
               <p style={{ fontSize: '0.92rem', color: 'var(--ink-muted)', marginBottom: '2rem' }}>
-                Fill out the credentials below to receive the official prospectus, syllabus schedule, and admission test dates.
+                Fill out the credentials below to receive the official prospectus, syllabus schedule, or discuss any specific query with our team.
               </p>
 
               {inquirySubmitted ? (
@@ -572,7 +762,7 @@ export default function HomePage() {
                     Enquiry Registered Successfully
                   </h4>
                   <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)' }}>
-                    Thank you, <strong>{inquiryData.parentName}</strong>. Our admissions officer will contact <strong>{inquiryData.phone}</strong> shortly.
+                    Thank you, <strong>{inquiryData.parentName}</strong>. Our admissions officer will review your query and contact <strong>{inquiryData.phone}</strong> shortly.
                   </p>
                   <button
                     type="button"
@@ -616,6 +806,20 @@ export default function HomePage() {
                   </div>
 
                   <div className="form-group">
+                    <label className="form-label" htmlFor="home-email">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="home-email"
+                      className="form-input"
+                      placeholder="e.g. parent@example.com"
+                      value={inquiryData.email}
+                      onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
                     <label className="form-label" htmlFor="home-grade">
                       Class Seeking Admission *
                     </label>
@@ -633,6 +837,19 @@ export default function HomePage() {
                       <option value="Senior Secondary - Commerce (Class XI - XII)">Senior Secondary — Commerce Faculty</option>
                       <option value="Senior Secondary - Humanities (Class XI - XII)">Senior Secondary — Humanities Faculty</option>
                     </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="home-message">
+                      Specific Query / Custom Problem (Optional)
+                    </label>
+                    <textarea
+                      id="home-message"
+                      className="form-textarea"
+                      placeholder="Mention any specific problem, transport route, syllabus query, or assistance needed..."
+                      value={inquiryData.message}
+                      onChange={(e) => setInquiryData({ ...inquiryData, message: e.target.value })}
+                    />
                   </div>
 
                   <button
