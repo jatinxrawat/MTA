@@ -14,8 +14,9 @@ export function useCountUp(targetNumber, duration = 1600, options = { threshold:
     const element = ref.current;
     if (!element) return;
 
-    // Respect reduced motion
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // On mobile or reduced motion — show final value immediately
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
       setDisplayValue(targetNumber);
       return;
     }

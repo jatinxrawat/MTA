@@ -12,15 +12,15 @@ export function useScrollReveal(options = { threshold: 0.18, rootMargin: '0px' }
     const element = ref.current;
     if (!element) return;
 
-    // If user prefers reduced motion, trigger visibility without waiting
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // On mobile or reduced motion — show immediately, skip observer
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
       setIsVisible(true);
       return;
     }
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        console.log('[ScrollReveal Triggered]', element.className || element.id || element.tagName);
         setIsVisible(true);
         observer.unobserve(element);
       }
