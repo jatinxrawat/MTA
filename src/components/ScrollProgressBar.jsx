@@ -1,22 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 /**
  * ScrollProgressBar:
- * An understated, elegant gold reading progress indicator fixed at the very top of the viewport.
- * Dynamically tracks scroll progress through the current page with a subtle gold glow.
+ * Reads scroll position and writes directly to a DOM ref — zero React state,
+ * zero re-renders on scroll. The scroll handler runs entirely off the React
+ * commit cycle, eliminating 60 re-renders/sec during scrolling.
  */
 export default function ScrollProgressBar() {
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const barRef = useRef(null);
 
   useEffect(() => {
+    let rafPending = false;
+
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight <= 0) {
-        setScrollProgress(0);
-        return;
-      }
-      const currentProgress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(Math.min(100, Math.max(0, currentProgress)));
+      if (rafPending) return;
+      rafPending = true;
+
+      requestAnimationFrame(() => {
+        rafPending = false;
+        const bar = barRef.current;
+        if (!bar) return;
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (totalHeight <= 0) {
+          bar.style.transform = 'scaleX(0)';
+          return;
+        }
+        const progress = Math.min(1, Math.max(0, window.scrollY / totalHeight));
+        // Use transform: scaleX() — GPU composited, zero layout/paint
+        bar.style.transform = `scaleX(${progress})`;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -27,14 +39,13 @@ export default function ScrollProgressBar() {
     <div
       className="global-scroll-progress-container"
       role="progressbar"
-      aria-valuenow={Math.round(scrollProgress)}
       aria-valuemin="0"
       aria-valuemax="100"
       aria-label="Page scroll progress"
     >
       <div
+        ref={barRef}
         className="global-scroll-progress-bar"
-        style={{ width: `${scrollProgress}%` }}
       />
     </div>
   );

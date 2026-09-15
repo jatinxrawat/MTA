@@ -24,6 +24,14 @@ body {
   background-repeat: repeat;
 }
 
+/* On mobile the SVG feTurbulence texture is imperceptible at 0.035 opacity
+   but still triggers rasterization on every repaint — remove it */
+@media (max-width: 768px) {
+  body {
+    background-image: none;
+  }
+}
+
 /* Accessible focus ring */
 a:focus-visible,
 button:focus-visible,
@@ -129,6 +137,12 @@ p {
   border-top: 1px solid var(--bg-paper-rule);
   border-bottom: 1px solid var(--bg-paper-rule);
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .section-parchment {
+    background-image: none;
+  }
 }
 
 /* Subtle transitional divider rules between prospectus sections */

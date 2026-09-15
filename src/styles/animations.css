@@ -18,10 +18,13 @@
 
 .global-scroll-progress-bar {
   height: 100%;
+  width: 100%; /* always full width — scaleX controls the visible portion */
   background: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-brass) 65%, var(--color-brass-light) 100%);
   box-shadow: 0 0 8px rgba(197, 151, 59, 0.65);
-  transition: width 90ms ease-out;
-  will-change: width;
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+  /* No CSS transition — JS sets transform directly each rAF, no spring needed */
 }
 
 /* 2. Page Route Transition (Fade & Gentle Rise) */
@@ -169,12 +172,13 @@
   animation: subtlePillPulse 4.5s ease-in-out infinite;
 }
 
+/* subtlePillPulse: converted from box-shadow (repaint) to filter:drop-shadow (GPU) */
 @keyframes subtlePillPulse {
   0%, 100% {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(197, 151, 59, 0);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
   }
   50% {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 12px 2px rgba(197, 151, 59, 0.32);
+    filter: drop-shadow(0 6px 14px rgba(197, 151, 59, 0.45));
   }
 }
 
@@ -194,7 +198,8 @@
 }
 
 .sidebar-nav-link {
-  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  /* Explicit props only — no transition:all which catches non-GPU properties */
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .sidebar-nav-link:hover {
@@ -264,18 +269,20 @@
   animation: gemSpinGlow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* gemSpinGlow: box-shadow removed from keyframes (forces repaint each frame). */
+/* Replaced with filter:drop-shadow — compositor-thread only, same visual result. */
 @keyframes gemSpinGlow {
   0% {
     transform: rotate(0deg) scale(0.5);
-    box-shadow: 0 0 0 rgba(197, 151, 59, 0);
+    filter: drop-shadow(0 0 0px rgba(197, 151, 59, 0));
   }
   65% {
     transform: rotate(45deg) scale(1.25);
-    box-shadow: 0 0 14px 4px rgba(197, 151, 59, 0.6);
+    filter: drop-shadow(0 0 8px rgba(197, 151, 59, 0.6));
   }
   100% {
     transform: rotate(45deg) scale(1);
-    box-shadow: 0 0 4px rgba(197, 151, 59, 0.25);
+    filter: drop-shadow(0 0 3px rgba(197, 151, 59, 0.25));
   }
 }
 
@@ -308,14 +315,13 @@
 .scroll-reveal-item {
   opacity: 0 !important;
   transform: translateY(56px) scale(0.90) !important;
+  /* GPU-only: opacity + transform. box-shadow/border-color removed — they cause repaint each frame */
   transition:
     opacity 750ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 750ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 300ms ease,
-    border-color 300ms ease !important;
+    transform 750ms cubic-bezier(0.16, 1, 0.3, 1) !important;
   transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 160ms) !important;
   transform-origin: center bottom;
-  will-change: opacity, transform;
+  /* will-change is managed dynamically in JS (added before observe, removed on transitionend) */
   position: relative;
 }
 
@@ -339,6 +345,8 @@
 }
 
 /* 2. Secondary Delayed Elements: Top Accent Bar Drawing Left-to-Right over 500ms */
+/* GPU fix: use scaleX(0→1) with transform-origin:left instead of width(0%→100%) */
+/* scaleX is compositor-only; width triggers full layout reflow on every frame */
 .pillar-feature-card::before,
 .event-card::before,
 .stream-card::before {
@@ -346,10 +354,12 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 0%;
+  width: 100%; /* always full width — scaleX hides it */
   height: 3px;
   background: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-brass) 50%, var(--color-brass-light) 100%);
-  transition: width 500ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1) !important;
   transition-delay: calc(var(--reveal-delay, var(--stagger-idx, 0)) * 160ms + 100ms) !important;
   z-index: 2;
 }
@@ -357,7 +367,7 @@
 .pillar-feature-card.is-revealed::before,
 .event-card.is-revealed::before,
 .stream-card.is-revealed::before {
-  width: 100% !important;
+  transform: scaleX(1) !important;
 }
 
 /* 3. Secondary Delayed Elements: Icon / Badge / Date Elastic Overshoot Pop (scale 0.5 -> 1.1 -> 1.0) */
@@ -522,7 +532,7 @@
 
 /* Notice Board Filter Pill Active Spring */
 .notice-filter-pill {
-  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms cubic-bezier(0.16, 1, 0.3, 1), border-color 220ms cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .notice-filter-pill:active {
@@ -589,7 +599,7 @@
 /* Lightbox Close Button Rotation on Hover */
 .modal-close-btn,
 .sidebar-close-btn {
-  transition: all 220ms ease;
+  transition: transform 220ms ease, opacity 220ms ease;
 }
 
 .modal-close-btn:hover,
@@ -738,7 +748,6 @@ input:focus, textarea:focus, select:focus {
   .leadership-role-tag {
     opacity: 1 !important;
     transform: none !important;
-    width: 100% !important;
     animation: none !important;
     transition: none !important;
   }
@@ -839,11 +848,11 @@ input:focus, textarea:focus, select:focus {
     will-change: auto;
   }
 
-  /* Top accent bar — show immediately */
+  /* Top accent bar — show immediately (scaleX: 1 = fully visible) */
   .pillar-feature-card::before,
   .event-card::before,
   .stream-card::before {
-    width: 100% !important;
+    transform: scaleX(1) !important;
     transition: none !important;
   }
 

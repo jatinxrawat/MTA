@@ -12,6 +12,14 @@
 }
 
 /* Edge-to-edge authentic school campus photograph */
+/* filter is on the viewport wrapper, NOT on the transitioning image.
+   When transform animates, having filter on the same element forces the
+   browser to re-run filter calculations every frame. Separating them keeps
+   the transform tween on the GPU compositor with no filter involvement. */
+.hero-viewport {
+  filter: saturate(1.06) contrast(1.02);
+}
+
 .hero-background-image {
   position: absolute;
   inset: 0;
@@ -20,13 +28,16 @@
   object-fit: cover;
   object-position: center 38%;
   transform: scale(1.01);
-  filter: saturate(1.06) contrast(1.02);
+  /* No filter here — see .hero-viewport above */
   transition: transform 9s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
 }
 
-.hero-viewport:hover .hero-background-image {
-  transform: scale(1.03);
+/* Desktop-only hover zoom — pointer:fine ensures touch screens skip it */
+@media (hover: hover) and (pointer: fine) {
+  .hero-viewport:hover .hero-background-image {
+    transform: scale(1.03);
+  }
 }
 
 /* Collegiate campus scrim: Allows genuine school building, lawns, and sky to shine through vibrantly while maintaining crisp contrast for typography */

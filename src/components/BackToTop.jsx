@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
+  const rafPending = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Fade in only after scrolling past the hero section
-      if (window.scrollY > 420) {
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
+      // Throttle state updates to one per animation frame
+      if (rafPending.current) return;
+      rafPending.current = true;
+
+      requestAnimationFrame(() => {
+        rafPending.current = false;
+        setVisible(window.scrollY > 420);
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

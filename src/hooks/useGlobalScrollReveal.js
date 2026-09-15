@@ -6,7 +6,11 @@ import { useLocation } from 'react-router-dom';
  * Automatically finds and reveals editorial headers, feature cards, gallery items,
  * metric boxes, and prospectus elements across the current page as they scroll into view.
  * Re-runs cleanly on every React Router location change.
- * On mobile (≤768px), skips observer entirely — CSS handles visibility instantly.
+ *
+ * Performance strategy:
+ * - On mobile (≤768px) or reduced-motion: reveals all elements immediately, no observer needed.
+ * - On desktop: adds will-change to each element just before observing it (not globally in CSS),
+ *   and removes it via transitionend to free the GPU layer after animation completes.
  */
 export function useGlobalScrollReveal() {
   const location = useLocation();
@@ -47,22 +51,39 @@ export function useGlobalScrollReveal() {
       return;
     }
 
+    // Cleanup function: removes will-change after the entrance transition ends
+    // so the element's GPU layer is freed once it's statically positioned.
+    const handleTransitionEnd = (e) => {
+      if (e.propertyName === 'opacity' || e.propertyName === 'transform') {
+        e.currentTarget.style.willChange = 'auto';
+        e.currentTarget.removeEventListener('transitionend', handleTransitionEnd);
+      }
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            observer.unobserve(entry.target);
+            const el = entry.target;
+            // Promote GPU layer just before animation starts
+            el.style.willChange = 'opacity, transform';
+            // Small timeout to allow the browser to create the GPU layer
+            // before the class change triggers the transition
+            requestAnimationFrame(() => {
+              el.classList.add('is-revealed');
+              // Schedule will-change removal after transition completes
+              el.addEventListener('transitionend', handleTransitionEnd);
+            });
+            observer.unobserve(el);
           }
         });
       },
       {
-        threshold: 0.18,
-        rootMargin: '0px',
+        threshold: 0.12, // slightly lower threshold — reveals elements sooner, reducing simultaneous animations
+        rootMargin: '0px 0px -20px 0px',
       }
     );
 
-    // Observe immediately
     const timeoutId = setTimeout(() => {
       const elements = document.querySelectorAll(targetSelector);
       elements.forEach((el, idx) => {

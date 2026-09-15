@@ -17,7 +17,7 @@
   padding: 0.55rem 1.15rem;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  transition: all 0.22s ease;
+  transition: transform 0.22s ease, background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease;
   font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 600;
@@ -124,7 +124,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   border-radius: 2px;
 }
 
@@ -188,7 +188,7 @@
   letter-spacing: 0.02em;
   border-radius: var(--radius-formal);
   position: relative;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-left-color 0.2s ease, color 0.2s ease;
   border-left: 3px solid transparent;
 }
 

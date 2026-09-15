@@ -277,7 +277,7 @@
   letter-spacing: 0.02em;
   border-radius: var(--radius-formal);
   cursor: pointer;
-  transition: all 180ms ease;
+  transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, border-color 180ms ease;
   white-space: nowrap;
 }
 
@@ -389,7 +389,7 @@
   border-radius: var(--radius-formal);
   width: fit-content;
   background-color: var(--color-brass-pale);
-  transition: all 180ms ease;
+  transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 
 /* Institutional Category-Striped Notice Rows */
@@ -788,7 +788,7 @@
   background: #ffffff;
   color: var(--ink-secondary);
   cursor: pointer;
-  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 2px 5px rgba(11, 27, 61, 0.04);
 }
 
@@ -933,7 +933,7 @@
   border-radius: 999px;
   background: rgba(11, 27, 61, 0.04);
   color: var(--ink-muted);
-  transition: all 250ms ease;
+  transition: transform 250ms ease, background-color 250ms ease, color 250ms ease;
   user-select: none;
 }
 
@@ -1468,5 +1468,18 @@
   }
   .event-month {
     margin-top: 0;
+  }
+}
+
+/* Mobile: remove SVG feTurbulence textures (imperceptible at 0.035 opacity, costly to rasterize) */
+@media (max-width: 768px) {
+  .notice-board-section,
+  .notice-card-header,
+  .home-gallery-section,
+  .home-connect-section {
+    background-image: none;
+  }
+  .about-prospectus-body {
+    background-image: none; /* ruled-notebook line gradient */
   }
 }
