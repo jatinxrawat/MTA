@@ -362,7 +362,8 @@ export default function HomePage({ onOpenInquiry }) {
                           </a>
                         ) : null}
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 )}
 
