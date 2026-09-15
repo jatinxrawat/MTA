@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import CrestLogo from './CrestLogo';
 import { schoolData } from '../data/schoolData';
 import { useCMS } from '../context/CMSContext';
-import { ArrowUp, Lock } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import '../styles/contact-footer.css';
 
 export default function Footer() {
@@ -88,24 +88,6 @@ export default function Footer() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
             <span>CBSE Affiliated Senior Secondary Institution</span>
-            <Link
-              to="/admin"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                color: 'rgba(255, 255, 255, 0.65)',
-                fontSize: '0.78rem',
-                textDecoration: 'none',
-                padding: '0.2rem 0.5rem',
-                borderRadius: '3px',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-              }}
-              title="Staff Administration Portal"
-            >
-              <Lock size={12} />
-              <span>Staff CMS</span>
-            </Link>
             <button
               type="button"
               onClick={scrollToTop}

@@ -52,7 +52,7 @@ function getHouseIcon(iconType, props = {}) {
   }
 }
 
-export default function HomePage() {
+export default function HomePage({ onOpenInquiry }) {
   const { content } = useCMS();
   const general = content.general || schoolData.general;
   const { postalAddress, phonePrimary, phoneSecondary, emailPrimary, emailAdmissions, officeHours, visitingHoursPrincipal } =
@@ -160,6 +160,18 @@ export default function HomePage() {
                 </div>
               </header>
 
+              {/* Campus Photo Showcase */}
+              <div className="about-showcase-card">
+                <div className="about-showcase-img-wrap">
+                  <EditableImage
+                    path="spirit.showcaseImage"
+                    defaultSrc="/campus-facade.jpg"
+                    alt="Mother Teresa Academy Main Campus Building"
+                    className="about-showcase-img"
+                  />
+                </div>
+              </div>
+
               <div className="about-prospectus-body">
                 <p className="about-prospectus-lead">
                   <EditableText
@@ -198,28 +210,40 @@ export default function HomePage() {
                   </footer>
                 </blockquote>
 
-                {/* Compact Quick Reference Block */}
+                {/* Multi-Colored Quick Reference Stat Cards */}
                 <div className="prospectus-quick-reference">
-                  <div className="quick-ref-item">
-                    <span className="quick-ref-label">Location</span>
+                  <div className="quick-ref-item ref-location">
+                    <div className="quick-ref-icon-title">
+                      <MapPin size={15} className="quick-ref-icon" />
+                      <span className="quick-ref-label">Location</span>
+                    </div>
                     <strong className="quick-ref-val">
                       <EditableText path="spirit.locationQuickRef" fallback="Baraut, Baghpat (U.P.)" as="span" />
                     </strong>
                   </div>
-                  <div className="quick-ref-item">
-                    <span className="quick-ref-label">Affiliation</span>
+                  <div className="quick-ref-item ref-affiliation">
+                    <div className="quick-ref-icon-title">
+                      <GraduationCap size={15} className="quick-ref-icon" />
+                      <span className="quick-ref-label">Affiliation</span>
+                    </div>
                     <strong className="quick-ref-val">
                       <EditableText path="spirit.affiliationQuickRef" fallback="CBSE Senior Secondary (K–XII)" as="span" />
                     </strong>
                   </div>
-                  <div className="quick-ref-item">
-                    <span className="quick-ref-label">Established</span>
+                  <div className="quick-ref-item ref-established">
+                    <div className="quick-ref-icon-title">
+                      <Building2 size={15} className="quick-ref-icon" />
+                      <span className="quick-ref-label">Established</span>
+                    </div>
                     <strong className="quick-ref-val">
                       <EditableText path="spirit.establishedQuickRef" fallback="2015" as="span" />
                     </strong>
                   </div>
-                  <div className="quick-ref-item">
-                    <span className="quick-ref-label">Motto</span>
+                  <div className="quick-ref-item ref-motto">
+                    <div className="quick-ref-icon-title">
+                      <ShieldCheck size={15} className="quick-ref-icon" />
+                      <span className="quick-ref-label">Motto</span>
+                    </div>
                     <strong className="quick-ref-val">
                       <EditableText path="spirit.mottoQuickRef" fallback='"Laborare est Orare"' as="span" />
                     </strong>
@@ -272,18 +296,28 @@ export default function HomePage() {
                   </div>
                 ) : (
                   <ul ref={noticesRef} className="notice-list">
-                    {displayedNotices.map((item, idx) => (
-                      <li
-                        key={item.id}
-                        className={`notice-item scroll-reveal-item ${noticesRevealed ? 'is-revealed' : ''}`}
-                        style={{ '--reveal-delay': idx }}
-                      >
-                        <div className="notice-left">
-                          {/* Simple Serif Date Treatment & Small Caps Category */}
-                          <div className="notice-date-column">
-                            <span className="notice-serif-date">{item.date}</span>
-                            <span className="notice-category-caps">{item.category}</span>
-                          </div>
+                    {displayedNotices.map((item, idx) => {
+                      const catLower = (item.category || '').toLowerCase();
+                      const catClass = catLower.includes('admiss')
+                        ? 'cat-admissions'
+                        : catLower.includes('exam')
+                        ? 'cat-exam'
+                        : catLower.includes('acad')
+                        ? 'cat-academics'
+                        : 'cat-general';
+
+                      return (
+                        <li
+                          key={item.id}
+                          className={`notice-item ${catClass} scroll-reveal-item ${noticesRevealed ? 'is-revealed' : ''}`}
+                          style={{ '--reveal-delay': idx }}
+                        >
+                          <div className="notice-left">
+                            {/* Category Colored Date Badge & Tag */}
+                            <div className="notice-date-column">
+                              <span className="notice-serif-date">{item.date}</span>
+                              <span className="notice-category-caps">{item.category}</span>
+                            </div>
 
                           <div className="notice-title-wrap">
                             <h4 className="notice-title-text">
@@ -353,7 +387,7 @@ export default function HomePage() {
       </section>
 
       {/* 3. CORE INSTITUTIONAL PILLARS SHOWCASE (CORNERSTONES) */}
-      <section className="section-padding section-parchment" aria-label="School Highlights">
+      <section className="section-padding section-parchment cornerstones-section" aria-label="School Highlights">
         <div className="container">
           <header className="editorial-section-header text-center">
             <span className="prospectus-subhead">Holistic Formation & Excellence</span>
@@ -370,7 +404,7 @@ export default function HomePage() {
           <div ref={cornerstonesRef} className="pillars-showcase-grid">
             {/* Pillar 1: CBSE Academic Rigor */}
             <article
-              className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
+              className={`pillar-feature-card pillar-theme-blue scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 0 }}
             >
               <div className="pillar-card-bg" aria-hidden="true">
@@ -383,7 +417,7 @@ export default function HomePage() {
                 />
                 <div className="pillar-card-bg-scrim" />
               </div>
-              <div className="pillar-card-icon" style={{ backgroundColor: '#edf2fb', color: 'var(--color-navy)' }}>
+              <div className="pillar-card-icon" style={{ backgroundColor: '#edf2fb', color: '#1d4ed8' }}>
                 <GraduationCap size={26} />
               </div>
               <h3 className="pillar-card-title">
@@ -409,7 +443,7 @@ export default function HomePage() {
 
             {/* Pillar 2: Best Campus Infrastructure */}
             <article
-              className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
+              className={`pillar-feature-card pillar-theme-teal scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 1 }}
             >
               <div className="pillar-card-bg" aria-hidden="true">
@@ -448,7 +482,7 @@ export default function HomePage() {
 
             {/* Pillar 3: Student Leadership & Houses */}
             <article
-              className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
+              className={`pillar-feature-card pillar-theme-crimson scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 2 }}
             >
               <div className="pillar-card-bg" aria-hidden="true">
@@ -461,7 +495,7 @@ export default function HomePage() {
                 />
                 <div className="pillar-card-bg-scrim" />
               </div>
-              <div className="pillar-card-icon" style={{ backgroundColor: '#fcf0f2', color: 'var(--color-maroon)' }}>
+              <div className="pillar-card-icon" style={{ backgroundColor: '#fff1f2', color: '#be123c' }}>
                 <Users size={26} />
               </div>
               <h3 className="pillar-card-title">
@@ -487,7 +521,7 @@ export default function HomePage() {
 
             {/* Pillar 4: Sports & Athletics */}
             <article
-              className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
+              className={`pillar-feature-card pillar-theme-emerald scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 3 }}
             >
               <div className="pillar-card-bg" aria-hidden="true">
@@ -500,7 +534,7 @@ export default function HomePage() {
                 />
                 <div className="pillar-card-bg-scrim" />
               </div>
-              <div className="pillar-card-icon" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}>
+              <div className="pillar-card-icon" style={{ backgroundColor: '#e8f5e9', color: '#16a34a' }}>
                 <Trophy size={26} />
               </div>
               <h3 className="pillar-card-title">
@@ -526,7 +560,7 @@ export default function HomePage() {
 
             {/* Pillar 5: Co-Curricular & Creative Clubs */}
             <article
-              className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
+              className={`pillar-feature-card pillar-theme-amber scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
               style={{ '--reveal-delay': 4 }}
             >
               <div className="pillar-card-bg" aria-hidden="true">
@@ -539,7 +573,7 @@ export default function HomePage() {
                 />
                 <div className="pillar-card-bg-scrim" />
               </div>
-              <div className="pillar-card-icon" style={{ backgroundColor: '#f3e5f5', color: '#6a1b9a' }}>
+              <div className="pillar-card-icon" style={{ backgroundColor: '#fef3c7', color: '#d97706' }}>
                 <Palette size={26} />
               </div>
               <h3 className="pillar-card-title">
@@ -565,8 +599,8 @@ export default function HomePage() {
 
             {/* Pillar 6: CBSE Appendix-IX Public Disclosure */}
             <article
-              className={`pillar-feature-card scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
-              style={{ '--reveal-delay': 5, borderTopColor: 'var(--color-maroon)' }}
+              className={`pillar-feature-card pillar-theme-brass scroll-reveal-item ${cornerstonesRevealed ? 'is-revealed' : ''}`}
+              style={{ '--reveal-delay': 5 }}
             >
               <div className="pillar-card-bg" aria-hidden="true">
                 <EditableImage
@@ -725,7 +759,7 @@ export default function HomePage() {
       </section>
 
       {/* 4. OUR GALLERY: 6 PHOTO PREVIEW + "VIEW FULL GALLERY" BUTTON */}
-      <section id="home-gallery" className="section-padding" aria-label="Campus Photo Gallery">
+      <section id="home-gallery" className="section-padding home-gallery-section" aria-label="Campus Photo Gallery">
         <div className="container">
           <header className="editorial-section-header text-center">
             <span className="prospectus-subhead">Visual Panorama of Campus Life</span>
@@ -789,26 +823,47 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. NEWS & UPCOMING EVENTS: Stagger in on scroll with hover border transitions */}
-      <section id="news-events" className="section-padding section-parchment" aria-label="News and Upcoming Events">
-        <div className="container">
-          <header className="editorial-section-header text-center">
-            <span className="prospectus-subhead">Campus Life & Calendar</span>
-            <h2 className="prospectus-title">News & Upcoming Events</h2>
-            <div className="prospectus-rule centered">
+      {/* 5. NEWS & UPCOMING EVENTS: Real school photo background */}
+      <section id="news-events" className="section-padding news-events-section" aria-label="News and Upcoming Events">
+        {/* Real School Photo Background Layer */}
+        <div className="news-events-bg-container">
+          <EditableImage
+            path="newsEvents.backgroundImage"
+            defaultSrc="/news-events-campus.jpg"
+            alt="Mother Teresa Academy Main Campus Facade, Entrance Portico, and Central Lawns"
+            className="news-events-bg-img"
+            loading="lazy"
+          />
+          <div className="news-events-overlay-scrim" />
+        </div>
+
+        <div className="container news-events-content-container">
+          <header className="editorial-section-header text-center news-events-header">
+            <span className="prospectus-subhead news-events-subhead">Campus Life & Calendar</span>
+            <h2 className="prospectus-title news-events-title">News & Upcoming Events</h2>
+            <div className="prospectus-rule centered news-events-rule">
               <span className="prospectus-rule-gem" />
             </div>
+            <p className="news-events-intro-lead">
+              Official updates, regional CBSE athletic meets, exhibitions, and scholastic milestones across the academy.
+            </p>
           </header>
 
           <div ref={eventsRef} className="events-grid">
-            {newsAndEvents.map((event, idx) => (
-              <article
-                key={event.id}
-                className={`event-card scroll-reveal-item ${eventsRevealed ? 'is-revealed' : ''}`}
-                style={{ '--reveal-delay': idx }}
-              >
-                <div className="event-date-badge">
-                  <div className="event-day">{event.day}</div>
+            {newsAndEvents.map((event, idx) => {
+              const themeClass = idx === 0 ? 'theme-emerald'
+                : idx === 1 ? 'theme-sapphire'
+                : idx === 2 ? 'theme-amber'
+                : 'theme-crimson';
+
+              return (
+                <article
+                  key={event.id}
+                  className={`event-card ${themeClass} scroll-reveal-item ${eventsRevealed ? 'is-revealed' : ''}`}
+                  style={{ '--reveal-delay': idx }}
+                >
+                  <div className="event-date-badge">
+                    <div className="event-day">{event.day}</div>
                   <div className="event-month">{event.month}</div>
                   <div className="event-year">{event.year}</div>
                 </div>
@@ -823,13 +878,14 @@ export default function HomePage() {
                   </div>
                 </div>
               </article>
-            ))}
+            );
+          })}
           </div>
         </div>
       </section>
 
       {/* 6. CONNECT WITH US / GET IN TOUCH */}
-      <section id="connect" className="section-padding" aria-label="Connect With Us">
+      <section id="connect" className="section-padding home-connect-section" aria-label="Connect With Us">
         <div className="container">
           <header className="editorial-section-header text-center">
             <span className="prospectus-subhead">Admissions Liaison & Enquiries</span>

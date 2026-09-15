@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useCMS } from '../../context/CMSContext';
 import { getNestedValue } from '../../lib/content';
 import { uploadMedia, getMedia, NEUTRAL_PLACEHOLDER_IMAGE } from '../../lib/media';
@@ -23,6 +24,8 @@ export default function EditableImage({
   aspectRatio = 'auto',
   ...props
 }) {
+  const location = useLocation();
+  const isInAdmin = location.pathname.startsWith('/admin');
   const { content, updateField, isAdmin, isEditing, showToast } = useCMS();
   const rawSrc = path ? getNestedValue(content, path, defaultSrc) : defaultSrc;
   const currentSrc = getMedia(rawSrc, defaultSrc || NEUTRAL_PLACEHOLDER_IMAGE);
@@ -35,6 +38,7 @@ export default function EditableImage({
 
   const isHeroBg = className.includes('hero-background-image');
   const isPillarBg = className.includes('pillar-card-bg-img');
+  const isSectionBg = className.includes('news-events-bg-img') || className.includes('section-background-image');
 
   const handleImageError = (e) => {
     if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
@@ -44,9 +48,9 @@ export default function EditableImage({
 
   // Suggested popular authentic school photos already in public directory
   const stockPhotos = [
-    { label: 'Campus Facade (Day)', url: '/gallery/main-campus-facade-daylight.jpg' },
+    { label: 'Campus Facade (Daylight & Lawns)', url: '/news-events-campus.jpg' },
+    { label: 'Athletics Track & Podium', url: '/gallery/athletics-track-victory-podium.jpg' },
     { label: 'Campus Block (Sunset)', url: '/school-hero.jpg' },
-    { label: 'Campus Architecture', url: '/campus-facade.jpg' },
     { label: 'Science & Maths Lab', url: '/science-maths-composite-lab.jpg' },
     { label: 'Chemistry Lab Practical', url: '/gallery/chemistry-lab-titration.jpg' },
     { label: 'Trophy Presentation', url: '/gallery/championship-trophy-presentation.jpg' },
@@ -54,8 +58,8 @@ export default function EditableImage({
     { label: 'Cultural Diya Lighting', url: '/gallery/cultural-celebrations-diya-lighting.jpg' },
   ];
 
-  // Non-admin or Preview Mode: render pure <img> tag with guaranteed fallback
-  if (!isAdmin || !isEditing || !path) {
+  // Strict isolation: Public site NEVER shows edit affordances, even if logged in
+  if (!isInAdmin || !isAdmin || !isEditing || !path) {
     return (
       <img
         src={currentSrc}
@@ -94,7 +98,7 @@ export default function EditableImage({
   return (
     <>
       <div
-        className={`cms-editable-image-container ${isHeroBg ? 'is-hero-bg' : ''} ${isPillarBg ? 'is-pillar-bg' : ''}`}
+        className={`cms-editable-image-container ${isHeroBg ? 'is-hero-bg' : ''} ${isPillarBg ? 'is-pillar-bg' : ''} ${isSectionBg ? 'is-section-bg' : ''}`}
         onClick={(e) => {
           e.stopPropagation();
           setPreviewSrc(currentSrc);
@@ -110,12 +114,20 @@ export default function EditableImage({
           onError={handleImageError}
           {...props}
         />
-        <div className="cms-image-hover-overlay">
-          <div className="cms-image-badge">
-            <Camera size={14} />
-            <span>Replace Photo</span>
-          </div>
-        </div>
+        <button
+          type="button"
+          className="cms-image-corner-badge"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPreviewSrc(currentSrc);
+            setIsModalOpen(true);
+          }}
+          title="Click to replace this photograph"
+          aria-label="Replace photograph"
+        >
+          <Camera size={13} className="cms-camera-icon" />
+          <span>Replace Photo</span>
+        </button>
       </div>
 
       {/* Modal for Image Selection & Upload */}

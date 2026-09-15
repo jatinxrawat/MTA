@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useCMS } from '../../context/CMSContext';
 import { getNestedValue } from '../../lib/content';
 import { Pencil, Check, X } from 'lucide-react';
@@ -23,6 +24,8 @@ export default function EditableText({
   children,
   ...props
 }) {
+  const location = useLocation();
+  const isInAdmin = location.pathname.startsWith('/admin');
   const { content, updateField, isAdmin, isEditing } = useCMS();
   const fallbackVal = fallback || (typeof children === 'string' ? children : '') || '';
   const rawValue = path ? getNestedValue(content, path, fallbackVal) : fallbackVal;
@@ -48,8 +51,8 @@ export default function EditableText({
     }
   }, [isEditingInline]);
 
-  // Non-admin or Preview Mode: render clean HTML tag with guaranteed fallback
-  if (!isAdmin || !isEditing || !path) {
+  // Strict isolation: Public site NEVER shows edit affordances, even if logged in
+  if (!isInAdmin || !isAdmin || !isEditing || !path) {
     return (
       <Component className={className} style={style} {...props}>
         {displayValue}

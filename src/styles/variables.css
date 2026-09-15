@@ -1,49 +1,73 @@
 :root {
-  /* Indian School Uniform / Blazer Palette */
-  --color-navy-deep: #071224;
-  --color-navy: #0b1b3d;
-  --color-navy-mid: #142854;
-  --color-navy-light: #203a74;
-  --color-navy-soft: #edf2fb;
+  /* ==========================================================================
+     REFINED PRIVATE-SCHOOL HERITAGE PALETTE
+     Inspired by Doon School, Mayo College & Established CBSE Convent Prospectuses
+     ========================================================================== */
 
-  --color-maroon-deep: #4a0c16;
-  --color-maroon: #6e1525;
-  --color-maroon-mid: #8a1d31;
-  --color-maroon-soft: #fcf0f2;
+  /* 1. Primary Dark: Deep Oxford Navy (Blazer & Academic Gown) */
+  --color-navy-deep: #0A1324;
+  --color-navy: #0F1B33;
+  --color-navy-mid: #172A4E;
+  --color-navy-light: #233B6B;
+  --color-navy-soft: #E8EDF5;
 
-  --color-brass-deep: #8a641a;
-  --color-brass: #c5973b;
-  --color-brass-light: #dfb75c;
-  --color-brass-pale: #f7eed9;
+  /* 2. Primary Accent: Deep Burgundy (Leather-bound archives & academic trim) */
+  --color-burgundy-deep: #430E17;
+  --color-burgundy: #5E1420;
+  --color-burgundy-mid: #781B2B;
+  --color-burgundy-soft: #F7EAEB;
+  /* Legacy alias for backwards compatibility */
+  --color-maroon-deep: #430E17;
+  --color-maroon: #5E1420;
+  --color-maroon-mid: #781B2B;
+  --color-maroon-soft: #F7EAEB;
 
-  /* Editorial Paper / Parchment Surfaces */
-  --bg-parchment-white: #fdfbf7;
-  --bg-parchment: #f6f1e5;
-  --bg-parchment-deep: #ede4d1;
-  --bg-paper-rule: #dfd4be;
+  /* 3. Secondary Accent: Antique Brass / Gold (Metallic structural accents & seals) */
+  --color-brass-deep: #7D5B1E;
+  --color-brass: #A67C2E;
+  --color-brass-light: #C89C46;
+  --color-brass-pale: #F4EBD8;
 
-  /* Ink & Typography */
-  --ink-primary: #1a202c;
-  --ink-secondary: #3c4656;
-  --ink-muted: #647082;
-  --ink-light: #f6f1e5;
-  --ink-accent-navy: #0b1b3d;
-  --ink-accent-maroon: #6e1525;
+  /* 4. Tertiary Accent: Deep Forest Green (Ivy, lawns & scholastic honors) */
+  --color-forest-green: #1F3D2B;
+  --color-forest-green-mid: #2C543B;
+  --color-forest-green-soft: #EBF2ED;
+
+  /* 5. Primary Light: Antique Ivory (Aged prospectus paper) */
+  --bg-parchment-white: #FAF7EE;
+  --bg-parchment: #F5F0E1;
+  --bg-parchment-deep: #EADFC7;
+  --bg-paper-rule: #DFD3B6;
+
+  /* Physical Campus & Prospectus Textures */
+  --texture-paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  --texture-ruled-notebook: repeating-linear-gradient(180deg, transparent, transparent 31px, rgba(15, 27, 51, 0.035) 31px, rgba(15, 27, 51, 0.035) 32px);
+  --border-brass-transitional: linear-gradient(90deg, transparent 0%, rgba(166, 124, 46, 0.3) 25%, rgba(166, 124, 46, 0.6) 50%, rgba(166, 124, 46, 0.3) 75%, transparent 100%);
+
+  /* 6. Body Text: Charcoal Ink (Warm, legible, softer than pure black) */
+  --ink-primary: #211D18;
+  --ink-secondary: #474138;
+  --ink-muted: #736B5E;
+  --ink-light: #F5F0E1; /* Antique Ivory text over Oxford Navy backgrounds */
+  --ink-accent-navy: #0F1B33;
+  --ink-accent-burgundy: #5E1420;
+  --ink-accent-maroon: #5E1420;
 
   /* Typography Stacks */
   --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Shadows - subtle and classical, not soft SaaS floating cards */
-  --shadow-editorial: 0 4px 20px -2px rgba(11, 27, 61, 0.08);
-  --shadow-elevated: 0 12px 30px -4px rgba(11, 27, 61, 0.14);
-  --shadow-inset-parchment: inset 0 1px 3px rgba(0, 0, 0, 0.04);
-
-  /* Borders & Rules */
+  /* Crisp Formal Borders & Shadows */
+  --radius-formal: 3px;
   --border-fine: 1px solid var(--bg-paper-rule);
-  --border-double: 3px double var(--color-brass);
-  --border-navy: 1px solid rgba(11, 27, 61, 0.15);
+  --border-hairline: 1px solid var(--bg-paper-rule);
   --border-brass: 1px solid var(--color-brass);
+  --border-double: 3px double var(--color-brass);
+  --border-navy: 1px solid rgba(15, 27, 51, 0.18);
+
+  --shadow-editorial: 0 4px 16px -2px rgba(15, 27, 51, 0.06);
+  --shadow-elevated: 0 10px 28px -4px rgba(15, 27, 51, 0.12);
+  --shadow-inset-parchment: inset 0 1px 3px rgba(0, 0, 0, 0.03);
 
   /* Container widths */
   --container-max: 1240px;

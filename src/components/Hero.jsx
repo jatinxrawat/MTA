@@ -29,7 +29,7 @@ export default function Hero({ onScrollClick }) {
       {/* Edge-to-Edge School Exterior Photo - Editable */}
       <EditableImage
         path="hero.backgroundImage"
-        defaultSrc={hero.backgroundImage || "/school-hero.jpg"}
+        defaultSrc={hero.backgroundImage || "/gallery/main-campus-facade-daylight.jpg"}
         alt="Mother Teresa Academy Campus Architecture, Baraut"
         className="hero-background-image"
         loading="eager"

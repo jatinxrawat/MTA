@@ -643,8 +643,8 @@ export const schoolData = {
     houses: [
       {
         name: "Teresa House",
-        color: "#6e1525",
-        colorRgb: "110, 21, 37",
+        color: "#5E1420",
+        colorRgb: "94, 20, 32",
         motto: "Compassion & Service",
         iconType: "heart",
         patron: "Saint Mother Teresa",
@@ -653,8 +653,8 @@ export const schoolData = {
       },
       {
         name: "Vivekananda House",
-        color: "#c5973b",
-        colorRgb: "197, 151, 59",
+        color: "#A67C2E",
+        colorRgb: "166, 124, 46",
         motto: "Strength & Wisdom",
         iconType: "sun",
         patron: "Swami Vivekananda",
@@ -663,8 +663,8 @@ export const schoolData = {
       },
       {
         name: "Kalam House",
-        color: "#1b5e20",
-        colorRgb: "27, 94, 32",
+        color: "#1F3D2B",
+        colorRgb: "31, 61, 43",
         motto: "Innovation & Vision",
         iconType: "rocket",
         patron: "Dr. A.P.J. Abdul Kalam",
@@ -673,8 +673,8 @@ export const schoolData = {
       },
       {
         name: "Tagore House",
-        color: "#0b1b3d",
-        colorRgb: "11, 27, 61",
+        color: "#0F1B33",
+        colorRgb: "15, 27, 51",
         motto: "Creativity & Harmony",
         iconType: "palette",
         patron: "Gurudev Rabindranath Tagore",

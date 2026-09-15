@@ -9,7 +9,7 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   color: var(--ink-primary);
-  background-color: var(--bg-parchment-white);
+  background-color: var(--bg-parchment);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,7 +19,9 @@ body {
   line-height: 1.65;
   overflow-x: hidden;
   color: var(--ink-primary);
-  background-color: var(--bg-parchment-white);
+  background-color: var(--bg-parchment);
+  background-image: var(--texture-paper-grain);
+  background-repeat: repeat;
 }
 
 /* Accessible focus ring */
@@ -37,7 +39,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 600;
   line-height: 1.2;
-  color: var(--color-navy-deep);
+  color: var(--color-navy);
   letter-spacing: -0.01em;
 }
 
@@ -46,7 +48,7 @@ p {
   font-size: 1.05rem;
 }
 
-/* Section Header (Prospectus Style - No ALL-CAPS SaaS eyebrow) */
+/* Section Header (Prospectus Style - Heritage Eyebrows) */
 .editorial-section-header {
   margin-bottom: 3.5rem;
   position: relative;
@@ -58,17 +60,18 @@ p {
 
 .prospectus-subhead {
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.25rem;
-  color: var(--color-maroon);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-brass);
   margin-bottom: 0.5rem;
-  letter-spacing: 0.02em;
 }
 
 .prospectus-title {
   font-size: clamp(2.2rem, 4vw, 3.4rem);
   font-weight: 600;
-  color: var(--color-navy-deep);
+  color: var(--color-navy);
   line-height: 1.15;
   margin-bottom: 1.25rem;
 }
@@ -94,8 +97,8 @@ p {
 }
 
 .prospectus-rule-gem {
-  width: 9px;
-  height: 9px;
+  width: 7px;
+  height: 7px;
   background-color: var(--color-brass);
   transform: rotate(45deg);
 }
@@ -121,8 +124,20 @@ p {
 
 .section-parchment {
   background-color: var(--bg-parchment);
+  background-image: var(--texture-paper-grain);
+  background-repeat: repeat;
   border-top: 1px solid var(--bg-paper-rule);
   border-bottom: 1px solid var(--bg-paper-rule);
+  position: relative;
+}
+
+/* Subtle transitional divider rules between prospectus sections */
+.section-transitional-divider {
+  height: 1px;
+  width: 100%;
+  background: var(--border-brass-transitional);
+  position: relative;
+  z-index: 5;
 }
 
 .section-navy {
@@ -134,11 +149,11 @@ p {
 .section-navy h2,
 .section-navy h3,
 .section-navy h4 {
-  color: #ffffff;
+  color: var(--bg-parchment);
 }
 
 .section-navy p {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(245, 240, 225, 0.88);
 }
 
 /* Real Academic Table Styling */
@@ -146,8 +161,9 @@ p {
   overflow-x: auto;
   margin: 2rem 0;
   border: 1px solid var(--bg-paper-rule);
-  background-color: #ffffff;
+  background-color: var(--bg-parchment-white);
   box-shadow: var(--shadow-editorial);
+  border-radius: var(--radius-formal);
 }
 
 .academic-table {
@@ -164,7 +180,7 @@ p {
   text-align: left;
   padding: 1.25rem 1.5rem;
   background-color: var(--color-navy);
-  color: #ffffff;
+  color: var(--bg-parchment);
   border-bottom: 2px solid var(--color-brass);
 }
 
@@ -172,12 +188,12 @@ p {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.82rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  background-color: #f8f6f0;
-  color: var(--color-navy-deep);
+  background-color: var(--color-navy);
+  color: var(--bg-parchment);
   padding: 1rem 1.25rem;
-  border-bottom: 2px solid var(--bg-paper-rule);
+  border-bottom: 2px solid var(--color-brass);
   white-space: nowrap;
 }
 
@@ -192,7 +208,7 @@ p {
 }
 
 .academic-table tr:hover td {
-  background-color: #fdfbf7;
+  background-color: #ffffff;
 }
 
 .table-badge-placeholder {
@@ -206,7 +222,7 @@ p {
   border-radius: 2px;
 }
 
-/* Editorial Buttons - Dignified Academic Styling (No generic SaaS '→' button) */
+/* Editorial Buttons - Dignified Academic Styling (Formal 3px corners, crisp hairlines) */
 .btn-academic {
   display: inline-flex;
   align-items: center;
@@ -218,35 +234,47 @@ p {
   padding: 0.85rem 1.75rem;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.25s ease;
-  border-radius: 0;
-  border: none;
+  transition: all 0.22s ease;
+  border-radius: var(--radius-formal);
+  border: 1px solid transparent;
 }
 
-.btn-academic-brass {
-  background: linear-gradient(135deg, var(--color-brass-light) 0%, var(--color-brass) 100%);
-  color: var(--color-navy-deep);
-  box-shadow: 0 2px 10px rgba(197, 151, 59, 0.28);
-  border: 1px solid var(--color-brass-deep);
+/* Primary CTA: Deep Burgundy #5E1420 with Antique Brass hairline border */
+.btn-academic-maroon,
+.btn-academic-burgundy,
+.btn-academic-primary {
+  background-color: var(--color-burgundy);
+  color: var(--bg-parchment);
+  border: 1px solid rgba(166, 124, 46, 0.45);
+  box-shadow: 0 2px 8px rgba(94, 20, 32, 0.22);
 }
 
-.btn-academic-brass:hover {
-  background: linear-gradient(135deg, #ebd07d 0%, var(--color-brass-light) 100%);
+.btn-academic-maroon:hover,
+.btn-academic-burgundy:hover,
+.btn-academic-primary:hover {
+  background-color: var(--color-burgundy-mid);
+  border-color: var(--color-brass-light);
+  color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(197, 151, 59, 0.38);
+  box-shadow: 0 4px 14px rgba(94, 20, 32, 0.32);
 }
 
+/* Secondary Button: Deep Oxford Navy #0F1B33 with Antique Ivory text and subtle Brass rule */
 .btn-academic-navy {
   background-color: var(--color-navy);
-  color: #ffffff;
-  border: 1px solid var(--color-brass);
+  color: var(--bg-parchment);
+  border: 1px solid rgba(166, 124, 46, 0.4);
+  box-shadow: 0 2px 8px rgba(15, 27, 51, 0.18);
 }
 
 .btn-academic-navy:hover {
   background-color: var(--color-navy-mid);
+  border-color: var(--color-brass-light);
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
+/* Outline Button: Crisp 1px rule, transparent background */
 .btn-academic-outline {
   background: transparent;
   color: var(--color-navy);
@@ -254,18 +282,8 @@ p {
 }
 
 .btn-academic-outline:hover {
-  background-color: var(--color-navy-soft);
-}
-
-.btn-academic-maroon {
-  background-color: var(--color-maroon);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-academic-maroon:hover {
-  background-color: var(--color-maroon-mid);
-  transform: translateY(-1px);
+  background-color: rgba(15, 27, 51, 0.05);
+  color: var(--color-navy-deep);
 }
 
 /* Drop cap for editorial story */
@@ -275,7 +293,7 @@ p {
   float: left;
   line-height: 0.75;
   margin: 0.15rem 0.85rem 0.2rem 0;
-  color: var(--color-maroon);
+  color: var(--color-burgundy);
   font-weight: 700;
 }
 
@@ -283,13 +301,17 @@ p {
 .editorial-pullquote {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 1.6rem;
-  line-height: 1.4;
-  color: var(--color-navy-deep);
-  border-left: 3px solid var(--color-brass);
+  font-size: 1.55rem;
+  line-height: 1.45;
+  color: var(--color-navy);
+  border-left: 3px solid var(--color-burgundy);
   padding: 1.25rem 0 1.25rem 2rem;
   margin: 2.5rem 0;
-  background-color: #fbf9f4;
+  background-color: var(--bg-parchment-white);
+  border-top: 1px solid var(--bg-paper-rule);
+  border-right: 1px solid var(--bg-paper-rule);
+  border-bottom: 1px solid var(--bg-paper-rule);
+  border-radius: var(--radius-formal);
 }
 
 /* Responsive utilities */

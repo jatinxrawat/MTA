@@ -5,6 +5,7 @@ import ScrollProgressBar from './components/ScrollProgressBar';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
+import FloatingQuickActions from './components/FloatingQuickActions';
 import { useGlobalScrollReveal } from './hooks/useGlobalScrollReveal';
 import { CMSProvider } from './context/CMSContext';
 
@@ -88,7 +89,7 @@ function AppContent() {
         className="page-transition-wrapper"
       >
         <Routes location={location}>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage onOpenInquiry={() => setInquiryModalOpen(true)} />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/academics" element={<AcademicsPage />} />
           <Route path="/staff" element={<StaffPage />} />
@@ -105,8 +106,11 @@ function AppContent() {
       {/* Institutional Footer across all pages */}
       <Footer />
 
-        {/* Floating Back to Top Control */}
-        <BackToTop />
+      {/* Right-Docked Floating Quick Action Pills (Fee, Location, Helpline) */}
+      <FloatingQuickActions onOpenInquiry={() => setInquiryModalOpen(true)} />
+
+      {/* Floating Back to Top Control */}
+      <BackToTop />
 
         {/* Quick Admission Inquiry Modal */}
         {inquiryModalOpen && (

@@ -50,7 +50,7 @@ export const defaultContent = {
     headline: "Mother Teresa Academy",
     motto: "Your Child Is Our Concern",
     location: "Baraut, District Baghpat, Uttar Pradesh",
-    backgroundImage: "/school-hero.jpg",
+    backgroundImage: "/gallery/main-campus-facade-daylight.jpg",
   },
 
   // "The Spirit of Mother Teresa Academy" Story Section
@@ -120,6 +120,11 @@ export const defaultContent = {
       image: "/campus-facade.jpg",
     },
   ],
+
+  // News & Upcoming Events Section Background Photo
+  newsEvents: {
+    backgroundImage: "/news-events-campus.jpg",
+  },
 
   // Four Institutional Houses
   houses: schoolData.studentLeadership.houses,
