@@ -6,21 +6,12 @@ import { useLocation } from 'react-router-dom';
  * Automatically finds and reveals editorial headers, feature cards, gallery items,
  * metric boxes, and prospectus elements across the current page as they scroll into view.
  * Re-runs cleanly on every React Router location change.
+ * On mobile (≤768px), skips observer entirely — CSS handles visibility instantly.
  */
 export function useGlobalScrollReveal() {
   const location = useLocation();
 
   useEffect(() => {
-    // If user prefers reduced motion, make all reveal targets visible immediately
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const allTargets = document.querySelectorAll(
-        '.scroll-reveal-item, .scroll-reveal-auto, .editorial-section-header, .pillar-feature-card, .house-item-box, .gallery-preview-card, .event-editorial-card, .stream-card, .infra-metric-card, .leadership-card, .disclosure-card, .academic-table-container'
-      );
-      allTargets.forEach((el) => el.classList.add('is-revealed'));
-      return;
-    }
-
-    // Target selector for elements across the entire website
     const targetSelector = [
       '.scroll-reveal-item',
       '.scroll-reveal-auto',
@@ -45,11 +36,21 @@ export function useGlobalScrollReveal() {
       '[data-reveal]',
     ].join(', ');
 
+    // On mobile OR if user prefers reduced motion — reveal everything immediately, skip observer
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const prefersReducedMotion =
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (isMobile || prefersReducedMotion) {
+      const allTargets = document.querySelectorAll(targetSelector);
+      allTargets.forEach((el) => el.classList.add('is-revealed'));
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            console.log('[GlobalScrollReveal Triggered]', entry.target.className);
             entry.target.classList.add('is-revealed');
             observer.unobserve(entry.target);
           }

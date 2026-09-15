@@ -47,6 +47,14 @@
   will-change: transform;
 }
 
+@media (max-width: 768px) {
+  .hero-background-image {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+  }
+}
+
 @keyframes heroKenBurns {
   0% {
     transform: scale(1.01) translate(0, 0);
@@ -731,3 +739,144 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
+/* ==========================================================================
+   15. MOBILE: DISABLE ALL ANIMATIONS (max-width: 768px)
+   On small screens, all entrance animations, continuous loops, and
+   scroll-reveal transitions are removed. Elements are instantly visible.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Page transition */
+  .page-transition-wrapper {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Hero text entrances */
+  .hero-affiliation-badge,
+  .hero-stately-reveal,
+  .hero-tagline-reveal,
+  .hero-scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Continuous loops */
+  .scroll-indicator-pulse,
+  .sidebar-toggle-pill,
+  .house-bob-icon,
+  .notice-urgent-tag::before,
+  .btn-sidebar-admissions::after {
+    animation: none !important;
+  }
+
+  /* Crest draw animation */
+  .crest-draw-path,
+  .crest-draw-shield,
+  .crest-draw-detail {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+
+  .crest-fill-in,
+  .crest-official-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Sidebar nav slide-in */
+  .prospectus-sidebar.is-open .sidebar-nav-list li {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Scroll-reveal headers & containers — show immediately */
+  .editorial-section-header,
+  .subpage-hero-header,
+  .about-academy-column,
+  .notice-board-compact-card,
+  .scroll-reveal-auto,
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+
+  /* All card entrances — show immediately */
+  .pillar-feature-card,
+  .house-item-box,
+  .gallery-preview-card,
+  .gallery-item,
+  .gallery-card-item,
+  .event-card,
+  .event-editorial-card,
+  .notice-item,
+  .stream-card,
+  .infra-metric-card,
+  .leadership-card,
+  .disclosure-card,
+  .contact-card,
+  .about-sidebar-column,
+  .scroll-reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+
+  /* Top accent bar — show immediately */
+  .pillar-feature-card::before,
+  .event-card::before,
+  .stream-card::before {
+    width: 100% !important;
+    transition: none !important;
+  }
+
+  /* Icon / badge / date pop — show immediately */
+  .pillar-card-icon,
+  .house-bob-icon,
+  .house-cool-toggle,
+  .event-date-badge,
+  .gallery-zoom-badge,
+  .notice-new-badge,
+  .notice-date-column,
+  .infra-metric-val,
+  .leadership-role-tag {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Gem spin on section headers */
+  .editorial-section-header.is-revealed .prospectus-rule-gem,
+  .subpage-hero-header.is-revealed .prospectus-rule-gem {
+    animation: none !important;
+    transform: rotate(45deg) scale(1) !important;
+  }
+
+  /* Modal & lightbox */
+  .modal-overlay {
+    animation: none !important;
+  }
+  .modal-card {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Back to top button */
+  .floating-back-to-top {
+    transition: opacity 200ms ease !important;
+  }
+
+  /* Form focus rings — keep minimal */
+  input, textarea, select {
+    transition: border-color 150ms ease !important;
+  }
+}
