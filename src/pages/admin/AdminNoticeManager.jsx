@@ -363,8 +363,8 @@ export default function AdminNoticeManager() {
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit}>
-              <div className="cms-modal-body">
+            <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+              <div className="cms-modal-body" style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
                 {/* Title */}
                 <div className="cms-form-group">
                   <label htmlFor="notice-title">Notice Title *</label>

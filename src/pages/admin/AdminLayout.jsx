@@ -5,6 +5,8 @@ import CrestLogo from '../../components/CrestLogo';
 import AdminNoticeManager from './AdminNoticeManager';
 import AdminGalleryManager from './AdminGalleryManager';
 import AdminPagesManager from './AdminPagesManager';
+import AdminCbseManager from './AdminCbseManager';
+import AdminStaffManager from './AdminStaffManager';
 import AdminCloudGuide from './AdminCloudGuide';
 
 // Live site page components for in-context mirror rendering
@@ -20,7 +22,8 @@ import Footer from '../../components/Footer';
 import { 
   FileEdit, Bell, Image as ImageIcon, Code2, LogOut, 
   ExternalLink, Eye, Edit3, RotateCcw, Save, CheckCircle2,
-  Menu, X, Loader2, Layers, KeyRound, Lock, ShieldCheck, EyeOff, AlertCircle
+  Menu, X, Loader2, Layers, KeyRound, Lock, ShieldCheck, EyeOff, AlertCircle,
+  FileCheck, Users
 } from 'lucide-react';
 import '../../styles/admin.css';
 
@@ -324,6 +327,24 @@ export default function AdminLayout() {
               <span>Custom Pages</span>
             </button>
 
+            <button
+              type="button"
+              className={`cms-nav-item ${activeSection === 'cbse' ? 'active' : ''}`}
+              onClick={() => handleNavSelect('cbse')}
+            >
+              <FileCheck size={16} />
+              <span>CBSE Disclosure</span>
+            </button>
+
+            <button
+              type="button"
+              className={`cms-nav-item ${activeSection === 'staff' ? 'active' : ''}`}
+              onClick={() => handleNavSelect('staff')}
+            >
+              <Users size={16} />
+              <span>Faculty & Staff</span>
+            </button>
+
             <span className="cms-sidebar-heading" style={{ marginTop: '1.25rem' }}>Configuration</span>
 
             <button
@@ -427,7 +448,13 @@ export default function AdminLayout() {
           {/* SECTION D: CUSTOM PAGES MANAGEMENT */}
           {activeSection === 'pages' && <AdminPagesManager />}
 
-          {/* SECTION E: CLOUD HANDOFF GUIDE */}
+          {/* SECTION E: CBSE DISCLOSURE MANAGEMENT */}
+          {activeSection === 'cbse' && <AdminCbseManager />}
+
+          {/* SECTION F: FACULTY & STAFF MANAGEMENT */}
+          {activeSection === 'staff' && <AdminStaffManager />}
+
+          {/* SECTION G: CLOUD HANDOFF GUIDE */}
           {activeSection === 'guide' && <AdminCloudGuide />}
         </main>
       </div>
