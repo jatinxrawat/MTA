@@ -10,7 +10,6 @@ import React from 'react';
  * - Circular styling with crisp white/neutral rim and drop shadow
  */
 export default function CrestLogo({ size = 120, animated = false, variant = "hero", className = "" }) {
-  const isLight = variant === "light";
   const animClass = animated ? "crest-official-reveal" : "";
 
   return (
@@ -24,32 +23,19 @@ export default function CrestLogo({ size = 120, animated = false, variant = "her
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '50%',
         position: 'relative',
+        filter: 'drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45))',
       }}
     >
-      {/* Outer Clean Circular Rim & Stately Drop Shadow */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: -3,
-          borderRadius: '50%',
-          border: isLight ? '2px solid rgba(255, 255, 255, 0.6)' : '2px solid rgba(255, 255, 255, 0.85)',
-          boxShadow: '0 10px 32px rgba(0, 0, 0, 0.65)',
-          pointerEvents: 'none',
-        }}
-      />
-      {/* Official School Logo Image */}
       <img
         src="/school-logo.png"
         alt="Mother Teresa Academy Baraut Official Emblem"
         style={{
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
-          borderRadius: '50%',
+          objectFit: 'contain',
           display: 'block',
-          backgroundColor: '#ffffff',
+          background: 'transparent',
         }}
         loading={animated ? "eager" : "lazy"}
         onError={(e) => {

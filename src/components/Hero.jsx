@@ -43,7 +43,7 @@ export default function Hero({ onScrollClick }) {
       <div className="hero-content">
         {/* Animated Hand-Drawn Crest on Page Load */}
         <div className="hero-crest-container">
-          <CrestLogo size={200} animated={true} variant="brass" />
+          <CrestLogo size={150} animated={true} variant="brass" />
         </div>
 
         {/* Affiliation Bar - Editable */}
@@ -83,18 +83,18 @@ export default function Hero({ onScrollClick }) {
             as="span"
           />
         </div>
-      </div>
 
-      {/* Subtle Bottom Scroll Cue (No heavy button, just refined scroll indicator) */}
-      <button
-        type="button"
-        onClick={handleScrollDown}
-        className="hero-scroll-cue hero-scroll-reveal"
-        aria-label="Scroll down to read prospectus"
-      >
-        <span className="hero-scroll-label">Scroll to Prospectus</span>
-        <div className="hero-scroll-line scroll-indicator-pulse" />
-      </button>
+        {/* Subtle Bottom Scroll Cue (Positioned with generous breathing space directly under location) */}
+        <button
+          type="button"
+          onClick={handleScrollDown}
+          className="hero-scroll-cue hero-scroll-reveal"
+          aria-label="Scroll down to read prospectus"
+        >
+          <span className="hero-scroll-label">Scroll to Prospectus</span>
+          <div className="hero-scroll-line scroll-indicator-pulse" />
+        </button>
+      </div>
     </section>
   );
 }
