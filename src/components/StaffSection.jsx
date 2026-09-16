@@ -55,6 +55,11 @@ export default function StaffSection() {
           <div className="leadership-grid">
             {leadership.map((leader, idx) => (
               <article key={idx} className="leadership-card" style={{ '--reveal-delay': idx }}>
+                {leader.photo && (
+                  <div style={{ width: '64px', height: '64px', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--color-brass)', marginBottom: '0.75rem' }}>
+                    <img src={leader.photo} alt={leader.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                )}
                 <span className="leadership-role-tag">{leader.role}</span>
                 <h3 className="leadership-name">
                   <EditableText path={`staff.leadership.${idx}.name`} fallback={leader.name} as="span" />
@@ -66,9 +71,11 @@ export default function StaffSection() {
                 <div className="leadership-exp">
                   <EditableText path={`staff.leadership.${idx}.experience`} fallback={leader.experience} as="span" />
                 </div>
-                <blockquote className="leadership-quote">
-                  <EditableText path={`staff.leadership.${idx}.messageExcerpt`} multiline={true} fallback={leader.messageExcerpt} as="span" />
-                </blockquote>
+                {leader.messageExcerpt && (
+                  <blockquote className="leadership-quote">
+                    <EditableText path={`staff.leadership.${idx}.messageExcerpt`} multiline={true} fallback={leader.messageExcerpt} as="span" />
+                  </blockquote>
+                )}
               </article>
             ))}
           </div>
@@ -140,7 +147,7 @@ export default function StaffSection() {
                         <EditableText path={`staff.cadreBreakdown.${idx}.qualificationRequirement`} fallback={row.qualificationRequirement} as="span" />
                       </td>
                       <td>
-                        <span className="status-badge-inline status-confirmed">Regular Appointed</span>
+                        <span className="status-badge-inline status-confirmed">{row.status || 'Regular Appointed'}</span>
                       </td>
                     </tr>
                   ))

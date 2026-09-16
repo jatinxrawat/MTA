@@ -2,13 +2,20 @@ import React from 'react';
 import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
 import EditableText from './admin/EditableText';
-import { FileText, Download, Printer, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { FileText, Download, Printer, ShieldAlert, CheckCircle2, ExternalLink } from 'lucide-react';
 import '../styles/cbse-disclosure.css';
 
 export default function CbseDisclosureSection() {
   const { content } = useCMS();
   const cbseData = content.cbseDisclosure || schoolData.cbseDisclosure;
-  const { annexure, title, instructions, sectionA, sectionB, sectionC, sectionD, sectionE } = cbseData;
+  const annexure = cbseData.annexure || schoolData.cbseDisclosure.annexure || 'APPENDIX - IX';
+  const title = cbseData.title || schoolData.cbseDisclosure.title || 'MANDATORY PUBLIC DISCLOSURE';
+  const instructions = cbseData.instructions || schoolData.cbseDisclosure.instructions || '';
+  const sectionA = cbseData.sectionA || schoolData.cbseDisclosure.sectionA;
+  const sectionB = cbseData.sectionB || schoolData.cbseDisclosure.sectionB;
+  const sectionC = cbseData.sectionC || schoolData.cbseDisclosure.sectionC;
+  const sectionD = cbseData.sectionD || schoolData.cbseDisclosure.sectionD;
+  const sectionE = cbseData.sectionE || schoolData.cbseDisclosure.sectionE;
 
   const handlePrint = () => {
     window.print();
@@ -54,7 +61,7 @@ export default function CbseDisclosureSection() {
         {/* Section A: GENERAL INFORMATION */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
-            <h3>{sectionA.sectionTitle}</h3>
+            <h3>{sectionA?.sectionTitle || 'A : GENERAL INFORMATION'}</h3>
             <span className="disclosure-norm-tag">CBSE Circular 03/2021 Norms</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
@@ -67,16 +74,33 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {sectionA.fields.map((field, idx) => (
+                {(sectionA?.fields || []).map((field, idx) => (
                   <tr key={field.sNo || idx}>
-                    <td>0{field.sNo || idx + 1}</td>
-                    <td><strong>{field.information}</strong></td>
+                    <td>{String(field.sNo || idx + 1).padStart(2, '0')}</td>
+                    <td><strong>{field.information || field.parameter}</strong></td>
                     <td>
-                      <EditableText
-                        path={`cbseDisclosure.sectionA.fields.${idx}.details`}
-                        fallback={field.details}
-                        as="span"
-                      />
+                      <div>
+                        <EditableText
+                          path={`cbseDisclosure.sectionA.fields.${idx}.details`}
+                          fallback={field.details}
+                          as="span"
+                        />
+                        {field.fileUrl && (
+                          <div style={{ marginTop: '6px' }}>
+                            <a
+                              href={field.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="cbse-doc-link-btn"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: '#2563eb', fontWeight: '600', textDecoration: 'underline' }}
+                            >
+                              <FileText size={13} />
+                              <span>{field.fileName || (field.fileUrl.endsWith('.pdf') ? 'View Document (PDF)' : 'View Certificate / Photo')}</span>
+                              <ExternalLink size={11} />
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -88,7 +112,7 @@ export default function CbseDisclosureSection() {
         {/* Section B: DOCUMENTS AND INFORMATION */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
-            <h3>{sectionB.sectionTitle}</h3>
+            <h3>{sectionB?.sectionTitle || 'B : DOCUMENTS AND INFORMATION'}</h3>
             <span className="disclosure-norm-tag">Self-Attested Statutory Affidavits</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
@@ -101,18 +125,46 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {sectionB.documents.map((doc, idx) => (
+                {(sectionB?.documents || []).map((doc, idx) => (
                   <tr key={doc.sNo || idx}>
-                    <td>0{doc.sNo || idx + 1}</td>
+                    <td>{String(doc.sNo || idx + 1).padStart(2, '0')}</td>
                     <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <span className="table-badge-placeholder">
-                        <EditableText
-                          path={`cbseDisclosure.sectionB.documents.${idx}.status`}
-                          fallback={doc.status}
-                          as="span"
-                        />
-                      </span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
+                        {doc.fileUrl ? (
+                          <a
+                            href={doc.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '5px 12px',
+                              backgroundColor: '#0b1b3d',
+                              color: '#ffffff',
+                              borderRadius: '4px',
+                              fontSize: '0.82rem',
+                              fontWeight: '600',
+                              textDecoration: 'none',
+                              boxShadow: '0 2px 6px rgba(11,27,61,0.2)'
+                            }}
+                            title="Open verified statutory document"
+                          >
+                            <FileText size={13} style={{ color: '#c5973b' }} />
+                            <span>{doc.fileName || (doc.fileUrl.endsWith('.pdf') ? 'View Document (PDF)' : 'View Certificate')}</span>
+                            <ExternalLink size={12} />
+                          </a>
+                        ) : null}
+
+                        <span className="table-badge-placeholder">
+                          <EditableText
+                            path={`cbseDisclosure.sectionB.documents.${idx}.status`}
+                            fallback={doc.status}
+                            as="span"
+                          />
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -124,7 +176,7 @@ export default function CbseDisclosureSection() {
         {/* Section C: RESULT AND ACADEMICS */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
-            <h3>{sectionC.sectionTitle}</h3>
+            <h3>{sectionC?.sectionTitle || 'C : RESULT AND ACADEMICS'}</h3>
             <span className="disclosure-norm-tag">Academic Records & Governance</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
@@ -137,18 +189,46 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {sectionC.documents.map((doc, idx) => (
+                {(sectionC?.documents || []).map((doc, idx) => (
                   <tr key={doc.sNo || idx}>
-                    <td>0{doc.sNo || idx + 1}</td>
+                    <td>{String(doc.sNo || idx + 1).padStart(2, '0')}</td>
                     <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <span className="table-badge-placeholder">
-                        <EditableText
-                          path={`cbseDisclosure.sectionC.documents.${idx}.status`}
-                          fallback={doc.status}
-                          as="span"
-                        />
-                      </span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
+                        {doc.fileUrl ? (
+                          <a
+                            href={doc.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '5px 12px',
+                              backgroundColor: '#0b1b3d',
+                              color: '#ffffff',
+                              borderRadius: '4px',
+                              fontSize: '0.82rem',
+                              fontWeight: '600',
+                              textDecoration: 'none',
+                              boxShadow: '0 2px 6px rgba(11,27,61,0.2)'
+                            }}
+                            title="Open statutory document"
+                          >
+                            <FileText size={13} style={{ color: '#c5973b' }} />
+                            <span>{doc.fileName || (doc.fileUrl.endsWith('.pdf') ? 'View Document (PDF)' : 'View Document')}</span>
+                            <ExternalLink size={12} />
+                          </a>
+                        ) : null}
+
+                        <span className="table-badge-placeholder">
+                          <EditableText
+                            path={`cbseDisclosure.sectionC.documents.${idx}.status`}
+                            fallback={doc.status}
+                            as="span"
+                          />
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -160,7 +240,7 @@ export default function CbseDisclosureSection() {
         {/* Section D: STAFF (TEACHING) */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
-            <h3>{sectionD.sectionTitle}</h3>
+            <h3>{sectionD?.sectionTitle || 'D : STAFF (TEACHING)'}</h3>
             <span className="disclosure-norm-tag">Affiliation Bye-Laws Staffing Ratio</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
@@ -173,16 +253,32 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {sectionD.fields.map((field, idx) => (
+                {(sectionD?.fields || []).map((field, idx) => (
                   <tr key={idx}>
-                    <td>{field.sNo ? `0${field.sNo}` : '—'}</td>
-                    <td><strong>{field.parameter}</strong></td>
+                    <td>{field.sNo ? String(field.sNo).padStart(2, '0') : '—'}</td>
+                    <td><strong>{field.parameter || field.information}</strong></td>
                     <td>
-                      <EditableText
-                        path={`cbseDisclosure.sectionD.fields.${idx}.details`}
-                        fallback={field.details}
-                        as="span"
-                      />
+                      <div>
+                        <EditableText
+                          path={`cbseDisclosure.sectionD.fields.${idx}.details`}
+                          fallback={field.details}
+                          as="span"
+                        />
+                        {field.fileUrl && (
+                          <div style={{ marginTop: '6px' }}>
+                            <a
+                              href={field.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: '#2563eb', fontWeight: '600', textDecoration: 'underline' }}
+                            >
+                              <FileText size={13} />
+                              <span>{field.fileName || 'View Staff Roster Document'}</span>
+                              <ExternalLink size={11} />
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -194,7 +290,7 @@ export default function CbseDisclosureSection() {
         {/* Section E: SCHOOL INFRASTRUCTURE */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
-            <h3>{sectionE.sectionTitle}</h3>
+            <h3>{sectionE?.sectionTitle || 'E : SCHOOL INFRASTRUCTURE'}</h3>
             <span className="disclosure-norm-tag">Physical Estate Verification Norms</span>
           </div>
           <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
@@ -207,16 +303,32 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {sectionE.fields.map((field, idx) => (
+                {(sectionE?.fields || []).map((field, idx) => (
                   <tr key={field.sNo || idx}>
-                    <td>0{field.sNo || idx + 1}</td>
-                    <td><strong>{field.parameter}</strong></td>
+                    <td>{String(field.sNo || idx + 1).padStart(2, '0')}</td>
+                    <td><strong>{field.parameter || field.information}</strong></td>
                     <td>
-                      <EditableText
-                        path={`cbseDisclosure.sectionE.fields.${idx}.details`}
-                        fallback={field.details}
-                        as="span"
-                      />
+                      <div>
+                        <EditableText
+                          path={`cbseDisclosure.sectionE.fields.${idx}.details`}
+                          fallback={field.details}
+                          as="span"
+                        />
+                        {field.fileUrl && (
+                          <div style={{ marginTop: '6px' }}>
+                            <a
+                              href={field.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: '#2563eb', fontWeight: '600', textDecoration: 'underline' }}
+                            >
+                              <FileText size={13} />
+                              <span>{field.fileName || 'View Certificate / Blueprint'}</span>
+                              <ExternalLink size={11} />
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

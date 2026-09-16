@@ -318,6 +318,230 @@ export function CMSProvider({ children }) {
     setContent((prev) => ({ ...prev, customPages: reorderedList }));
   }, []);
 
+  // --- CBSE DISCLOSURE HELPERS ---
+  const addCbseItem = useCallback((sectionKey, itemData) => {
+    setContent((prev) => {
+      const cbse = prev.cbseDisclosure || {};
+      const section = cbse[sectionKey] || {};
+      const isDocsSection = sectionKey === 'sectionB' || sectionKey === 'sectionC';
+      const listKey = isDocsSection ? 'documents' : 'fields';
+      const currentList = Array.isArray(section[listKey]) ? section[listKey] : [];
+      const nextSNo = currentList.length + 1;
+
+      const newItem = {
+        sNo: nextSNo,
+        ...(isDocsSection 
+          ? { documentName: itemData.documentName || 'New Document', docRef: itemData.docRef || '', status: itemData.status || 'Available', fileUrl: itemData.fileUrl || '', fileName: itemData.fileName || '' } 
+          : { parameter: itemData.parameter || itemData.information || 'New Parameter', information: itemData.information || itemData.parameter || 'New Parameter', details: itemData.details || '', fileUrl: itemData.fileUrl || '', fileName: itemData.fileName || '' }),
+        ...itemData,
+      };
+
+      const updatedSection = {
+        ...section,
+        [listKey]: [...currentList, newItem],
+      };
+
+      return {
+        ...prev,
+        cbseDisclosure: {
+          ...cbse,
+          [sectionKey]: updatedSection,
+        },
+      };
+    });
+    showToast('New disclosure point added to draft!', 'info');
+  }, [showToast]);
+
+  const updateCbseItem = useCallback((sectionKey, index, updatedData) => {
+    setContent((prev) => {
+      const cbse = prev.cbseDisclosure || {};
+      const section = cbse[sectionKey] || {};
+      const isDocsSection = sectionKey === 'sectionB' || sectionKey === 'sectionC';
+      const listKey = isDocsSection ? 'documents' : 'fields';
+      const currentList = Array.isArray(section[listKey]) ? [...section[listKey]] : [];
+
+      if (currentList[index]) {
+        currentList[index] = { ...currentList[index], ...updatedData };
+      }
+
+      return {
+        ...prev,
+        cbseDisclosure: {
+          ...cbse,
+          [sectionKey]: {
+            ...section,
+            [listKey]: currentList,
+          },
+        },
+      };
+    });
+    showToast('Disclosure point updated in draft!', 'info');
+  }, [showToast]);
+
+  const deleteCbseItem = useCallback((sectionKey, index) => {
+    setContent((prev) => {
+      const cbse = prev.cbseDisclosure || {};
+      const section = cbse[sectionKey] || {};
+      const isDocsSection = sectionKey === 'sectionB' || sectionKey === 'sectionC';
+      const listKey = isDocsSection ? 'documents' : 'fields';
+      const currentList = Array.isArray(section[listKey]) ? [...section[listKey]] : [];
+
+      const filtered = currentList.filter((_, idx) => idx !== index);
+
+      return {
+        ...prev,
+        cbseDisclosure: {
+          ...cbse,
+          [sectionKey]: {
+            ...section,
+            [listKey]: filtered,
+          },
+        },
+      };
+    });
+    showToast('Disclosure point removed.', 'info');
+  }, [showToast]);
+
+  // --- FACULTY & STAFF HELPERS ---
+  const addFacultyMember = useCallback((memberData) => {
+    setContent((prev) => {
+      const staff = prev.staff || {};
+      const currentLeadership = Array.isArray(staff.leadership) ? staff.leadership : [];
+      const newMember = {
+        role: memberData.role || 'Faculty Member',
+        name: memberData.name || 'Faculty Name',
+        qualifications: memberData.qualifications || '',
+        experience: memberData.experience || '',
+        messageExcerpt: memberData.messageExcerpt || '',
+        photo: memberData.photo || '',
+        ...memberData,
+      };
+
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          leadership: [...currentLeadership, newMember],
+        },
+      };
+    });
+    showToast('Faculty member added to draft roster!', 'info');
+  }, [showToast]);
+
+  const updateFacultyMember = useCallback((index, updatedData) => {
+    setContent((prev) => {
+      const staff = prev.staff || {};
+      const currentLeadership = Array.isArray(staff.leadership) ? [...staff.leadership] : [];
+
+      if (currentLeadership[index]) {
+        currentLeadership[index] = { ...currentLeadership[index], ...updatedData };
+      }
+
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          leadership: currentLeadership,
+        },
+      };
+    });
+    showToast('Faculty member details updated.', 'info');
+  }, [showToast]);
+
+  const deleteFacultyMember = useCallback((index) => {
+    setContent((prev) => {
+      const staff = prev.staff || {};
+      const currentLeadership = Array.isArray(staff.leadership) ? [...staff.leadership] : [];
+      const filtered = currentLeadership.filter((_, idx) => idx !== index);
+
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          leadership: filtered,
+        },
+      };
+    });
+    showToast('Faculty member removed from roster.', 'info');
+  }, [showToast]);
+
+  const updateStaffMetrics = useCallback((updatedMetrics) => {
+    setContent((prev) => {
+      const staff = prev.staff || {};
+      const currentMetrics = staff.metrics || {};
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          metrics: {
+            ...currentMetrics,
+            ...updatedMetrics,
+          },
+        },
+      };
+    });
+    showToast('Faculty statistics updated in draft.', 'info');
+  }, [showToast]);
+
+  const addCadreRow = useCallback((cadreData) => {
+    setContent((prev) => {
+      const staff = prev.staff || {};
+      const currentCadre = Array.isArray(staff.cadreBreakdown) ? staff.cadreBreakdown : [];
+      const newRow = {
+        category: cadreData.category || 'New Designation',
+        count: cadreData.count || '01',
+        qualificationRequirement: cadreData.qualificationRequirement || '',
+        ...cadreData,
+      };
+
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          cadreBreakdown: [...currentCadre, newRow],
+        },
+      };
+    });
+    showToast('New cadre designation added.', 'info');
+  }, [showToast]);
+
+  const updateCadreRow = useCallback((index, updatedData) => {
+    setContent((prev) => {
+      const staff = prev.staff || {};
+      const currentCadre = Array.isArray(staff.cadreBreakdown) ? [...staff.cadreBreakdown] : [];
+
+      if (currentCadre[index]) {
+        currentCadre[index] = { ...currentCadre[index], ...updatedData };
+      }
+
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          cadreBreakdown: currentCadre,
+        },
+      };
+    });
+    showToast('Cadre designation updated.', 'info');
+  }, [showToast]);
+
+  const deleteCadreRow = useCallback((index) => {
+    setContent((prev) => {
+      const staff = prev.staff || {};
+      const currentCadre = Array.isArray(staff.cadreBreakdown) ? [...staff.cadreBreakdown] : [];
+      const filtered = currentCadre.filter((_, idx) => idx !== index);
+
+      return {
+        ...prev,
+        staff: {
+          ...staff,
+          cadreBreakdown: filtered,
+        },
+      };
+    });
+    showToast('Cadre designation removed.', 'info');
+  }, [showToast]);
+
   // --- PIN AUTHENTICATION & SECURITY (IN-MEMORY SESSION, PERSISTENT PIN) ---
   const activePin = content?.security?.adminPin || getStoredPin() || DEFAULT_ADMIN_PIN;
 
@@ -398,6 +622,18 @@ export function CMSProvider({ children }) {
     deleteCustomPage,
     toggleCustomPagePublish,
     reorderCustomPages,
+    // CBSE Disclosure helpers
+    addCbseItem,
+    updateCbseItem,
+    deleteCbseItem,
+    // Faculty & Staff helpers
+    addFacultyMember,
+    updateFacultyMember,
+    deleteFacultyMember,
+    updateStaffMetrics,
+    addCadreRow,
+    updateCadreRow,
+    deleteCadreRow,
     // Security & PIN Auth
     activePin,
     verifyAndLogin,
