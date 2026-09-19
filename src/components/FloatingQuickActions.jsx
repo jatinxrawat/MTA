@@ -55,7 +55,7 @@ export default function FloatingQuickActions({ onOpenInquiry }) {
           if (onOpenInquiry) onOpenInquiry();
         }}
         className="quick-dock-btn dock-phone"
-        title="Admissions Helpline: +91 98765 43210"
+        title="Admissions Helpline: +91 95576 67999"
         aria-label="Admissions Enquiry"
       >
         <span className="dock-icon-box">

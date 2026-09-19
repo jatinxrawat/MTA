@@ -1,21 +1,99 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
 import EditableText from './admin/EditableText';
-import { FileText, Download, Printer, ShieldAlert, CheckCircle2, ExternalLink } from 'lucide-react';
+import { 
+  FileText, Download, Printer, CheckCircle2, 
+  ExternalLink, Eye, ShieldCheck, Building2, 
+  GraduationCap, Award, X, Image as ImageIcon,
+  FileCheck, Calendar, Users, IndianRupee, Layers
+} from 'lucide-react';
 import '../styles/cbse-disclosure.css';
 
 export default function CbseDisclosureSection() {
   const { content } = useCMS();
   const cbseData = content.cbseDisclosure || schoolData.cbseDisclosure;
-  const annexure = cbseData.annexure || schoolData.cbseDisclosure.annexure || 'APPENDIX - IX';
-  const title = cbseData.title || schoolData.cbseDisclosure.title || 'MANDATORY PUBLIC DISCLOSURE';
-  const instructions = cbseData.instructions || schoolData.cbseDisclosure.instructions || '';
-  const sectionA = cbseData.sectionA || schoolData.cbseDisclosure.sectionA;
-  const sectionB = cbseData.sectionB || schoolData.cbseDisclosure.sectionB;
-  const sectionC = cbseData.sectionC || schoolData.cbseDisclosure.sectionC;
-  const sectionD = cbseData.sectionD || schoolData.cbseDisclosure.sectionD;
-  const sectionE = cbseData.sectionE || schoolData.cbseDisclosure.sectionE;
+  const disclosureDocs = content.disclosureDocuments || schoolData.disclosureDocuments || [];
+  const feeList = content.feeStructure || schoolData.feeStructure || [];
+
+  const { annexure, title, instructions, sectionA, sectionB, sectionC, sectionD, sectionE } = cbseData;
+
+  // Active category filter for certificate vault
+  const [activeCategory, setActiveCategory] = useState('All');
+  // Selected document for Lightbox / Modal Viewer
+  const [selectedDoc, setSelectedDoc] = useState(null);
+
+  const categories = [
+    'All',
+    'Affiliation & Recognition',
+    'Safety & Compliance',
+    'Academics & Fees',
+    'Society & Governance',
+  ];
+
+  const filteredDocs = disclosureDocs.filter((doc) => {
+    if (doc.isPublished === false) return false;
+    if (activeCategory === 'All') return true;
+    return doc.category && doc.category.toLowerCase() === activeCategory.toLowerCase();
+  });
+
+  const isInvalid = (val) => {
+    if (!val) return true;
+    const str = String(val).trim().toLowerCase();
+    return str === '' || str.includes('to be added') || str.includes('[—') || str.includes('[--');
+  };
+
+  // Section A fields sanitized
+  const rawSectionA = (sectionA?.fields && sectionA.fields.length > 0) ? sectionA.fields : schoolData.cbseDisclosure.sectionA.fields;
+  const sectionAFields = rawSectionA
+    .map((f, i) => {
+      const fallbackF = schoolData.cbseDisclosure.sectionA.fields[i] || {};
+      const details = isInvalid(f.details) ? fallbackF.details : f.details;
+      return { ...f, details };
+    })
+    .filter(f => !isInvalid(f.details));
+
+  // Section B documents sanitized
+  const rawSectionB = (sectionB?.documents && sectionB.documents.length > 0) ? sectionB.documents : schoolData.cbseDisclosure.sectionB.documents;
+  const sectionBDocuments = rawSectionB
+    .map((d, i) => {
+      const fallbackD = schoolData.cbseDisclosure.sectionB.documents[i] || {};
+      const fileUrl = isInvalid(d.fileUrl) ? fallbackD.fileUrl : d.fileUrl;
+      const status = isInvalid(d.status) ? fallbackD.status : d.status;
+      return { ...d, fileUrl, status };
+    })
+    .filter(d => !isInvalid(d.documentName));
+
+  // Section C documents sanitized
+  const rawSectionC = (sectionC?.documents && sectionC.documents.length > 0) ? sectionC.documents : schoolData.cbseDisclosure.sectionC.documents;
+  const sectionCDocuments = rawSectionC
+    .map((d, i) => {
+      const fallbackD = schoolData.cbseDisclosure.sectionC.documents[i] || {};
+      const fileUrl = isInvalid(d.fileUrl) ? fallbackD.fileUrl : d.fileUrl;
+      const status = isInvalid(d.status) ? fallbackD.status : d.status;
+      return { ...d, fileUrl, status };
+    })
+    .filter(d => !isInvalid(d.documentName));
+
+  // Section D fields sanitized
+  const rawSectionD = (sectionD?.fields && sectionD.fields.length > 0) ? sectionD.fields : schoolData.cbseDisclosure.sectionD.fields;
+  const sectionDFields = rawSectionD
+    .map((f, i) => {
+      const fallbackF = schoolData.cbseDisclosure.sectionD.fields[i] || {};
+      const details = isInvalid(f.details) ? fallbackF.details : f.details;
+      return { ...f, details };
+    })
+    .filter(f => !isInvalid(f.details));
+
+  // Section E fields sanitized
+  const rawSectionE = (sectionE?.fields && sectionE.fields.length > 0) ? sectionE.fields : schoolData.cbseDisclosure.sectionE.fields;
+  const sectionEFields = rawSectionE
+    .map((f, i) => {
+      const fallbackF = schoolData.cbseDisclosure.sectionE.fields[i] || {};
+      const details = isInvalid(f.details) ? fallbackF.details : f.details;
+      return { ...f, details };
+    })
+    .filter(f => !isInvalid(f.details));
 
   const handlePrint = () => {
     window.print();
@@ -32,18 +110,71 @@ export default function CbseDisclosureSection() {
         <header className="editorial-section-header text-center">
           <span className="prospectus-subhead">Statutory Regulatory Compliance</span>
           <h2 className="prospectus-title">CBSE Mandatory Public Disclosure</h2>
+          <p className="prospectus-lead text-center" style={{ maxWidth: '780px', margin: '0.75rem auto 0' }}>
+            Official publication of Central Board of Secondary Education (CBSE) Appendix-IX statutory data,
+            self-attested regulatory certificates, institutional affiliations, and approved fee schedules.
+          </p>
           <div className="prospectus-rule centered">
             <span className="prospectus-rule-gem" />
           </div>
         </header>
 
-        {/* CBSE Official Appendix-IX Seal Banner */}
+        {/* 1. Quick Glance Statutory Metric Cards */}
+        <div className="statutory-highlights-grid">
+          <div className="statutory-highlight-card">
+            <div className="statutory-highlight-icon">
+              <Award size={24} />
+            </div>
+            <div>
+              <span className="statutory-highlight-label">CBSE Affiliation No.</span>
+              <div className="statutory-highlight-val">2134272</div>
+              <span className="statutory-highlight-sub">● Senior Secondary (Fresh)</span>
+            </div>
+          </div>
+
+          <div className="statutory-highlight-card highlight-accent">
+            <div className="statutory-highlight-icon">
+              <ShieldCheck size={24} />
+            </div>
+            <div>
+              <span className="statutory-highlight-label">School Code (OASIS)</span>
+              <div className="statutory-highlight-val">61658</div>
+              <span className="statutory-highlight-sub">● CBSE Examination Center</span>
+            </div>
+          </div>
+
+          <div className="statutory-highlight-card highlight-brass">
+            <div className="statutory-highlight-icon">
+              <GraduationCap size={24} />
+            </div>
+            <div>
+              <span className="statutory-highlight-label">Status & Range</span>
+              <div className="statutory-highlight-val">Class I to XII</div>
+              <span className="statutory-highlight-sub">● Science, Commerce, Arts</span>
+            </div>
+          </div>
+
+          <div className="statutory-highlight-card">
+            <div className="statutory-highlight-icon">
+              <Building2 size={24} />
+            </div>
+            <div>
+              <span className="statutory-highlight-label">Campus Land Area</span>
+              <div className="statutory-highlight-val">6,275 Sq. M.</div>
+              <span className="statutory-highlight-sub">● 1.55 Acres Enclosure</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. CBSE Official Appendix-IX Seal Banner */}
         <div className="cbse-seal-banner">
           <div className="cbse-seal-left">
             <div>
-              <span className="cbse-official-pill">{annexure} FORMAT</span>
-              <h3 className="cbse-seal-title">{title}</h3>
-              <p className="cbse-seal-notice">{instructions}</p>
+              <span className="cbse-official-pill">{annexure || 'APPENDIX - IX'} FORMAT</span>
+              <h3 className="cbse-seal-title">{title || 'MANDATORY PUBLIC DISCLOSURE'}</h3>
+              <p className="cbse-seal-notice">
+                {instructions || 'In compliance with CBSE Affiliation Bye-Laws (Rule 14.10) and Circular No. 03/2021, the following statutory information and self-attested documents are published for public inspection.'}
+              </p>
             </div>
           </div>
           <button
@@ -58,7 +189,174 @@ export default function CbseDisclosureSection() {
           </button>
         </div>
 
-        {/* Section A: GENERAL INFORMATION */}
+        {/* 3. CERTIFICATE & DOCUMENT VAULT (PDFs & Photos) */}
+        <div className="disclosure-vault-wrapper">
+          <div className="disclosure-vault-header">
+            <div className="vault-heading-group">
+              <h3>Statutory Certificates & Document Archive</h3>
+              <p>Self-attested official copies of affiliation letters, safety certificates, recognition orders, and registrations.</p>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="vault-category-filter">
+              {categories.map((cat) => {
+                const count = cat === 'All' 
+                  ? disclosureDocs.filter((d) => d.isPublished !== false).length 
+                  : disclosureDocs.filter((d) => d.isPublished !== false && d.category?.toLowerCase() === cat.toLowerCase()).length;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    className={`vault-cat-btn ${activeCategory === cat ? 'active' : ''}`}
+                    onClick={() => setActiveCategory(cat)}
+                  >
+                    <span>{cat}</span>
+                    <span className="vault-cat-badge">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="disclosure-cards-grid">
+            {filteredDocs.map((doc) => {
+              const isPdf = doc.fileType === 'pdf' || doc.fileUrl?.toLowerCase().endsWith('.pdf');
+              return (
+                <div key={doc.id} className="disclosure-doc-card">
+                  {/* Preview Area */}
+                  <div 
+                    className="disclosure-card-preview"
+                    onClick={() => setSelectedDoc(doc)}
+                  >
+                    <span className={`disclosure-card-tag ${isPdf ? 'tag-pdf' : 'tag-photo'}`}>
+                      {isPdf ? 'PDF Document' : 'Official Photo'}
+                    </span>
+
+                    {isPdf ? (
+                      <div className="disclosure-pdf-art">
+                        <div className="disclosure-pdf-icon-ring">
+                          <FileText size={26} />
+                        </div>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#f8fafc' }}>
+                          Official CBSE PDF Document
+                        </span>
+                      </div>
+                    ) : (
+                      <img
+                        src={doc.fileUrl}
+                        alt={doc.title}
+                        className="disclosure-card-img"
+                        loading="lazy"
+                      />
+                    )}
+
+                    <div className="disclosure-card-hover-overlay">
+                      <Eye size={22} />
+                      <span>Click to Inspect / View</span>
+                    </div>
+                  </div>
+
+                  {/* Body Content */}
+                  <div className="disclosure-card-body">
+                    <span className="disclosure-card-cat">{doc.category || 'Statutory Compliance'}</span>
+                    <h4 className="disclosure-card-title">{doc.title}</h4>
+                    
+                    <div className="disclosure-card-meta">
+                      {doc.documentNumber && (
+                        <div><strong>Doc No:</strong> {doc.documentNumber}</div>
+                      )}
+                      {doc.issuingAuthority && (
+                        <div><strong>Authority:</strong> {doc.issuingAuthority}</div>
+                      )}
+                      {doc.validUntil && (
+                        <div><strong>Validity:</strong> {doc.validUntil}</div>
+                      )}
+                    </div>
+
+                    <div className="disclosure-card-actions">
+                      <button
+                        type="button"
+                        className="disclosure-action-btn btn-primary"
+                        onClick={() => setSelectedDoc(doc)}
+                      >
+                        <Eye size={14} />
+                        <span>Inspect</span>
+                      </button>
+
+                      <a
+                        href={doc.fileUrl}
+                        download
+                        target="_blank"
+                        rel="noreferrer"
+                        className="disclosure-action-btn"
+                        title="Download Certificate File"
+                      >
+                        <Download size={14} />
+                        <span>Download</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 4. OFFICIAL APPROVED FEE SCHEDULE SECTION (Session 2025–26) */}
+        {feeList.length > 0 && (
+          <div className="fee-table-section">
+            <div className="fee-table-header">
+              <div>
+                <h3>Official Approved Annual & Monthly Fee Schedule (Session 2025–2026)</h3>
+                <span>Approved by School Management Committee & Affiliation Compliance Desk</span>
+              </div>
+              <a
+                href="/disclosure/fee-structure-official.jpg"
+                target="_blank"
+                rel="noreferrer"
+                className="doc-link-btn"
+                style={{ background: '#ffffff', color: '#0b1b3d' }}
+              >
+                <Eye size={15} />
+                <span>View Original Signed Document</span>
+              </a>
+            </div>
+
+            <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
+              <table className="academic-table" aria-label="Official Approved Fee Schedule 2025-2026">
+                <thead>
+                  <tr>
+                    <th scope="col">Class / Standard</th>
+                    <th scope="col">Reg. Charges (₹)</th>
+                    <th scope="col">Annual Charges (₹)</th>
+                    <th scope="col">Monthly Tuition (₹)</th>
+                    <th scope="col">Tuition (12 Mos) (₹)</th>
+                    <th scope="col">Exam Charges (₹)</th>
+                    <th scope="col" style={{ background: '#0b1b3d', color: '#f8fafc' }}>Total Annual Fee (₹)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {feeList.map((item, idx) => (
+                    <tr key={item.grade || idx}>
+                      <td><strong>{item.grade}</strong></td>
+                      <td>₹ {item.regFee?.toLocaleString('en-IN')}/-</td>
+                      <td>₹ {item.annualCharges?.toLocaleString('en-IN')}/-</td>
+                      <td>₹ {item.monthlyTuition?.toLocaleString('en-IN')}/- pm</td>
+                      <td>₹ {item.totalTuition?.toLocaleString('en-IN')}/-</td>
+                      <td>₹ {item.examFee?.toLocaleString('en-IN')}/-</td>
+                      <td style={{ fontWeight: 700, color: 'var(--color-navy-deep)', background: '#f8fafc' }}>
+                        ₹ {item.total?.toLocaleString('en-IN')}/-
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* 5. Section A: GENERAL INFORMATION */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionA?.sectionTitle || 'A : GENERAL INFORMATION'}</h3>
@@ -74,10 +372,10 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {(sectionA?.fields || []).map((field, idx) => (
+                {sectionAFields.map((field, idx) => (
                   <tr key={field.sNo || idx}>
-                    <td>{String(field.sNo || idx + 1).padStart(2, '0')}</td>
-                    <td><strong>{field.information || field.parameter}</strong></td>
+                    <td>0{field.sNo || idx + 1}</td>
+                    <td><strong>{field.information}</strong></td>
                     <td>
                       <div>
                         <EditableText
@@ -90,13 +388,11 @@ export default function CbseDisclosureSection() {
                             <a
                               href={field.fileUrl}
                               target="_blank"
-                              rel="noopener noreferrer"
-                              className="cbse-doc-link-btn"
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: '#2563eb', fontWeight: '600', textDecoration: 'underline' }}
+                              rel="noreferrer"
+                              className="doc-link-btn"
                             >
-                              <FileText size={13} />
-                              <span>{field.fileName || (field.fileUrl.endsWith('.pdf') ? 'View Document (PDF)' : 'View Certificate / Photo')}</span>
-                              <ExternalLink size={11} />
+                              <ExternalLink size={13} />
+                              <span>{field.fileName || 'View Document'}</span>
                             </a>
                           </div>
                         )}
@@ -109,7 +405,7 @@ export default function CbseDisclosureSection() {
           </div>
         </div>
 
-        {/* Section B: DOCUMENTS AND INFORMATION */}
+        {/* 6. Section B: DOCUMENTS AND INFORMATION */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionB?.sectionTitle || 'B : DOCUMENTS AND INFORMATION'}</h3>
@@ -120,47 +416,33 @@ export default function CbseDisclosureSection() {
               <thead>
                 <tr>
                   <th scope="col" style={{ width: '80px' }}>S.No.</th>
-                  <th scope="col" style={{ width: '54%' }}>Documents / Prescribed Information</th>
-                  <th scope="col">Document Verification & Upload Status</th>
+                  <th scope="col" style={{ width: '50%' }}>Documents / Prescribed Information</th>
+                  <th scope="col">Document Verification & Upload Link</th>
                 </tr>
               </thead>
               <tbody>
-                {(sectionB?.documents || []).map((doc, idx) => (
+                {sectionBDocuments.map((doc, idx) => (
                   <tr key={doc.sNo || idx}>
-                    <td>{String(doc.sNo || idx + 1).padStart(2, '0')}</td>
+                    <td>0{doc.sNo || idx + 1}</td>
                     <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                         {doc.fileUrl ? (
                           <a
                             href={doc.fileUrl}
                             target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '6px',
-                              padding: '5px 12px',
-                              backgroundColor: '#0b1b3d',
-                              color: '#ffffff',
-                              borderRadius: '4px',
-                              fontSize: '0.82rem',
-                              fontWeight: '600',
-                              textDecoration: 'none',
-                              boxShadow: '0 2px 6px rgba(11,27,61,0.2)'
-                            }}
-                            title="Open verified statutory document"
+                            rel="noreferrer"
+                            className="doc-link-btn"
                           >
-                            <FileText size={13} style={{ color: '#c5973b' }} />
-                            <span>{doc.fileName || (doc.fileUrl.endsWith('.pdf') ? 'View Document (PDF)' : 'View Certificate')}</span>
-                            <ExternalLink size={12} />
+                            <ExternalLink size={14} />
+                            <span>View / Download Document</span>
                           </a>
                         ) : null}
-
-                        <span className="table-badge-placeholder">
+                        <span className="doc-link-verified">
+                          <CheckCircle2 size={13} />
                           <EditableText
                             path={`cbseDisclosure.sectionB.documents.${idx}.status`}
-                            fallback={doc.status}
+                            fallback={doc.status || 'Verified & Uploaded'}
                             as="span"
                           />
                         </span>
@@ -173,7 +455,7 @@ export default function CbseDisclosureSection() {
           </div>
         </div>
 
-        {/* Section C: RESULT AND ACADEMICS */}
+        {/* 7. Section C: RESULT AND ACADEMICS */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionC?.sectionTitle || 'C : RESULT AND ACADEMICS'}</h3>
@@ -184,47 +466,33 @@ export default function CbseDisclosureSection() {
               <thead>
                 <tr>
                   <th scope="col" style={{ width: '80px' }}>S.No.</th>
-                  <th scope="col" style={{ width: '54%' }}>Statutory Institutional Document</th>
+                  <th scope="col" style={{ width: '50%' }}>Statutory Institutional Document</th>
                   <th scope="col">Publication Link / Verification Status</th>
                 </tr>
               </thead>
               <tbody>
-                {(sectionC?.documents || []).map((doc, idx) => (
+                {sectionCDocuments.map((doc, idx) => (
                   <tr key={doc.sNo || idx}>
-                    <td>{String(doc.sNo || idx + 1).padStart(2, '0')}</td>
+                    <td>0{doc.sNo || idx + 1}</td>
                     <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
-                        {doc.fileUrl ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                        {doc.fileUrl && doc.fileUrl.startsWith('/') ? (
                           <a
                             href={doc.fileUrl}
                             target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '6px',
-                              padding: '5px 12px',
-                              backgroundColor: '#0b1b3d',
-                              color: '#ffffff',
-                              borderRadius: '4px',
-                              fontSize: '0.82rem',
-                              fontWeight: '600',
-                              textDecoration: 'none',
-                              boxShadow: '0 2px 6px rgba(11,27,61,0.2)'
-                            }}
-                            title="Open statutory document"
+                            rel="noreferrer"
+                            className="doc-link-btn"
                           >
-                            <FileText size={13} style={{ color: '#c5973b' }} />
-                            <span>{doc.fileName || (doc.fileUrl.endsWith('.pdf') ? 'View Document (PDF)' : 'View Document')}</span>
-                            <ExternalLink size={12} />
+                            <ExternalLink size={14} />
+                            <span>View Document</span>
                           </a>
                         ) : null}
-
-                        <span className="table-badge-placeholder">
+                        <span className="doc-link-verified">
+                          <CheckCircle2 size={13} />
                           <EditableText
                             path={`cbseDisclosure.sectionC.documents.${idx}.status`}
-                            fallback={doc.status}
+                            fallback={doc.status || 'Verified & Uploaded'}
                             as="span"
                           />
                         </span>
@@ -237,7 +505,7 @@ export default function CbseDisclosureSection() {
           </div>
         </div>
 
-        {/* Section D: STAFF (TEACHING) */}
+        {/* 8. Section D: STAFF (TEACHING) */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionD?.sectionTitle || 'D : STAFF (TEACHING)'}</h3>
@@ -253,32 +521,16 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {(sectionD?.fields || []).map((field, idx) => (
+                {sectionDFields.map((field, idx) => (
                   <tr key={idx}>
-                    <td>{field.sNo ? String(field.sNo).padStart(2, '0') : '—'}</td>
-                    <td><strong>{field.parameter || field.information}</strong></td>
+                    <td>{field.sNo ? `0${field.sNo}` : '—'}</td>
+                    <td><strong>{field.parameter}</strong></td>
                     <td>
-                      <div>
-                        <EditableText
-                          path={`cbseDisclosure.sectionD.fields.${idx}.details`}
-                          fallback={field.details}
-                          as="span"
-                        />
-                        {field.fileUrl && (
-                          <div style={{ marginTop: '6px' }}>
-                            <a
-                              href={field.fileUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: '#2563eb', fontWeight: '600', textDecoration: 'underline' }}
-                            >
-                              <FileText size={13} />
-                              <span>{field.fileName || 'View Staff Roster Document'}</span>
-                              <ExternalLink size={11} />
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                      <EditableText
+                        path={`cbseDisclosure.sectionD.fields.${idx}.details`}
+                        fallback={field.details}
+                        as="span"
+                      />
                     </td>
                   </tr>
                 ))}
@@ -287,7 +539,7 @@ export default function CbseDisclosureSection() {
           </div>
         </div>
 
-        {/* Section E: SCHOOL INFRASTRUCTURE */}
+        {/* 9. Section E: SCHOOL INFRASTRUCTURE */}
         <div className="disclosure-table-wrapper">
           <div className="disclosure-section-heading">
             <h3>{sectionE?.sectionTitle || 'E : SCHOOL INFRASTRUCTURE'}</h3>
@@ -303,32 +555,16 @@ export default function CbseDisclosureSection() {
                 </tr>
               </thead>
               <tbody>
-                {(sectionE?.fields || []).map((field, idx) => (
+                {sectionEFields.map((field, idx) => (
                   <tr key={field.sNo || idx}>
-                    <td>{String(field.sNo || idx + 1).padStart(2, '0')}</td>
-                    <td><strong>{field.parameter || field.information}</strong></td>
+                    <td>0{field.sNo || idx + 1}</td>
+                    <td><strong>{field.parameter}</strong></td>
                     <td>
-                      <div>
-                        <EditableText
-                          path={`cbseDisclosure.sectionE.fields.${idx}.details`}
-                          fallback={field.details}
-                          as="span"
-                        />
-                        {field.fileUrl && (
-                          <div style={{ marginTop: '6px' }}>
-                            <a
-                              href={field.fileUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: '#2563eb', fontWeight: '600', textDecoration: 'underline' }}
-                            >
-                              <FileText size={13} />
-                              <span>{field.fileName || 'View Certificate / Blueprint'}</span>
-                              <ExternalLink size={11} />
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                      <EditableText
+                        path={`cbseDisclosure.sectionE.fields.${idx}.details`}
+                        fallback={field.details}
+                        as="span"
+                      />
                     </td>
                   </tr>
                 ))}
@@ -337,6 +573,80 @@ export default function CbseDisclosureSection() {
           </div>
         </div>
       </div>
+
+      {/* 10. LIGHTBOX & DOCUMENT MODAL VIEWER */}
+      {selectedDoc && (
+        <div 
+          className="doc-modal-backdrop"
+          onClick={() => setSelectedDoc(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div 
+            className="doc-modal-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="doc-modal-header">
+              <div className="doc-modal-title-group">
+                <span>{selectedDoc.category || 'Mandatory Public Disclosure'}</span>
+                <h3>{selectedDoc.title}</h3>
+              </div>
+              <button
+                type="button"
+                className="doc-modal-close-btn"
+                onClick={() => setSelectedDoc(null)}
+                aria-label="Close document viewer"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="doc-modal-content">
+              {selectedDoc.fileType === 'pdf' || selectedDoc.fileUrl?.toLowerCase().endsWith('.pdf') ? (
+                <iframe
+                  src={selectedDoc.fileUrl}
+                  title={selectedDoc.title}
+                  className="doc-modal-pdf-embed"
+                />
+              ) : (
+                <img
+                  src={selectedDoc.fileUrl}
+                  alt={selectedDoc.title}
+                  className="doc-modal-img"
+                />
+              )}
+            </div>
+
+            <div className="doc-modal-footer">
+              <div className="doc-modal-meta">
+                {selectedDoc.documentNumber && <span><strong>Doc Ref:</strong> {selectedDoc.documentNumber} | </span>}
+                {selectedDoc.issuingAuthority && <span><strong>Authority:</strong> {selectedDoc.issuingAuthority} | </span>}
+                {selectedDoc.validUntil && <span><strong>Valid:</strong> {selectedDoc.validUntil}</span>}
+              </div>
+
+              <div className="doc-modal-actions">
+                <a
+                  href={selectedDoc.fileUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="disclosure-action-btn"
+                >
+                  <ExternalLink size={15} />
+                  <span>Open in New Tab</span>
+                </a>
+                <a
+                  href={selectedDoc.fileUrl}
+                  download
+                  className="disclosure-action-btn btn-primary"
+                >
+                  <Download size={15} />
+                  <span>Download File</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

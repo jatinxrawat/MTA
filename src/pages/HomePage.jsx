@@ -1047,15 +1047,15 @@ export default function HomePage({ onOpenInquiry }) {
               ) : (
                 <form onSubmit={handleInquirySubmit}>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="home-parentName">
-                      Parent / Guardian Full Name *
+                    <label className="form-label" htmlFor="home-parent-name">
+                      Parent / Guardian Name *
                     </label>
                     <input
                       type="text"
-                      id="home-parentName"
+                      id="home-parent-name"
                       required
                       className="form-input"
-                      placeholder="e.g. Sh. Devendra Kumar"
+                      placeholder="Enter full name"
                       value={inquiryData.parentName}
                       onChange={(e) => setInquiryData({ ...inquiryData, parentName: e.target.value })}
                     />
@@ -1070,7 +1070,7 @@ export default function HomePage({ onOpenInquiry }) {
                       id="home-phone"
                       required
                       className="form-input"
-                      placeholder="+91 98XXXXXXXX"
+                      placeholder="+91 95576 XXXXX"
                       value={inquiryData.phone}
                       onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
                     />
@@ -1084,7 +1084,7 @@ export default function HomePage({ onOpenInquiry }) {
                       type="email"
                       id="home-email"
                       className="form-input"
-                      placeholder="e.g. parent@example.com"
+                      placeholder="parent@example.com"
                       value={inquiryData.email}
                       onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
                     />

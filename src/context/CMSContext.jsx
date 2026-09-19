@@ -542,6 +542,62 @@ export function CMSProvider({ children }) {
     showToast('Cadre designation removed.', 'info');
   }, [showToast]);
 
+  // --- MANDATORY DISCLOSURE & CERTIFICATES HELPERS ---
+  const addDisclosureDoc = useCallback((newDoc) => {
+    setContent((prev) => {
+      const currentDocs = prev.disclosureDocuments || [];
+      const docId = newDoc.id || `doc_${Date.now()}`;
+      const updated = [
+        {
+          id: docId,
+          title: newDoc.title || 'Official Statutory Document',
+          category: newDoc.category || 'Affiliation & Recognition',
+          fileType: newDoc.fileType || (newDoc.fileUrl?.endsWith('.pdf') ? 'pdf' : 'photo'),
+          fileUrl: newDoc.fileUrl || '/disclosure/cbse-affiliation-grant-letter.pdf',
+          issuingAuthority: newDoc.issuingAuthority || 'Competent Regulatory Authority',
+          documentNumber: newDoc.documentNumber || 'MTA/DOC/' + new Date().getFullYear(),
+          issueDate: newDoc.issueDate || new Date().toLocaleDateString('en-GB'),
+          validUntil: newDoc.validUntil || 'Statutory Compliance',
+          description: newDoc.description || '',
+          isPublished: true,
+          ...newDoc,
+        },
+        ...currentDocs,
+      ];
+      return { ...prev, disclosureDocuments: updated };
+    });
+    showToast('Disclosure document drafted! Click "Publish" when ready.', 'info');
+  }, [showToast]);
+
+  const updateDisclosureDoc = useCallback((id, updatedFields) => {
+    setContent((prev) => {
+      const currentDocs = prev.disclosureDocuments || [];
+      const updated = currentDocs.map((d) => (d.id === id ? { ...d, ...updatedFields } : d));
+      return { ...prev, disclosureDocuments: updated };
+    });
+  }, []);
+
+  const deleteDisclosureDoc = useCallback((id) => {
+    setContent((prev) => {
+      const currentDocs = prev.disclosureDocuments || [];
+      const updated = currentDocs.filter((d) => d.id !== id);
+      return { ...prev, disclosureDocuments: updated };
+    });
+    showToast('Document removed from disclosure draft.', 'info');
+  }, [showToast]);
+
+  const toggleDisclosureDocVisibility = useCallback((id) => {
+    setContent((prev) => {
+      const currentDocs = prev.disclosureDocuments || [];
+      const updated = currentDocs.map((d) => (d.id === id ? { ...d, isPublished: !d.isPublished } : d));
+      return { ...prev, disclosureDocuments: updated };
+    });
+  }, []);
+
+  const reorderDisclosureDocs = useCallback((reorderedList) => {
+    setContent((prev) => ({ ...prev, disclosureDocuments: reorderedList }));
+  }, []);
+
   // --- PIN AUTHENTICATION & SECURITY (IN-MEMORY SESSION, PERSISTENT PIN) ---
   const activePin = content?.security?.adminPin || getStoredPin() || DEFAULT_ADMIN_PIN;
 
@@ -634,6 +690,12 @@ export function CMSProvider({ children }) {
     addCadreRow,
     updateCadreRow,
     deleteCadreRow,
+    // Disclosure & Certificate helpers
+    addDisclosureDoc,
+    updateDisclosureDoc,
+    deleteDisclosureDoc,
+    toggleDisclosureDocVisibility,
+    reorderDisclosureDocs,
     // Security & PIN Auth
     activePin,
     verifyAndLogin,

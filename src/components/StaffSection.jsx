@@ -7,9 +7,20 @@ import EditableImage from './admin/EditableImage';
 export default function StaffSection() {
   const { content } = useCMS();
   const staff = content.staff || schoolData.staff;
-  const leadership = staff.leadership || schoolData.staff.leadership;
+  const rawLeadership = (staff.leadership && staff.leadership.length > 0) ? staff.leadership : schoolData.staff.leadership;
   const cadreBreakdown = staff.cadreBreakdown || schoolData.staff.cadreBreakdown;
   const metrics = staff.metrics || schoolData.staff.metrics;
+
+  const isInvalid = (val) => {
+    if (!val) return true;
+    const str = String(val).trim().toLowerCase();
+    return str === '' || str.includes('to be added') || str.includes('[—') || str.includes('[--');
+  };
+
+  // Only keep leaders with a non-empty, authentic name
+  const leadership = (rawLeadership || []).filter(
+    (leader) => leader && !isInvalid(leader.name) && leader.name.trim() !== ''
+  );
 
   return (
     <section id="staff" className="section-padding section-parchment" aria-label="Teaching Staff & Leadership">
@@ -45,14 +56,9 @@ export default function StaffSection() {
           </div>
         </div>
 
-        {/* Leadership Triptych (Principal, Vice Principal, Headmaster/Headmistress) */}
-        {/* Leadership Triptych (Principal, Vice Principal, Headmaster/Headmistress) */}
-        {leadership.length === 0 ? (
-          <div style={{ padding: '2.5rem', textAlign: 'center', background: '#fff', border: '1px dashed var(--bg-paper-rule)', marginBottom: '2.5rem' }}>
-            <p style={{ margin: 0, color: 'var(--ink-secondary)' }}>Staff leadership roster will appear here once added.</p>
-          </div>
-        ) : (
-          <div className="leadership-grid">
+        {/* Leadership Showcase (Only authentic roster members) */}
+        {leadership.length === 0 ? null : (
+          <div className={`leadership-grid ${leadership.length === 1 ? 'single-leader' : ''}`} style={leadership.length === 1 ? { maxWidth: '720px', margin: '0 auto 3.5rem' } : {}}>
             {leadership.map((leader, idx) => (
               <article key={idx} className="leadership-card" style={{ '--reveal-delay': idx }}>
                 {leader.photo && (
@@ -64,14 +70,18 @@ export default function StaffSection() {
                 <h3 className="leadership-name">
                   <EditableText path={`staff.leadership.${idx}.name`} fallback={leader.name} as="span" />
                 </h3>
-                <p className="leadership-qual">
-                  <strong>Qualifications:</strong>{' '}
-                  <EditableText path={`staff.leadership.${idx}.qualifications`} fallback={leader.qualifications} as="span" />
-                </p>
-                <div className="leadership-exp">
-                  <EditableText path={`staff.leadership.${idx}.experience`} fallback={leader.experience} as="span" />
-                </div>
-                {leader.messageExcerpt && (
+                {leader.qualifications && !isInvalid(leader.qualifications) && (
+                  <p className="leadership-qual">
+                    <strong>Qualifications:</strong>{' '}
+                    <EditableText path={`staff.leadership.${idx}.qualifications`} fallback={leader.qualifications} as="span" />
+                  </p>
+                )}
+                {leader.experience && !isInvalid(leader.experience) && (
+                  <div className="leadership-exp">
+                    <EditableText path={`staff.leadership.${idx}.experience`} fallback={leader.experience} as="span" />
+                  </div>
+                )}
+                {leader.messageExcerpt && !isInvalid(leader.messageExcerpt) && (
                   <blockquote className="leadership-quote">
                     <EditableText path={`staff.leadership.${idx}.messageExcerpt`} multiline={true} fallback={leader.messageExcerpt} as="span" />
                   </blockquote>

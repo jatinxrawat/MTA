@@ -5,6 +5,7 @@ import CrestLogo from '../../components/CrestLogo';
 import AdminNoticeManager from './AdminNoticeManager';
 import AdminGalleryManager from './AdminGalleryManager';
 import AdminPagesManager from './AdminPagesManager';
+import AdminDisclosureManager from './AdminDisclosureManager';
 import AdminCbseManager from './AdminCbseManager';
 import AdminStaffManager from './AdminStaffManager';
 import AdminCloudGuide from './AdminCloudGuide';
@@ -329,10 +330,19 @@ export default function AdminLayout() {
 
             <button
               type="button"
+              className={`cms-nav-item ${activeSection === 'disclosure' ? 'active' : ''}`}
+              onClick={() => handleNavSelect('disclosure')}
+            >
+              <FileCheck size={16} />
+              <span>Mandatory Disclosure</span>
+            </button>
+
+            <button
+              type="button"
               className={`cms-nav-item ${activeSection === 'cbse' ? 'active' : ''}`}
               onClick={() => handleNavSelect('cbse')}
             >
-              <FileCheck size={16} />
+              <ShieldCheck size={16} />
               <span>CBSE Disclosure</span>
             </button>
 
@@ -448,13 +458,16 @@ export default function AdminLayout() {
           {/* SECTION D: CUSTOM PAGES MANAGEMENT */}
           {activeSection === 'pages' && <AdminPagesManager />}
 
-          {/* SECTION E: CBSE DISCLOSURE MANAGEMENT */}
+          {/* SECTION E: MANDATORY DISCLOSURE & CERTIFICATES */}
+          {activeSection === 'disclosure' && <AdminDisclosureManager />}
+
+          {/* SECTION F: CBSE DISCLOSURE MANAGEMENT */}
           {activeSection === 'cbse' && <AdminCbseManager />}
 
-          {/* SECTION F: FACULTY & STAFF MANAGEMENT */}
+          {/* SECTION G: FACULTY & STAFF MANAGEMENT */}
           {activeSection === 'staff' && <AdminStaffManager />}
 
-          {/* SECTION G: CLOUD HANDOFF GUIDE */}
+          {/* SECTION H: CLOUD HANDOFF GUIDE */}
           {activeSection === 'guide' && <AdminCloudGuide />}
         </main>
       </div>

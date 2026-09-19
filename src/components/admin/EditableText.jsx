@@ -27,19 +27,29 @@ export default function EditableText({
   const location = useLocation();
   const isInAdmin = location.pathname.startsWith('/admin');
   const { content, updateField, isAdmin, isEditing } = useCMS();
-  const fallbackVal = fallback || (typeof children === 'string' ? children : '') || '';
-  const rawValue = path ? getNestedValue(content, path, fallbackVal) : fallbackVal;
-  const hasValue = rawValue !== undefined && rawValue !== null && String(rawValue).trim() !== '';
-  const displayValue = hasValue ? String(rawValue) : String(fallbackVal);
+  const sanitize = (val) => {
+    if (typeof val !== 'string') return val;
+    const s = val.trim().toLowerCase();
+    if (s.includes('to be added') || s.includes('[—') || s.includes('[--') || s === '[— to be added]') {
+      return '';
+    }
+    return val;
+  };
+
+  const cleanFallback = sanitize(fallback || (typeof children === 'string' ? children : '') || '');
+  const rawValue = path ? getNestedValue(content, path, cleanFallback) : cleanFallback;
+  const sanitizedRaw = sanitize(rawValue);
+  const hasValue = sanitizedRaw !== undefined && sanitizedRaw !== null && String(sanitizedRaw).trim() !== '';
+  const displayValue = hasValue ? String(sanitizedRaw) : String(cleanFallback);
 
   const [isEditingInline, setIsEditingInline] = useState(false);
-  const [draftValue, setDraftValue] = useState(hasValue ? String(rawValue) : String(fallbackVal));
+  const [draftValue, setDraftValue] = useState(displayValue);
   const inputRef = useRef(null);
 
   // Sync draft value if content changes externally
   useEffect(() => {
-    setDraftValue(hasValue ? String(rawValue) : String(fallbackVal));
-  }, [rawValue, fallbackVal, hasValue]);
+    setDraftValue(displayValue);
+  }, [displayValue]);
 
   // Focus and select text upon entering edit mode
   useEffect(() => {

@@ -38,9 +38,20 @@ import { schoolData } from '../data/schoolData.js';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase.js';
 
-const STORAGE_KEY = 'mta_cms_site_content_v1';
+const STORAGE_KEY = 'mta_cms_site_content_v2';
 export const FIRESTORE_COLLECTION = 'site_content';
 export const FIRESTORE_DOC_ID = 'main';
+
+/**
+ * Helper to identify corrupted/unwanted placeholder strings
+ */
+function isInvalidPlaceholder(val) {
+  if (typeof val === 'string') {
+    const s = val.trim().toLowerCase();
+    return s.includes('to be added') || s.includes('[—') || s.includes('[--') || s === '[— to be added]' || s.includes('[-');
+  }
+  return false;
+}
 
 // Comprehensive default content model initialized from schoolData and page-level copy
 export const defaultContent = {
@@ -57,7 +68,7 @@ export const defaultContent = {
   spirit: {
     subhead: "Institutional Heritage & Foundation",
     title: "The Spirit of Mother Teresa Academy",
-    lead: "Founded with the enduring vision of Saint Mother Teresa’s selfless dedication, Mother Teresa Academy stands as a premier seat of school education along Baghpat Road in Baraut, Western Uttar Pradesh—synthesizing rigorous CBSE academic discipline with a profound moral conscience.",
+    lead: "Founded with the enduring vision of Saint Mother Teresa’s selfless dedication, Mother Teresa Academy stands as a premier seat of school education along Chhaprauli Road in Baraut, Western Uttar Pradesh—synthesizing rigorous CBSE academic discipline with a profound moral conscience.",
     paragraph: "Our pedagogical framework balances scholastic distinction with character formation. Pupils are guided from formative curiosity towards scholarly mastery—fostering bilingual eloquence, experimental science inquiry in dedicated laboratories, and athletic vigor on our tournament grounds.",
     pullquote: "Not all of us can do great things. But we can do small things with great love.",
     pullquoteAuthor: "— Saint Mother Teresa, Institutional Patron",
@@ -74,7 +85,7 @@ export const defaultContent = {
     {
       id: "cbse-academic",
       title: "CBSE Academic Excellence",
-      description: "Affiliated with the Central Board of Secondary Education, offering Senior Secondary Science, Commerce, and Humanities faculties with dedicated focus on NCERT benchmarks and national competitive exam readiness.",
+      description: "Affiliated with the Central Board of Secondary Education (Affiliation No. 2134272, School Code 61658), offering Senior Secondary Science, Commerce, and Humanities faculties with dedicated focus on NCERT benchmarks.",
       linkText: "View 3-Year Board Results & Streams",
       linkUrl: "/academics",
       image: "/gallery/chemistry-lab-titration.jpg",
@@ -82,7 +93,7 @@ export const defaultContent = {
     {
       id: "best-infrastructure",
       title: "Best-in-Class Infrastructure",
-      description: "Dedicated physics and composite science laboratories with Ohm's law apparatus, 3D mathematics geometric models, high-speed IT terminals, and spacious smart classrooms across our central lawn campus.",
+      description: "Dedicated physics, chemistry, biology, and composite science laboratories with Ohm's law apparatus, 3D mathematics models, high-speed IT terminals, and 15 smart classrooms across our 6,275 sq.m. campus.",
       linkText: "Explore Campus Estates & Labs",
       linkUrl: "/infrastructure",
       image: "/science-maths-composite-lab.jpg",
@@ -129,17 +140,17 @@ export const defaultContent = {
   // Four Institutional Houses
   houses: schoolData.studentLeadership.houses,
 
-  // General School Contact Info with concrete fallbacks
+  // General School Contact Info with concrete verified values
   general: {
     ...schoolData.general,
-    affiliationNo: (schoolData.general.affiliationNo && !schoolData.general.affiliationNo.includes('to be added')) ? schoolData.general.affiliationNo : '2133456',
-    schoolCode: (schoolData.general.schoolCode && !schoolData.general.schoolCode.includes('to be added')) ? schoolData.general.schoolCode : '81234',
-    establishedYear: (schoolData.general.establishedYear && !schoolData.general.establishedYear.includes('to be added')) ? schoolData.general.establishedYear : '2015',
-    phonePrimary: (schoolData.general.phonePrimary && !schoolData.general.phonePrimary.includes('to be added')) ? schoolData.general.phonePrimary : '+91 98765 43210',
-    phoneSecondary: (schoolData.general.phoneSecondary && !schoolData.general.phoneSecondary.includes('to be added')) ? schoolData.general.phoneSecondary : '+91 12345 67890',
-    emailPrimary: (schoolData.general.emailPrimary && !schoolData.general.emailPrimary.includes('to be added')) ? schoolData.general.emailPrimary : 'office@motherteresaacademy.edu.in',
-    emailAdmissions: (schoolData.general.emailAdmissions && !schoolData.general.emailAdmissions.includes('to be added')) ? schoolData.general.emailAdmissions : 'admissions@motherteresaacademy.edu.in',
-    website: (schoolData.general.website && !schoolData.general.website.includes('to be added')) ? schoolData.general.website : 'www.motherteresaacademy.edu.in',
+    affiliationNo: schoolData.general.affiliationNo || '2134272',
+    schoolCode: schoolData.general.schoolCode || '61658',
+    establishedYear: schoolData.general.establishedYear || '2015',
+    phonePrimary: schoolData.general.phonePrimary || '+91 95576 67999',
+    phoneSecondary: schoolData.general.phoneSecondary || '+91 70175 51638',
+    emailPrimary: schoolData.general.emailPrimary || 'motherteresaacademybaraut@gmail.com',
+    emailAdmissions: schoolData.general.emailAdmissions || 'motherteresaacademybaraut@gmail.com',
+    website: schoolData.general.website || 'www.motherteresaacademy.edu.in',
   },
 
   // About Section Detailed Content
@@ -163,6 +174,12 @@ export const defaultContent = {
 
   // CBSE Mandatory Appendix-IX Disclosure
   cbseDisclosure: schoolData.cbseDisclosure,
+
+  // Statutory Disclosure Certificates & Documents (PDFs & Photos)
+  disclosureDocuments: schoolData.disclosureDocuments || [],
+
+  // Official Fee Structure Breakdown
+  feeStructure: schoolData.feeStructure || [],
 
   // Notice Board items
   notices: schoolData.notices.map((notice) => ({
@@ -204,6 +221,7 @@ export function deepMerge(target, source) {
       if (isObject(tgtItem) && isObject(srcItem)) {
         return deepMerge(tgtItem, srcItem);
       }
+      if (isInvalidPlaceholder(srcItem)) return tgtItem;
       return (srcItem !== undefined && srcItem !== null && srcItem !== '') ? srcItem : tgtItem;
     });
   }
@@ -218,6 +236,8 @@ export function deepMerge(target, source) {
         output[key] = deepMerge(tgtVal, srcVal);
       } else if (Array.isArray(tgtVal) && Array.isArray(srcVal)) {
         output[key] = deepMerge(tgtVal, srcVal);
+      } else if (isInvalidPlaceholder(srcVal)) {
+        output[key] = tgtVal;
       } else if (srcVal !== undefined && srcVal !== null && srcVal !== '') {
         output[key] = srcVal;
       } else if (tgtVal !== undefined) {
@@ -227,6 +247,7 @@ export function deepMerge(target, source) {
     return output;
   }
 
+  if (isInvalidPlaceholder(source)) return target;
   return (source !== undefined && source !== null && source !== '') ? source : target;
 }
 
@@ -237,7 +258,14 @@ export function deepMerge(target, source) {
  */
 export function loadContent() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    // Clear legacy v1 storage key if present to purge stale placeholder drafts
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem('mta_cms_site_content_v1');
+      }
+    } catch (e) {}
+
+    const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
     if (!raw) return defaultContent;
     const parsed = JSON.parse(raw);
     return deepMerge(defaultContent, parsed);
@@ -384,7 +412,12 @@ export function getNestedValue(obj, path, fallback = '') {
     current = current[part];
   }
   if (current === undefined || current === null) return fallback;
-  if (typeof current === 'string' && current.trim() === '') return fallback;
+  if (typeof current === 'string') {
+    const s = current.trim().toLowerCase();
+    if (s === '' || s.includes('to be added') || s.includes('[—') || s.includes('[--') || s === '[— to be added]') {
+      return fallback;
+    }
+  }
   return current;
 }
 

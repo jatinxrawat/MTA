@@ -196,7 +196,7 @@ export default function ContactSection() {
                     id="parentName"
                     required
                     className="form-input"
-                    placeholder="e.g. Dr. Rajesh Sharma"
+                    placeholder="Enter full name"
                     value={formData.parentName}
                     onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
                   />
@@ -209,10 +209,10 @@ export default function ContactSection() {
                     </label>
                     <input
                       type="tel"
-                      id="contactNumber"
+                      id="contact-number"
                       required
                       className="form-input"
-                      placeholder="+91 98765 XXXXX"
+                      placeholder="+91 95576 XXXXX"
                       value={formData.contactNumber}
                       onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
                     />
