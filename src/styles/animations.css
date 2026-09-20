@@ -674,7 +674,8 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
-.spinner-icon {
+.spinner-icon,
+.spin-animation {
   animation: spinIcon 0.85s linear infinite;
   display: inline-block;
 }

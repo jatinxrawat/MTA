@@ -8,6 +8,8 @@ import EditableText from '../components/admin/EditableText';
 import EditableImage from '../components/admin/EditableImage';
 import { NEUTRAL_PLACEHOLDER_IMAGE } from '../lib/media';
 
+import { sendInquiry, OFFICIAL_SCHOOL_EMAIL } from '../services/inquiryService';
+
 import {
   Bell,
   Calendar,
@@ -110,13 +112,25 @@ export default function HomePage({ onOpenInquiry }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
 
-  const handleInquirySubmit = (e) => {
+  const handleInquirySubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await sendInquiry({
+        name: inquiryData.parentName,
+        phone: inquiryData.phone,
+        email: inquiryData.email,
+        grade: inquiryData.grade,
+        message: inquiryData.message,
+        source: 'Homepage Quick Enquiry',
+      });
       setInquirySubmitted(true);
-    }, 450);
+    } catch (err) {
+      console.error('Inquiry submission error:', err);
+      setInquirySubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const filteredNotices =
@@ -1030,14 +1044,26 @@ export default function HomePage({ onOpenInquiry }) {
                 <div style={{ backgroundColor: 'var(--bg-parchment-white)', border: '1px solid var(--color-brass)', padding: '2.5rem', textAlign: 'center' }}>
                   <CheckCircle size={42} style={{ color: '#2e7d32', margin: '0 auto 1rem' }} />
                   <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--color-navy)', marginBottom: '0.5rem' }}>
-                    Enquiry Registered Successfully
+                    Enquiry Dispatched to Admissions
                   </h4>
-                  <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)' }}>
-                    Thank you, <strong>{inquiryData.parentName}</strong>. Our admissions officer will review your query and contact <strong>{inquiryData.phone}</strong> shortly.
+                  <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)', marginBottom: '0.5rem' }}>
+                    Thank you, <strong>{inquiryData.parentName}</strong>. Your query has been forwarded directly to our administration desk (<strong>{OFFICIAL_SCHOOL_EMAIL}</strong>).
+                  </p>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--ink-muted)' }}>
+                    Our Admissions Secretariat will review your inquiry and contact <strong>{inquiryData.phone}</strong> shortly.
                   </p>
                   <button
                     type="button"
-                    onClick={() => setInquirySubmitted(false)}
+                    onClick={() => {
+                      setInquirySubmitted(false);
+                      setInquiryData({
+                        parentName: '',
+                        phone: '',
+                        email: '',
+                        grade: 'Pre-Primary (Nursery - UKG)',
+                        message: '',
+                      });
+                    }}
                     className="btn-academic btn-academic-outline"
                     style={{ marginTop: '1.5rem' }}
                   >

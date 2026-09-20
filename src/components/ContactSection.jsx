@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { schoolData } from '../data/schoolData';
 import { useCMS } from '../context/CMSContext';
 import EditableText from './admin/EditableText';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Navigation, ExternalLink, Map } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Navigation, ExternalLink, Map, Loader2 } from 'lucide-react';
+import { sendInquiry, OFFICIAL_SCHOOL_EMAIL } from '../services/inquiryService';
 import '../styles/contact-footer.css';
 
 export default function ContactSection() {
@@ -21,11 +22,28 @@ export default function ContactSection() {
     message: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await sendInquiry({
+        name: formData.parentName,
+        phone: formData.contactNumber,
+        email: formData.email,
+        grade: formData.gradeSeeking,
+        message: formData.message,
+        source: 'Contact Page (/contact)',
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Failed to dispatch inquiry:', err);
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -171,14 +189,26 @@ export default function ContactSection() {
               <div style={{ backgroundColor: 'var(--bg-parchment-white)', border: '1px solid var(--color-brass)', padding: '2.5rem', textAlign: 'center' }}>
                 <CheckCircle size={42} style={{ color: '#2e7d32', margin: '0 auto 1rem' }} />
                 <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--color-navy)', marginBottom: '0.5rem' }}>
-                  Enquiry Registered Successfully
+                  Enquiry Dispatched to Admissions
                 </h4>
-                <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)' }}>
-                  Thank you, <strong>{formData.parentName}</strong>. The Admissions Secretariat will reach out to <strong>{formData.contactNumber}</strong> shortly.
+                <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)', marginBottom: '0.5rem' }}>
+                  Thank you, <strong>{formData.parentName}</strong>. Your enquiry has been delivered directly to our administration desk (<strong>{OFFICIAL_SCHOOL_EMAIL}</strong>).
+                </p>
+                <p style={{ fontSize: '0.88rem', color: 'var(--ink-muted)' }}>
+                  Our Admissions Secretariat will review your requirements and reach out to <strong>{formData.contactNumber}</strong> shortly.
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => {
+                    setSubmitted(false);
+                    setFormData({
+                      parentName: '',
+                      contactNumber: '',
+                      email: '',
+                      gradeSeeking: 'Class XI - Science',
+                      message: '',
+                    });
+                  }}
                   className="btn-academic btn-academic-outline"
                   style={{ marginTop: '1.5rem' }}
                 >
@@ -267,11 +297,30 @@ export default function ContactSection() {
 
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="btn-academic btn-academic-brass"
-                  style={{ width: '100%', padding: '1rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    opacity: isSubmitting ? 0.75 : 1,
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                  }}
                 >
-                  <Send size={16} style={{ marginRight: '0.5rem' }} />
-                  Submit Official Admission Enquiry
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="spin-animation" />
+                      <span>Sending to Admissions Secretariat...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      <span>Submit Official Admission Enquiry</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}

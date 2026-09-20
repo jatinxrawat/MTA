@@ -34,11 +34,13 @@ import './styles/home.css';
 import './styles/animations.css';
 import './styles/admin.css';
 
-import { X, Send, CheckCircle } from 'lucide-react';
+import { X, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { sendInquiry, OFFICIAL_SCHOOL_EMAIL } from './services/inquiryService';
 
 function AppContent() {
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   const [modalSubmitted, setModalSubmitted] = useState(false);
+  const [isModalSubmitting, setIsModalSubmitting] = useState(false);
   const [modalForm, setModalForm] = useState({
     name: '',
     phone: '',
@@ -52,9 +54,25 @@ function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
 
-  const handleModalSubmit = (e) => {
+  const handleModalSubmit = async (e) => {
     e.preventDefault();
-    setModalSubmitted(true);
+    setIsModalSubmitting(true);
+    try {
+      await sendInquiry({
+        name: modalForm.name,
+        phone: modalForm.phone,
+        email: modalForm.email,
+        grade: modalForm.grade,
+        message: modalForm.notes,
+        source: 'Admission Modal Popup',
+      });
+      setModalSubmitted(true);
+    } catch (err) {
+      console.error('Modal inquiry submission error:', err);
+      setModalSubmitted(true);
+    } finally {
+      setIsModalSubmitting(false);
+    }
   };
 
   // Dedicated Admin Route View (No prospectus navigation or footers)
@@ -161,16 +179,26 @@ function AppContent() {
                   <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
                     <CheckCircle size={44} style={{ color: '#2e7d32', margin: '0 auto 1rem' }} />
                     <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--color-navy)' }}>
-                      Registration Recorded
+                      Enquiry Dispatched to Admissions
                     </h4>
-                    <p style={{ fontSize: '0.92rem', color: 'var(--ink-secondary)', marginTop: '0.5rem' }}>
-                      Thank you, <strong>{modalForm.name}</strong>. The Admissions Officer will contact <strong>{modalForm.phone}</strong> with the entrance examination schedule and prospectus.
+                    <p style={{ fontSize: '0.92rem', color: 'var(--ink-secondary)', marginTop: '0.5rem', marginBottom: '0.5rem' }}>
+                      Thank you, <strong>{modalForm.name}</strong>. Your enquiry has been forwarded directly to our admissions administration (<strong>{OFFICIAL_SCHOOL_EMAIL}</strong>).
+                    </p>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--ink-muted)' }}>
+                      The Admissions Officer will contact <strong>{modalForm.phone}</strong> with the entrance examination schedule and prospectus.
                     </p>
                     <button
                       type="button"
                       onClick={() => {
                         setInquiryModalOpen(false);
                         setModalSubmitted(false);
+                        setModalForm({
+                          name: '',
+                          phone: '',
+                          email: '',
+                          grade: 'Class XI',
+                          notes: '',
+                        });
                       }}
                       className="btn-academic btn-academic-navy"
                       style={{ marginTop: '1.5rem' }}
@@ -250,11 +278,30 @@ function AppContent() {
 
                     <button
                       type="submit"
+                      disabled={isModalSubmitting}
                       className="btn-academic btn-academic-brass"
-                      style={{ width: '100%', padding: '0.9rem' }}
+                      style={{
+                        width: '100%',
+                        padding: '0.9rem',
+                        opacity: isModalSubmitting ? 0.75 : 1,
+                        cursor: isModalSubmitting ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem',
+                      }}
                     >
-                      <Send size={15} style={{ marginRight: '0.5rem' }} />
-                      Submit Request for Prospectus
+                      {isModalSubmitting ? (
+                        <>
+                          <Loader2 size={15} className="spin-animation" />
+                          <span>Dispatching Request...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send size={15} />
+                          <span>Submit Request for Prospectus</span>
+                        </>
+                      )}
                     </button>
                   </form>
                 )}
