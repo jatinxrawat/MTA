@@ -149,10 +149,13 @@ export default function Navigation({ onOpenInquiry }) {
 
           <div className="sidebar-contact-info">
             <div>
-              <strong>Campus:</strong> Baghpat Road, Baraut (U.P.)
+              <strong>Campus:</strong> Chhaprauli Road, Baraut (Baghpat, U.P.)
             </div>
             <div>
-              <strong>Affiliation:</strong> CBSE Senior Secondary
+              <strong>Affiliation:</strong> CBSE Senior Sec. (No: 2134272 | Code: 61658)
+            </div>
+            <div>
+              <strong>Helpline:</strong> +91 95576 67999 / +91 70175 51638
             </div>
           </div>
         </div>

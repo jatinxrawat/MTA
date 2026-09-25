@@ -6,7 +6,8 @@ import {
   FileText, Download, Printer, CheckCircle2, 
   ExternalLink, Eye, ShieldCheck, Building2, 
   GraduationCap, Award, X, Image as ImageIcon,
-  FileCheck, Calendar, Users, IndianRupee, Layers
+  FileCheck, Calendar, Users, IndianRupee, Layers,
+  ZoomIn, ZoomOut, RotateCw, Maximize2
 } from 'lucide-react';
 import '../styles/cbse-disclosure.css';
 
@@ -22,6 +23,39 @@ export default function CbseDisclosureSection() {
   const [activeCategory, setActiveCategory] = useState('All');
   // Selected document for Lightbox / Modal Viewer
   const [selectedDoc, setSelectedDoc] = useState(null);
+  // Zoom and rotation states for document inspector
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [rotation, setRotation] = useState(0);
+
+  const handleOpenDoc = (doc) => {
+    setZoomLevel(1);
+    setRotation(0);
+    setSelectedDoc(doc);
+  };
+
+  const handleZoomIn = () => setZoomLevel((z) => Math.min(z + 0.3, 3));
+  const handleZoomOut = () => setZoomLevel((z) => Math.max(z - 0.3, 0.7));
+  const handleRotate = () => setRotation((r) => (r + 90) % 360);
+  const handleResetView = () => {
+    setZoomLevel(1);
+    setRotation(0);
+  };
+
+  const getDocForViewing = (fileUrl, docName, category = 'Mandatory Public Disclosure') => {
+    if (!fileUrl) return null;
+    const found = disclosureDocs.find((d) => d.fileUrl === fileUrl);
+    if (found) return found;
+    return {
+      id: `doc-ref-${Date.now()}`,
+      title: docName || 'Statutory Compliance Document',
+      fileUrl,
+      fileType: fileUrl.toLowerCase().endsWith('.pdf') ? 'pdf' : 'photo',
+      category,
+      documentNumber: 'Appendix-IX Compliance',
+      issuingAuthority: 'Mother Teresa Academy Compliance Desk',
+      validUntil: 'Statutory Public Record',
+    };
+  };
 
   const categories = [
     'All',
@@ -227,10 +261,13 @@ export default function CbseDisclosureSection() {
                   {/* Preview Area */}
                   <div 
                     className="disclosure-card-preview"
-                    onClick={() => setSelectedDoc(doc)}
+                    onClick={() => handleOpenDoc(doc)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Inspect ${doc.title}`}
                   >
                     <span className={`disclosure-card-tag ${isPdf ? 'tag-pdf' : 'tag-photo'}`}>
-                      {isPdf ? 'PDF Document' : 'Official Photo'}
+                      {isPdf ? 'PDF Document' : 'Official Certificate'}
                     </span>
 
                     {isPdf ? (
@@ -253,7 +290,7 @@ export default function CbseDisclosureSection() {
 
                     <div className="disclosure-card-hover-overlay">
                       <Eye size={22} />
-                      <span>Click to Inspect / View</span>
+                      <span>Click to Inspect / View Document</span>
                     </div>
                   </div>
 
@@ -278,7 +315,8 @@ export default function CbseDisclosureSection() {
                       <button
                         type="button"
                         className="disclosure-action-btn btn-primary"
-                        onClick={() => setSelectedDoc(doc)}
+                        onClick={() => handleOpenDoc(doc)}
+                        title="Inspect full document in popup reader"
                       >
                         <Eye size={14} />
                         <span>Inspect</span>
@@ -311,16 +349,15 @@ export default function CbseDisclosureSection() {
                 <h3>Official Approved Annual & Monthly Fee Schedule (Session 2025–2026)</h3>
                 <span>Approved by School Management Committee & Affiliation Compliance Desk</span>
               </div>
-              <a
-                href="/disclosure/fee-structure-official.jpg"
-                target="_blank"
-                rel="noreferrer"
+              <button
+                type="button"
+                onClick={() => handleOpenDoc(getDocForViewing('/disclosure/fee-structure-official.jpg', 'Official Approved Fee Schedule (NUR to XII)', 'Academics & Fees'))}
                 className="doc-link-btn"
-                style={{ background: '#ffffff', color: '#0b1b3d' }}
+                style={{ background: '#ffffff', color: '#0b1b3d', border: '1px solid #d0d7e6', cursor: 'pointer' }}
               >
                 <Eye size={15} />
-                <span>View Original Signed Document</span>
-              </a>
+                <span>Inspect Signed Document</span>
+              </button>
             </div>
 
             <div className="academic-table-container" style={{ margin: 0, border: 'none' }}>
@@ -426,17 +463,31 @@ export default function CbseDisclosureSection() {
                     <td>0{doc.sNo || idx + 1}</td>
                     <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                         {doc.fileUrl ? (
-                          <a
-                            href={doc.fileUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="doc-link-btn"
-                          >
-                            <ExternalLink size={14} />
-                            <span>View / Download Document</span>
-                          </a>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenDoc(getDocForViewing(doc.fileUrl, doc.documentName, 'Section B Documents'))}
+                              className="doc-link-btn"
+                              style={{ background: '#0b1b3d', color: '#ffffff', border: '1px solid #0b1b3d', cursor: 'pointer' }}
+                              title="Inspect document directly in viewer"
+                            >
+                              <Eye size={14} />
+                              <span>Inspect Document</span>
+                            </button>
+                            <a
+                              href={doc.fileUrl}
+                              download
+                              target="_blank"
+                              rel="noreferrer"
+                              className="doc-link-btn"
+                              title="Direct download file"
+                            >
+                              <Download size={13} />
+                              <span>Download</span>
+                            </a>
+                          </>
                         ) : null}
                         <span className="doc-link-verified">
                           <CheckCircle2 size={13} />
@@ -476,17 +527,31 @@ export default function CbseDisclosureSection() {
                     <td>0{doc.sNo || idx + 1}</td>
                     <td><strong>{doc.documentName}</strong></td>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                         {doc.fileUrl && doc.fileUrl.startsWith('/') ? (
-                          <a
-                            href={doc.fileUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="doc-link-btn"
-                          >
-                            <ExternalLink size={14} />
-                            <span>View Document</span>
-                          </a>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenDoc(getDocForViewing(doc.fileUrl, doc.documentName, 'Section C Records'))}
+                              className="doc-link-btn"
+                              style={{ background: '#0b1b3d', color: '#ffffff', border: '1px solid #0b1b3d', cursor: 'pointer' }}
+                              title="Inspect document directly in viewer"
+                            >
+                              <Eye size={14} />
+                              <span>Inspect Document</span>
+                            </button>
+                            <a
+                              href={doc.fileUrl}
+                              download
+                              target="_blank"
+                              rel="noreferrer"
+                              className="doc-link-btn"
+                              title="Direct download file"
+                            >
+                              <Download size={13} />
+                              <span>Download</span>
+                            </a>
+                          </>
                         ) : null}
                         <span className="doc-link-verified">
                           <CheckCircle2 size={13} />
@@ -591,37 +656,85 @@ export default function CbseDisclosureSection() {
                 <span>{selectedDoc.category || 'Mandatory Public Disclosure'}</span>
                 <h3>{selectedDoc.title}</h3>
               </div>
-              <button
-                type="button"
-                className="doc-modal-close-btn"
-                onClick={() => setSelectedDoc(null)}
-                aria-label="Close document viewer"
-              >
-                <X size={24} />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                {/* Document Viewer Zoom & Rotate Controls */}
+                <div className="doc-modal-tools">
+                  <button type="button" className="doc-tool-btn" onClick={handleZoomIn} title="Zoom In (+)">
+                    <ZoomIn size={16} />
+                  </button>
+                  <button type="button" className="doc-tool-btn" onClick={handleZoomOut} title="Zoom Out (-)">
+                    <ZoomOut size={16} />
+                  </button>
+                  <button type="button" className="doc-tool-btn" onClick={handleRotate} title="Rotate 90° Clockwise">
+                    <RotateCw size={16} />
+                  </button>
+                  <button type="button" className="doc-tool-btn" onClick={handleResetView} title="Reset Zoom/Orientation">
+                    <Maximize2 size={16} />
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  className="doc-modal-close-btn"
+                  onClick={() => setSelectedDoc(null)}
+                  aria-label="Close document viewer"
+                >
+                  <X size={22} />
+                </button>
+              </div>
             </div>
 
             <div className="doc-modal-content">
               {selectedDoc.fileType === 'pdf' || selectedDoc.fileUrl?.toLowerCase().endsWith('.pdf') ? (
-                <iframe
-                  src={selectedDoc.fileUrl}
-                  title={selectedDoc.title}
-                  className="doc-modal-pdf-embed"
-                />
+                <div className="doc-modal-pdf-wrapper">
+                  <object
+                    data={`${selectedDoc.fileUrl}#toolbar=1&navpanes=0`}
+                    type="application/pdf"
+                    className="doc-modal-pdf-embed"
+                  >
+                    <iframe
+                      src={selectedDoc.fileUrl}
+                      title={selectedDoc.title}
+                      className="doc-modal-pdf-embed"
+                    >
+                      <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        <FileText size={48} style={{ color: 'var(--color-navy)', margin: '0 auto 1rem' }} />
+                        <p style={{ fontWeight: 600, color: 'var(--color-navy-deep)' }}>
+                          PDF Document Loaded ({selectedDoc.title})
+                        </p>
+                        <a
+                          href={selectedDoc.fileUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="btn-academic btn-academic-navy"
+                          style={{ marginTop: '1rem', display: 'inline-flex' }}
+                        >
+                          Open in Full PDF Reader
+                        </a>
+                      </div>
+                    </iframe>
+                  </object>
+                </div>
               ) : (
-                <img
-                  src={selectedDoc.fileUrl}
-                  alt={selectedDoc.title}
-                  className="doc-modal-img"
-                />
+                <div className="doc-modal-img-viewport">
+                  <img
+                    src={selectedDoc.fileUrl}
+                    alt={selectedDoc.title}
+                    className="doc-modal-img"
+                    style={{
+                      transform: `scale(${zoomLevel}) rotate(${rotation}deg)`,
+                      transformOrigin: 'center center',
+                      transition: 'transform 0.2s cubic-bezier(0.2, 0, 0, 1)',
+                    }}
+                  />
+                </div>
               )}
             </div>
 
             <div className="doc-modal-footer">
               <div className="doc-modal-meta">
-                {selectedDoc.documentNumber && <span><strong>Doc Ref:</strong> {selectedDoc.documentNumber} | </span>}
-                {selectedDoc.issuingAuthority && <span><strong>Authority:</strong> {selectedDoc.issuingAuthority} | </span>}
-                {selectedDoc.validUntil && <span><strong>Valid:</strong> {selectedDoc.validUntil}</span>}
+                {selectedDoc.documentNumber && <span><strong>Doc Ref:</strong> {selectedDoc.documentNumber} &nbsp;|&nbsp; </span>}
+                {selectedDoc.issuingAuthority && <span><strong>Authority:</strong> {selectedDoc.issuingAuthority} &nbsp;|&nbsp; </span>}
+                {selectedDoc.validUntil && <span><strong>Validity:</strong> {selectedDoc.validUntil}</span>}
               </div>
 
               <div className="doc-modal-actions">
@@ -630,17 +743,19 @@ export default function CbseDisclosureSection() {
                   target="_blank"
                   rel="noreferrer"
                   className="disclosure-action-btn"
+                  title="Open full resolution file in new browser window"
                 >
                   <ExternalLink size={15} />
-                  <span>Open in New Tab</span>
+                  <span>Open in Tab</span>
                 </a>
                 <a
                   href={selectedDoc.fileUrl}
                   download
                   className="disclosure-action-btn btn-primary"
+                  title="Download file directly"
                 >
                   <Download size={15} />
-                  <span>Download File</span>
+                  <span>Download Document</span>
                 </a>
               </div>
             </div>

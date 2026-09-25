@@ -738,17 +738,27 @@ export default function AdminDisclosureManager() {
 
             <div className="doc-modal-content">
               {previewDoc.fileType === 'pdf' || previewDoc.fileUrl?.toLowerCase().endsWith('.pdf') ? (
-                <iframe
-                  src={previewDoc.fileUrl}
-                  title={previewDoc.title}
-                  className="doc-modal-pdf-embed"
-                />
+                <div className="doc-modal-pdf-wrapper">
+                  <object
+                    data={`${previewDoc.fileUrl}#toolbar=1&navpanes=0`}
+                    type="application/pdf"
+                    className="doc-modal-pdf-embed"
+                  >
+                    <iframe
+                      src={previewDoc.fileUrl}
+                      title={previewDoc.title}
+                      className="doc-modal-pdf-embed"
+                    />
+                  </object>
+                </div>
               ) : (
-                <img
-                  src={previewDoc.fileUrl}
-                  alt={previewDoc.title}
-                  className="doc-modal-img"
-                />
+                <div className="doc-modal-img-viewport">
+                  <img
+                    src={previewDoc.fileUrl}
+                    alt={previewDoc.title}
+                    className="doc-modal-img"
+                  />
+                </div>
               )}
             </div>
 

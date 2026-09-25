@@ -104,6 +104,20 @@
   transition-delay: 0.04s;
 }
 
+/* WhatsApp Button - Vibrant Emerald Green */
+.quick-dock-btn.dock-whatsapp {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+}
+
+.quick-dock-btn.dock-whatsapp:hover {
+  background: linear-gradient(135deg, #2fe06f 0%, #0d7065 100%);
+}
+
+.dock-whatsapp-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
 /* 1. Fee Structure Button - Vibrant Gold/Amber (Matching reference screenshot) */
 .quick-dock-btn.dock-fee {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
@@ -170,4 +184,139 @@
   .dock-label-box {
     display: none;
   }
+}
+
+/* ==========================================================================
+   CONTACT NOW MODAL STYLES
+   ========================================================================== */
+.contact-modal-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.contact-modal-tab {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.contact-modal-tab:hover {
+  background: #e2e8f0;
+  color: var(--color-navy);
+}
+
+.contact-modal-tab.active-tab {
+  background: #ffffff;
+  color: var(--color-navy);
+  border-bottom-color: var(--color-brass);
+}
+
+/* WhatsApp Contact Cards */
+.whatsapp-contact-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+  border: 1.5px solid #d1fae5;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.whatsapp-contact-card:hover {
+  border-color: #25d366;
+  background: #f0fdf4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.15);
+}
+
+.whatsapp-card-icon {
+  width: 42px;
+  height: 42px;
+  background: #25d366;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.whatsapp-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.whatsapp-card-role {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #047857;
+}
+
+.whatsapp-card-number {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-navy-deep);
+  margin: 0.1rem 0;
+}
+
+.whatsapp-card-sub {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}
+
+.whatsapp-card-btn {
+  background: #25d366;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Call Action Cards */
+.call-action-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.call-action-card:hover {
+  border-color: var(--color-navy);
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(11, 27, 61, 0.08);
+}
+
+.call-card-icon {
+  color: var(--color-navy);
+  flex-shrink: 0;
 }

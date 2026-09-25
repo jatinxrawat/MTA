@@ -148,9 +148,11 @@ export const defaultContent = {
     establishedYear: schoolData.general.establishedYear || '2015',
     phonePrimary: schoolData.general.phonePrimary || '+91 95576 67999',
     phoneSecondary: schoolData.general.phoneSecondary || '+91 70175 51638',
+    whatsappNumber: schoolData.general.whatsappNumber || '+91 95576 67999',
     emailPrimary: schoolData.general.emailPrimary || 'motherteresaacademybaraut@gmail.com',
     emailAdmissions: schoolData.general.emailAdmissions || 'motherteresaacademybaraut@gmail.com',
     website: schoolData.general.website || 'www.motherteresaacademy.edu.in',
+    youtubeUrl: schoolData.general.youtubeUrl || 'https://www.youtube.com/@motherteresaacademy7598',
   },
 
   // About Section Detailed Content

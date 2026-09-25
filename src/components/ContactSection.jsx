@@ -142,24 +142,76 @@ export default function ContactSection() {
             <div className="contact-item-group">
               <div className="contact-item-header">
                 <Phone size={22} className="contact-icon" />
-                <h3 className="contact-label">Telephonic Helplines</h3>
+                <h3 className="contact-label">Telephonic Helplines &amp; WhatsApp</h3>
               </div>
               <p className="contact-val">
-                General Inquiries: <EditableText path="general.phonePrimary" fallback={phonePrimary} as="span" />
+                General Inquiries: <EditableText path="general.phonePrimary" fallback={phonePrimary} as="span" />{' '}
+                <a
+                  href="https://wa.me/919557667999?text=Hello%20Mother%20Teresa%20Academy%2C%20I%20would%20like%20to%20inquire%20about%20admissions."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    background: '#25d366',
+                    color: '#ffffff',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '4px',
+                    textDecoration: 'none',
+                    marginLeft: '0.5rem',
+                    verticalAlign: 'middle',
+                  }}
+                  title="Direct WhatsApp Chat"
+                >
+                  💬 WhatsApp
+                </a>
                 <br />
-                Admissions Cell: <EditableText path="general.phoneSecondary" fallback={phoneSecondary} as="span" />
+                Admissions Cell: <EditableText path="general.phoneSecondary" fallback={phoneSecondary} as="span" />{' '}
+                <a
+                  href="https://wa.me/917017551638?text=Hello%20Mother%20Teresa%20Academy%2C%20I%20would%20like%20to%20inquire%20about%20admissions."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    background: '#25d366',
+                    color: '#ffffff',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '4px',
+                    textDecoration: 'none',
+                    marginLeft: '0.5rem',
+                    verticalAlign: 'middle',
+                  }}
+                  title="Direct WhatsApp Chat"
+                >
+                  💬 WhatsApp
+                </a>
               </p>
             </div>
 
             <div className="contact-item-group">
               <div className="contact-item-header">
                 <Mail size={22} className="contact-icon" />
-                <h3 className="contact-label">Electronic Mail</h3>
+                <h3 className="contact-label">Electronic Mail &amp; YouTube Channel</h3>
               </div>
               <p className="contact-val">
                 Official Secretarial Desk: <EditableText path="general.emailPrimary" fallback={emailPrimary} as="span" />
                 <br />
-                Admissions Registrar: <EditableText path="general.emailAdmissions" fallback={emailAdmissions} as="span" />
+                YouTube Channel:{' '}
+                <a
+                  href="https://www.youtube.com/@motherteresaacademy7598"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#dc2626', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                >
+                  ▶ @motherteresaacademy7598 (Official Channel)
+                </a>
               </p>
             </div>
 
