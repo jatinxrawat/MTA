@@ -684,15 +684,26 @@ export default function HomePage({ onOpenInquiry }) {
 
             <div ref={housesRef} className="houses-strip">
               {houses.map((house, idx) => {
+                const defaultHouseMeta = [
+                  { color: '#dc2626', rgb: '220, 38, 38', colorName: 'Red House' },
+                  { color: '#d97706', rgb: '217, 119, 6', colorName: 'Yellow House' },
+                  { color: '#16a34a', rgb: '22, 163, 74', colorName: 'Green House' },
+                  { color: '#2563eb', rgb: '37, 99, 235', colorName: 'Blue House' },
+                ];
+                const meta = defaultHouseMeta[idx % 4];
+                const houseColor = house.color || meta.color;
+                const houseColorRgb = house.colorRgb || meta.rgb;
+                const houseColorName = house.colorName || meta.colorName;
                 const houseClass = `house-${(house.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 const isToggled = !!toggledHouses[idx];
+
                 return (
                   <div
                     key={idx}
                     className={`house-item-box ${houseClass} ${isToggled ? 'is-toggled' : ''} scroll-reveal-item ${housesRevealed ? 'is-revealed' : ''}`}
                     style={{
-                      '--house-color': house.color,
-                      '--house-color-rgb': house.colorRgb || '11, 27, 61',
+                      '--house-color': houseColor,
+                      '--house-color-rgb': houseColorRgb,
                       '--reveal-delay': idx,
                     }}
                     onClick={() => handleToggleHouse(idx)}
@@ -706,6 +717,12 @@ export default function HomePage({ onOpenInquiry }) {
                     }}
                     title="Click card or toggle switch to flip between Motto and House Profile"
                   >
+                    {/* Explicit House Color Badge Header */}
+                    <div className="house-color-header-pill">
+                      <span className="house-color-indicator-dot" />
+                      <span className="house-color-title">{houseColorName}</span>
+                    </div>
+
                     {/* Cool Interactive Pill Toggle replacing static emoji */}
                     <div className="house-toggle-wrapper">
                       <button
@@ -750,6 +767,9 @@ export default function HomePage({ onOpenInquiry }) {
                         <h4 className="house-name">
                           <EditableText path={`houses.${idx}.name`} fallback={house.name} as="span" />
                         </h4>
+                        <div className="house-color-sub-badge">
+                          {houseColorName}
+                        </div>
                         <p className="house-motto">
                           "
                           <EditableText path={`houses.${idx}.motto`} fallback={house.motto} as="span" />
@@ -759,6 +779,9 @@ export default function HomePage({ onOpenInquiry }) {
 
                       <div className={`house-view-panel ${isToggled ? 'is-active' : 'is-hidden'}`}>
                         <h4 className="house-patron-title">{house.patron || house.name}</h4>
+                        <div className="house-color-sub-badge">
+                          {houseColorName}
+                        </div>
                         <p className="house-virtues-text">
                           <EditableText path={`houses.${idx}.virtues`} fallback={house.virtues} as="span" />
                         </p>
