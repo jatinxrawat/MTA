@@ -38,6 +38,11 @@ import ContactNowModal from './components/ContactNowModal';
 
 function AppContent() {
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  // Automatically reveals elements on scroll across all routes
+  useGlobalScrollReveal();
 
   // Dedicated Admin Route View (No prospectus navigation or footers)
   if (isAdminRoute) {
