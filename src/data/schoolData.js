@@ -776,7 +776,7 @@ export const schoolData = {
     ],
     houses: [
       {
-        name: "Teresa House",
+        name: "Red House",
         colorName: "Red House",
         color: "#dc2626",
         colorRgb: "220, 38, 38",
@@ -787,7 +787,7 @@ export const schoolData = {
         virtues: "Charity • Humility • Service",
       },
       {
-        name: "Vivekananda House",
+        name: "Yellow House",
         colorName: "Yellow House",
         color: "#d97706",
         colorRgb: "217, 119, 6",
@@ -798,7 +798,7 @@ export const schoolData = {
         virtues: "Courage • Intellect • Willpower",
       },
       {
-        name: "Kalam House",
+        name: "Green House",
         colorName: "Green House",
         color: "#16a34a",
         colorRgb: "22, 163, 74",
@@ -809,7 +809,7 @@ export const schoolData = {
         virtues: "Inquiry • Innovation • Vision",
       },
       {
-        name: "Tagore House",
+        name: "Blue House",
         colorName: "Blue House",
         color: "#2563eb",
         colorRgb: "37, 99, 235",

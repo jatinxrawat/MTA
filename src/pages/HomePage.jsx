@@ -717,12 +717,6 @@ export default function HomePage({ onOpenInquiry }) {
                     }}
                     title="Click card or toggle switch to flip between Motto and House Profile"
                   >
-                    {/* Explicit House Color Badge Header */}
-                    <div className="house-color-header-pill">
-                      <span className="house-color-indicator-dot" />
-                      <span className="house-color-title">{houseColorName}</span>
-                    </div>
-
                     {/* Cool Interactive Pill Toggle replacing static emoji */}
                     <div className="house-toggle-wrapper">
                       <button
@@ -764,12 +758,9 @@ export default function HomePage({ onOpenInquiry }) {
                     {/* Dual-View Animated Content */}
                     <div className="house-card-content">
                       <div className={`house-view-panel ${!isToggled ? 'is-active' : 'is-hidden'}`}>
-                        <h4 className="house-name">
-                          <EditableText path={`houses.${idx}.name`} fallback={house.name} as="span" />
-                        </h4>
-                        <div className="house-color-sub-badge">
+                        <h4 className="house-name" style={{ color: houseColor, fontSize: '1.25rem', fontWeight: 800 }}>
                           {houseColorName}
-                        </div>
+                        </h4>
                         <p className="house-motto">
                           "
                           <EditableText path={`houses.${idx}.motto`} fallback={house.motto} as="span" />
@@ -778,10 +769,9 @@ export default function HomePage({ onOpenInquiry }) {
                       </div>
 
                       <div className={`house-view-panel ${isToggled ? 'is-active' : 'is-hidden'}`}>
-                        <h4 className="house-patron-title">{house.patron || house.name}</h4>
-                        <div className="house-color-sub-badge">
+                        <h4 className="house-patron-title" style={{ color: houseColor, fontSize: '1.15rem', fontWeight: 800 }}>
                           {houseColorName}
-                        </div>
+                        </h4>
                         <p className="house-virtues-text">
                           <EditableText path={`houses.${idx}.virtues`} fallback={house.virtues} as="span" />
                         </p>
