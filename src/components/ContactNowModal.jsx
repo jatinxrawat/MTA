@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Send, CheckCircle, Loader2, Phone, Mail, MapPin, MessageSquare, ExternalLink } from 'lucide-react';
 import { sendInquiry, OFFICIAL_SCHOOL_EMAIL } from '../services/inquiryService';
 import { schoolData } from '../data/schoolData';
@@ -7,12 +8,19 @@ import { useCMS } from '../context/CMSContext';
 export default function ContactNowModal({ isOpen, onClose }) {
   const { content } = useCMS();
   const general = content.general || schoolData.general;
-  const {
-    postalAddress,
-    phonePrimary = '+91 95576 67999',
-    phoneSecondary = '+91 70175 51638',
-    emailPrimary = 'motherteresaacademybaraut@gmail.com',
-  } = general;
+  
+  const isInvalid = (val) =>
+    !val ||
+    typeof val !== 'string' ||
+    val.includes('12345') ||
+    val.includes('98765') ||
+    val.includes('xxxxx') ||
+    val.includes('to be added');
+
+  const phonePrimary = isInvalid(general?.phonePrimary) ? '+91 95576 67999' : general.phonePrimary;
+  const phoneSecondary = isInvalid(general?.phoneSecondary) ? '+91 70175 51638' : general.phoneSecondary;
+  const emailPrimary = general?.emailPrimary || 'motherteresaacademybaraut@gmail.com';
+  const postalAddress = general?.postalAddress || 'Chhaprauli Road, Near Tarar Bhatta, Baraut, District Baghpat, Uttar Pradesh 250611';
 
   const [activeTab, setActiveTab] = useState('whatsapp'); // 'whatsapp' | 'call' | 'form'
   const [formData, setFormData] = useState({
@@ -55,9 +63,10 @@ export default function ContactNowModal({ isOpen, onClose }) {
     'Hello Mother Teresa Academy Admissions Desk, I would like to inquire about admission for my child.'
   )}`;
 
-  return (
+  return createPortal(
     <div
       className="modal-overlay"
+      style={{ zIndex: 1000000 }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -165,26 +174,11 @@ export default function ContactNowModal({ isOpen, onClose }) {
                 >
                   <div className="whatsapp-card-icon">💬</div>
                   <div className="whatsapp-card-text">
-                    <span className="whatsapp-card-role">Primary Admissions Desk</span>
+                    <span className="whatsapp-card-role">Official Admissions & Inquiry Desk</span>
                     <strong className="whatsapp-card-number">{phonePrimary}</strong>
-                    <span className="whatsapp-card-sub">Instant response during office hours</span>
+                    <span className="whatsapp-card-sub">Instant response on WhatsApp (Mon–Sat, 8:00 AM – 2:30 PM)</span>
                   </div>
-                  <div className="whatsapp-card-btn">Chat Now ↗</div>
-                </a>
-
-                <a
-                  href={whatsappLink2}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="whatsapp-contact-card"
-                >
-                  <div className="whatsapp-card-icon">💬</div>
-                  <div className="whatsapp-card-text">
-                    <span className="whatsapp-card-role">Administration &amp; Helplines</span>
-                    <strong className="whatsapp-card-number">{phoneSecondary}</strong>
-                    <span className="whatsapp-card-sub">Admissions &amp; Prospectus queries</span>
-                  </div>
-                  <div className="whatsapp-card-btn">Chat Now ↗</div>
+                  <div className="whatsapp-card-btn">Chat on WhatsApp ↗</div>
                 </a>
               </div>
 
@@ -318,7 +312,7 @@ export default function ContactNowModal({ isOpen, onClose }) {
                         id="popup-phone"
                         required
                         className="form-input"
-                        placeholder="+91 98XXXXXXXX"
+                        placeholder="Enter 10-digit mobile number"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
@@ -393,6 +387,7 @@ export default function ContactNowModal({ isOpen, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

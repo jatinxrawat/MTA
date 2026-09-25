@@ -1148,7 +1148,7 @@ export default function HomePage({ onOpenInquiry }) {
                       id="home-phone"
                       required
                       className="form-input"
-                      placeholder="+91 95576 XXXXX"
+                      placeholder="Enter 10-digit mobile number"
                       value={inquiryData.phone}
                       onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
                     />

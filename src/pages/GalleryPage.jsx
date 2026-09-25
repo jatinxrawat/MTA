@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import PageHeader from '../components/PageHeader';
 import { schoolData } from '../data/schoolData';
 import { useCMS } from '../context/CMSContext';
@@ -189,143 +190,145 @@ export default function GalleryPage() {
       </section>
 
       {/* Lightbox Modal with Next / Prev */}
-      {lightboxIndex !== null && filteredPhotos[lightboxIndex] && (
-        <div
-          className="modal-overlay"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(7, 18, 36, 0.92)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem',
-          }}
-          onClick={closeLightbox}
-        >
+      {lightboxIndex !== null && filteredPhotos[lightboxIndex] &&
+        createPortal(
           <div
-            className="modal-card"
+            className="modal-overlay"
             style={{
-              maxWidth: '960px',
-              width: '100%',
-              backgroundColor: '#ffffff',
-              border: '2px solid var(--color-brass)',
-              overflow: 'hidden',
-              position: 'relative',
-              borderRadius: '2px',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(7, 18, 36, 0.92)',
+              zIndex: 999999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1.5rem',
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={closeLightbox}
           >
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={closeLightbox}
-              className="modal-close-btn"
+            <div
+              className="modal-card"
               style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
-                backgroundColor: 'rgba(7, 18, 36, 0.85)',
-                color: '#ffffff',
-                border: '1px solid var(--color-brass)',
-                padding: '0.4rem',
-                cursor: 'pointer',
-                zIndex: 10,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                maxWidth: '960px',
+                width: '100%',
+                backgroundColor: '#ffffff',
+                border: '2px solid var(--color-brass)',
+                overflow: 'hidden',
+                position: 'relative',
                 borderRadius: '2px',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
               }}
-              aria-label="Close photo preview"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X size={20} />
-            </button>
-
-            {/* Photo */}
-            <div style={{ position: 'relative', width: '100%', maxHeight: '70vh', overflow: 'hidden', backgroundColor: '#071224' }}>
-              <img
-                src={filteredPhotos[lightboxIndex]?.image || NEUTRAL_PLACEHOLDER_IMAGE}
-                alt={filteredPhotos[lightboxIndex]?.title || 'Mother Teresa Academy'}
-                style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain', display: 'block', margin: '0 auto' }}
-                onError={(e) => {
-                  if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
-                    e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
-                  }
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={closeLightbox}
+                className="modal-close-btn"
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  backgroundColor: 'rgba(7, 18, 36, 0.85)',
+                  color: '#ffffff',
+                  border: '1px solid var(--color-brass)',
+                  padding: '0.4rem',
+                  cursor: 'pointer',
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '2px',
                 }}
-              />
+                aria-label="Close photo preview"
+              >
+                <X size={20} />
+              </button>
 
-              {/* Prev Button */}
-              {filteredPhotos.length > 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    prevPhoto();
+              {/* Photo */}
+              <div style={{ position: 'relative', width: '100%', maxHeight: '70vh', overflow: 'hidden', backgroundColor: '#071224' }}>
+                <img
+                  src={filteredPhotos[lightboxIndex]?.image || NEUTRAL_PLACEHOLDER_IMAGE}
+                  alt={filteredPhotos[lightboxIndex]?.title || 'Mother Teresa Academy'}
+                  style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain', display: 'block', margin: '0 auto' }}
+                  onError={(e) => {
+                    if (e.target.src !== NEUTRAL_PLACEHOLDER_IMAGE) {
+                      e.target.src = NEUTRAL_PLACEHOLDER_IMAGE;
+                    }
                   }}
-                  style={{
-                    position: 'absolute',
-                    left: '16px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(7, 18, 36, 0.8)',
-                    color: '#ffffff',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    padding: '0.6rem',
-                    cursor: 'pointer',
-                    borderRadius: '50%',
-                  }}
-                  aria-label="Previous photo"
-                >
-                  <ChevronLeft size={22} />
-                </button>
-              )}
+                />
 
-              {/* Next Button */}
-              {filteredPhotos.length > 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    nextPhoto();
-                  }}
-                  style={{
-                    position: 'absolute',
-                    right: '16px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(7, 18, 36, 0.8)',
-                    color: '#ffffff',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    padding: '0.6rem',
-                    cursor: 'pointer',
-                    borderRadius: '50%',
-                  }}
-                  aria-label="Next photo"
-                >
-                  <ChevronRight size={22} />
-                </button>
-              )}
-            </div>
+                {/* Prev Button */}
+                {filteredPhotos.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      prevPhoto();
+                    }}
+                    style={{
+                      position: 'absolute',
+                      left: '16px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      backgroundColor: 'rgba(7, 18, 36, 0.8)',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      padding: '0.6rem',
+                      cursor: 'pointer',
+                      borderRadius: '50%',
+                    }}
+                    aria-label="Previous photo"
+                  >
+                    <ChevronLeft size={22} />
+                  </button>
+                )}
 
-            {/* Caption bar */}
-            <div style={{ padding: '1.25rem 1.75rem', backgroundColor: 'var(--bg-parchment-white)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-              <div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--color-navy)' }}>
-                  {filteredPhotos[lightboxIndex].title}
-                </h3>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink-secondary)', marginTop: '0.25rem' }}>
-                  {filteredPhotos[lightboxIndex].caption}
-                </p>
+                {/* Next Button */}
+                {filteredPhotos.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nextPhoto();
+                    }}
+                    style={{
+                      position: 'absolute',
+                      right: '16px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      backgroundColor: 'rgba(7, 18, 36, 0.8)',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      padding: '0.6rem',
+                      cursor: 'pointer',
+                      borderRadius: '50%',
+                    }}
+                    aria-label="Next photo"
+                  >
+                    <ChevronRight size={22} />
+                  </button>
+                )}
               </div>
-              <span style={{ fontSize: '0.82rem', color: 'var(--ink-muted)', fontWeight: '600' }}>
-                Photo {lightboxIndex + 1} of {filteredPhotos.length}
-              </span>
+
+              {/* Caption bar */}
+              <div style={{ padding: '1.25rem 1.75rem', backgroundColor: 'var(--bg-parchment-white)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--color-navy)' }}>
+                    {filteredPhotos[lightboxIndex].title}
+                  </h3>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--ink-secondary)', marginTop: '0.25rem' }}>
+                    {filteredPhotos[lightboxIndex].caption}
+                  </p>
+                </div>
+                <span style={{ fontSize: '0.82rem', color: 'var(--ink-muted)', fontWeight: '600' }}>
+                  Photo {lightboxIndex + 1} of {filteredPhotos.length}
+                </span>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

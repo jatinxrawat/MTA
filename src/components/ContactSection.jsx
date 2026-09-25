@@ -62,7 +62,7 @@ export default function ContactSection() {
           {/* Left Column: Campus Postal Address & Office Timings */}
           <div className="contact-details-box">
             {/* Unified Campus Location & Interactive Google Maps Card */}
-            <div className="contact-location-merged-card">
+            <div id="campus-location" className="contact-location-merged-card" style={{ scrollMarginTop: '110px' }}>
               <div className="merged-card-top-bar">
                 <div className="merged-location-header">
                   <MapPin size={22} className="contact-icon" />
@@ -294,7 +294,7 @@ export default function ContactSection() {
                       id="contact-number"
                       required
                       className="form-input"
-                      placeholder="+91 95576 XXXXX"
+                      placeholder="Enter 10-digit mobile number"
                       value={formData.contactNumber}
                       onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
                     />

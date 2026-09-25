@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useCMS } from '../context/CMSContext';
 import { schoolData } from '../data/schoolData';
 import EditableText from './admin/EditableText';
@@ -7,7 +8,7 @@ import {
   ExternalLink, Eye, ShieldCheck, Building2, 
   GraduationCap, Award, X, Image as ImageIcon,
   FileCheck, Calendar, Users, IndianRupee, Layers,
-  ZoomIn, ZoomOut, RotateCw, Maximize2
+  ZoomIn, ZoomOut, RotateCw, Maximize2, Play
 } from 'lucide-react';
 import '../styles/cbse-disclosure.css';
 
@@ -131,6 +132,104 @@ export default function CbseDisclosureSection() {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const renderFieldDetail = (field, sectionKey, idx) => {
+    const rawVal = String(field.details || '').trim();
+    const isUrl = rawVal.startsWith('http://') || rawVal.startsWith('https://') || rawVal.startsWith('www.');
+    const fullUrl = rawVal.startsWith('www.') ? `https://${rawVal}` : rawVal;
+    const isYoutube = rawVal.includes('youtube.com') || rawVal.includes('youtu.be');
+
+    if (isUrl) {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+          <a
+            href={fullUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="doc-link-btn"
+            style={{
+              background: isYoutube ? '#cc0000' : 'var(--color-navy)',
+              color: '#ffffff',
+              border: isYoutube ? '1px solid #b30000' : '1px solid var(--color-navy)',
+              padding: '0.45rem 0.95rem',
+              fontWeight: 700,
+              fontSize: '0.82rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              borderRadius: '4px',
+              textDecoration: 'none',
+              boxShadow: isYoutube ? '0 2px 8px rgba(204, 0, 0, 0.35)' : 'none',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {isYoutube ? <Play size={14} fill="#ffffff" /> : <ExternalLink size={14} />}
+            <span>{isYoutube ? 'Watch Inspection Video on YouTube ↗' : 'Visit Official Portal ↗'}</span>
+          </a>
+          <span style={{ fontSize: '0.82rem', color: 'var(--ink-secondary)', wordBreak: 'break-all' }}>
+            <EditableText
+              path={`cbseDisclosure.${sectionKey}.fields.${idx}.details`}
+              fallback={field.details}
+              as="span"
+            />
+          </span>
+        </div>
+      );
+    }
+
+    if (rawVal.includes('@') && rawVal.includes('.')) {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+          <a
+            href={`mailto:${rawVal}`}
+            className="doc-link-btn"
+            style={{
+              background: '#f4f6fa',
+              color: 'var(--color-navy)',
+              border: '1px solid #d0d7e6',
+              padding: '0.35rem 0.75rem',
+              fontWeight: 600,
+              fontSize: '0.82rem',
+              textDecoration: 'none',
+            }}
+          >
+            <ExternalLink size={13} />
+            <span>Send Email</span>
+          </a>
+          <span>
+            <EditableText
+              path={`cbseDisclosure.${sectionKey}.fields.${idx}.details`}
+              fallback={field.details}
+              as="span"
+            />
+          </span>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <EditableText
+          path={`cbseDisclosure.${sectionKey}.fields.${idx}.details`}
+          fallback={field.details}
+          as="span"
+        />
+        {field.fileUrl && (
+          <div style={{ marginTop: '6px' }}>
+            <a
+              href={field.fileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="doc-link-btn"
+            >
+              <ExternalLink size={13} />
+              <span>{field.fileName || 'View Document'}</span>
+            </a>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -343,7 +442,7 @@ export default function CbseDisclosureSection() {
 
         {/* 4. OFFICIAL APPROVED FEE SCHEDULE SECTION (Session 2025–26) */}
         {feeList.length > 0 && (
-          <div className="fee-table-section">
+          <div id="fee-structure" className="fee-table-section" style={{ scrollMarginTop: '110px' }}>
             <div className="fee-table-header">
               <div>
                 <h3>Official Approved Annual & Monthly Fee Schedule (Session 2025–2026)</h3>
@@ -414,26 +513,7 @@ export default function CbseDisclosureSection() {
                     <td>0{field.sNo || idx + 1}</td>
                     <td><strong>{field.information}</strong></td>
                     <td>
-                      <div>
-                        <EditableText
-                          path={`cbseDisclosure.sectionA.fields.${idx}.details`}
-                          fallback={field.details}
-                          as="span"
-                        />
-                        {field.fileUrl && (
-                          <div style={{ marginTop: '6px' }}>
-                            <a
-                              href={field.fileUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="doc-link-btn"
-                            >
-                              <ExternalLink size={13} />
-                              <span>{field.fileName || 'View Document'}</span>
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                      {renderFieldDetail(field, 'sectionA', idx)}
                     </td>
                   </tr>
                 ))}
@@ -591,11 +671,7 @@ export default function CbseDisclosureSection() {
                     <td>{field.sNo ? `0${field.sNo}` : '—'}</td>
                     <td><strong>{field.parameter}</strong></td>
                     <td>
-                      <EditableText
-                        path={`cbseDisclosure.sectionD.fields.${idx}.details`}
-                        fallback={field.details}
-                        as="span"
-                      />
+                      {renderFieldDetail(field, 'sectionD', idx)}
                     </td>
                   </tr>
                 ))}
@@ -625,11 +701,7 @@ export default function CbseDisclosureSection() {
                     <td>0{field.sNo || idx + 1}</td>
                     <td><strong>{field.parameter}</strong></td>
                     <td>
-                      <EditableText
-                        path={`cbseDisclosure.sectionE.fields.${idx}.details`}
-                        fallback={field.details}
-                        as="span"
-                      />
+                      {renderFieldDetail(field, 'sectionE', idx)}
                     </td>
                   </tr>
                 ))}
@@ -639,129 +711,131 @@ export default function CbseDisclosureSection() {
         </div>
       </div>
 
-      {/* 10. LIGHTBOX & DOCUMENT MODAL VIEWER */}
-      {selectedDoc && (
-        <div 
-          className="doc-modal-backdrop"
-          onClick={() => setSelectedDoc(null)}
-          role="dialog"
-          aria-modal="true"
-        >
+      {/* 10. LIGHTBOX & DOCUMENT MODAL VIEWER (Mounted to document.body via Portal) */}
+      {selectedDoc &&
+        createPortal(
           <div 
-            className="doc-modal-container"
-            onClick={(e) => e.stopPropagation()}
+            className="doc-modal-backdrop"
+            onClick={() => setSelectedDoc(null)}
+            role="dialog"
+            aria-modal="true"
           >
-            <div className="doc-modal-header">
-              <div className="doc-modal-title-group">
-                <span>{selectedDoc.category || 'Mandatory Public Disclosure'}</span>
-                <h3>{selectedDoc.title}</h3>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                {/* Document Viewer Zoom & Rotate Controls */}
-                <div className="doc-modal-tools">
-                  <button type="button" className="doc-tool-btn" onClick={handleZoomIn} title="Zoom In (+)">
-                    <ZoomIn size={16} />
-                  </button>
-                  <button type="button" className="doc-tool-btn" onClick={handleZoomOut} title="Zoom Out (-)">
-                    <ZoomOut size={16} />
-                  </button>
-                  <button type="button" className="doc-tool-btn" onClick={handleRotate} title="Rotate 90° Clockwise">
-                    <RotateCw size={16} />
-                  </button>
-                  <button type="button" className="doc-tool-btn" onClick={handleResetView} title="Reset Zoom/Orientation">
-                    <Maximize2 size={16} />
+            <div 
+              className="doc-modal-container"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="doc-modal-header">
+                <div className="doc-modal-title-group">
+                  <span>{selectedDoc.category || 'Mandatory Public Disclosure'}</span>
+                  <h3>{selectedDoc.title}</h3>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  {/* Document Viewer Zoom & Rotate Controls */}
+                  <div className="doc-modal-tools">
+                    <button type="button" className="doc-tool-btn" onClick={handleZoomIn} title="Zoom In (+)">
+                      <ZoomIn size={16} />
+                    </button>
+                    <button type="button" className="doc-tool-btn" onClick={handleZoomOut} title="Zoom Out (-)">
+                      <ZoomOut size={16} />
+                    </button>
+                    <button type="button" className="doc-tool-btn" onClick={handleRotate} title="Rotate 90° Clockwise">
+                      <RotateCw size={16} />
+                    </button>
+                    <button type="button" className="doc-tool-btn" onClick={handleResetView} title="Reset Zoom/Orientation">
+                      <Maximize2 size={16} />
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    className="doc-modal-close-btn"
+                    onClick={() => setSelectedDoc(null)}
+                    aria-label="Close document viewer"
+                  >
+                    <X size={22} />
                   </button>
                 </div>
-                <button
-                  type="button"
-                  className="doc-modal-close-btn"
-                  onClick={() => setSelectedDoc(null)}
-                  aria-label="Close document viewer"
-                >
-                  <X size={22} />
-                </button>
               </div>
-            </div>
 
-            <div className="doc-modal-content">
-              {selectedDoc.fileType === 'pdf' || selectedDoc.fileUrl?.toLowerCase().endsWith('.pdf') ? (
-                <div className="doc-modal-pdf-wrapper">
-                  <object
-                    data={`${selectedDoc.fileUrl}#toolbar=1&navpanes=0`}
-                    type="application/pdf"
-                    className="doc-modal-pdf-embed"
-                  >
-                    <iframe
-                      src={selectedDoc.fileUrl}
-                      title={selectedDoc.title}
+              <div className="doc-modal-content">
+                {selectedDoc.fileType === 'pdf' || selectedDoc.fileUrl?.toLowerCase().endsWith('.pdf') ? (
+                  <div className="doc-modal-pdf-wrapper">
+                    <object
+                      data={`${selectedDoc.fileUrl}#toolbar=1&navpanes=0`}
+                      type="application/pdf"
                       className="doc-modal-pdf-embed"
                     >
-                      <div style={{ textAlign: 'center', padding: '2rem' }}>
-                        <FileText size={48} style={{ color: 'var(--color-navy)', margin: '0 auto 1rem' }} />
-                        <p style={{ fontWeight: 600, color: 'var(--color-navy-deep)' }}>
-                          PDF Document Loaded ({selectedDoc.title})
-                        </p>
-                        <a
-                          href={selectedDoc.fileUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="btn-academic btn-academic-navy"
-                          style={{ marginTop: '1rem', display: 'inline-flex' }}
-                        >
-                          Open in Full PDF Reader
-                        </a>
-                      </div>
-                    </iframe>
-                  </object>
-                </div>
-              ) : (
-                <div className="doc-modal-img-viewport">
-                  <img
-                    src={selectedDoc.fileUrl}
-                    alt={selectedDoc.title}
-                    className="doc-modal-img"
-                    style={{
-                      transform: `scale(${zoomLevel}) rotate(${rotation}deg)`,
-                      transformOrigin: 'center center',
-                      transition: 'transform 0.2s cubic-bezier(0.2, 0, 0, 1)',
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="doc-modal-footer">
-              <div className="doc-modal-meta">
-                {selectedDoc.documentNumber && <span><strong>Doc Ref:</strong> {selectedDoc.documentNumber} &nbsp;|&nbsp; </span>}
-                {selectedDoc.issuingAuthority && <span><strong>Authority:</strong> {selectedDoc.issuingAuthority} &nbsp;|&nbsp; </span>}
-                {selectedDoc.validUntil && <span><strong>Validity:</strong> {selectedDoc.validUntil}</span>}
+                      <iframe
+                        src={selectedDoc.fileUrl}
+                        title={selectedDoc.title}
+                        className="doc-modal-pdf-embed"
+                      >
+                        <div style={{ textAlign: 'center', padding: '2rem' }}>
+                          <FileText size={48} style={{ color: 'var(--color-navy)', margin: '0 auto 1rem' }} />
+                          <p style={{ fontWeight: 600, color: 'var(--color-navy-deep)' }}>
+                            PDF Document Loaded ({selectedDoc.title})
+                          </p>
+                          <a
+                            href={selectedDoc.fileUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn-academic btn-academic-navy"
+                            style={{ marginTop: '1rem', display: 'inline-flex' }}
+                          >
+                            Open in Full PDF Reader
+                          </a>
+                        </div>
+                      </iframe>
+                    </object>
+                  </div>
+                ) : (
+                  <div className="doc-modal-img-viewport">
+                    <img
+                      src={selectedDoc.fileUrl}
+                      alt={selectedDoc.title}
+                      className="doc-modal-img"
+                      style={{
+                        transform: `scale(${zoomLevel}) rotate(${rotation}deg)`,
+                        transformOrigin: 'center center',
+                        transition: 'transform 0.2s cubic-bezier(0.2, 0, 0, 1)',
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
-              <div className="doc-modal-actions">
-                <a
-                  href={selectedDoc.fileUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="disclosure-action-btn"
-                  title="Open full resolution file in new browser window"
-                >
-                  <ExternalLink size={15} />
-                  <span>Open in Tab</span>
-                </a>
-                <a
-                  href={selectedDoc.fileUrl}
-                  download
-                  className="disclosure-action-btn btn-primary"
-                  title="Download file directly"
-                >
-                  <Download size={15} />
-                  <span>Download Document</span>
-                </a>
+              <div className="doc-modal-footer">
+                <div className="doc-modal-meta">
+                  {selectedDoc.documentNumber && <span><strong>Doc Ref:</strong> {selectedDoc.documentNumber} &nbsp;|&nbsp; </span>}
+                  {selectedDoc.issuingAuthority && <span><strong>Authority:</strong> {selectedDoc.issuingAuthority} &nbsp;|&nbsp; </span>}
+                  {selectedDoc.validUntil && <span><strong>Validity:</strong> {selectedDoc.validUntil}</span>}
+                </div>
+
+                <div className="doc-modal-actions">
+                  <a
+                    href={selectedDoc.fileUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="disclosure-action-btn"
+                    title="Open full resolution file in new browser window"
+                  >
+                    <ExternalLink size={15} />
+                    <span>Open in Tab</span>
+                  </a>
+                  <a
+                    href={selectedDoc.fileUrl}
+                    download
+                    className="disclosure-action-btn btn-primary"
+                    title="Download file directly"
+                  >
+                    <Download size={15} />
+                    <span>Download Document</span>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

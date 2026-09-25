@@ -9,7 +9,27 @@ import '../styles/contact-footer.css';
 export default function Footer() {
   const { content } = useCMS();
   const general = content.general || schoolData.general;
-  const { name, mottoTranslation, affiliationNo, schoolCode, postalAddress, phonePrimary, emailPrimary } = general;
+  const {
+    name = schoolData.general.name,
+    mottoTranslation = schoolData.general.mottoTranslation,
+    affiliationNo = schoolData.general.affiliationNo,
+    schoolCode = schoolData.general.schoolCode,
+    postalAddress = schoolData.general.postalAddress,
+    phonePrimary = schoolData.general.phonePrimary,
+    phoneSecondary = schoolData.general.phoneSecondary,
+    emailPrimary = schoolData.general.emailPrimary,
+  } = general;
+
+  const isInvalid = (val) =>
+    !val ||
+    typeof val !== 'string' ||
+    val.includes('12345') ||
+    val.includes('98765') ||
+    val.includes('xxxxx') ||
+    val.includes('to be added');
+
+  const safePhonePrimary = isInvalid(phonePrimary) ? '+91 95576 67999' : phonePrimary;
+  const safePhoneSecondary = isInvalid(phoneSecondary) ? '+91 70175 51638' : phoneSecondary;
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -72,7 +92,7 @@ export default function Footer() {
                 <strong>Campus:</strong> {postalAddress || 'Chhaprauli Road, Near Tarar Bhatta, Baraut, District Baghpat, Uttar Pradesh 250611'}
               </div>
               <div style={{ marginTop: '0.65rem' }}>
-                <strong>Helplines:</strong> {phonePrimary || '+91 95576 67999'} / {general.phoneSecondary || '+91 70175 51638'}
+                <strong>Helplines:</strong> {safePhonePrimary} / {safePhoneSecondary}
               </div>
               <div>
                 <strong>Email:</strong> {emailPrimary || 'motherteresaacademybaraut@gmail.com'}

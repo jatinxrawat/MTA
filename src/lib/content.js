@@ -38,17 +38,26 @@ import { schoolData } from '../data/schoolData.js';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase.js';
 
-const STORAGE_KEY = 'mta_cms_site_content_v2';
+const STORAGE_KEY = 'mta_cms_site_content_v3';
 export const FIRESTORE_COLLECTION = 'site_content';
 export const FIRESTORE_DOC_ID = 'main';
 
 /**
- * Helper to identify corrupted/unwanted placeholder strings
+ * Helper to identify corrupted/unwanted placeholder strings and dummy numbers
  */
 function isInvalidPlaceholder(val) {
   if (typeof val === 'string') {
     const s = val.trim().toLowerCase();
-    return s.includes('to be added') || s.includes('[—') || s.includes('[--') || s === '[— to be added]' || s.includes('[-');
+    return (
+      s.includes('to be added') ||
+      s.includes('[—') ||
+      s.includes('[--') ||
+      s === '[— to be added]' ||
+      s.includes('[-') ||
+      s.includes('12345') ||
+      s.includes('98765') ||
+      s.includes('xxxxx')
+    );
   }
   return false;
 }
@@ -260,10 +269,11 @@ export function deepMerge(target, source) {
  */
 export function loadContent() {
   try {
-    // Clear legacy v1 storage key if present to purge stale placeholder drafts
+    // Clear legacy v1/v2 storage keys if present to purge stale placeholder drafts
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
         window.localStorage.removeItem('mta_cms_site_content_v1');
+        window.localStorage.removeItem('mta_cms_site_content_v2');
       }
     } catch (e) {}
 

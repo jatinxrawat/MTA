@@ -1,8 +1,7 @@
 /* ==========================================================================
    FLOATING QUICK ACTION DOCK
-   Docked to right edge with distinct vibrant jewel colors (Fee, Location, Call)
-   Silky-smooth 60fps sliding drawer animation without layout jumps or flickering
-   Clean border and highlight styling without corner bevel clipping artifacts
+   Docked to right edge with distinct vibrant jewel colors (Contact, Fee, Location)
+   Silky-smooth 60fps drawer animation without edge jitter, lag, or layout oscillation
    ========================================================================== */
 
 .floating-quick-dock {
@@ -13,30 +12,30 @@
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* Ensures button width smoothly expands to the left */
-  gap: 10px;
-  pointer-events: none; /* Container lets background clicks pass through */
+  align-items: flex-end;
+  gap: 12px;
+  pointer-events: none;
 }
 
 .quick-dock-btn {
-  pointer-events: auto; /* Buttons are fully clickable */
+  pointer-events: auto;
   position: relative;
   display: flex;
   align-items: center;
   height: 48px;
   width: 48px; /* Fixed collapsed width */
-  border-radius: 12px 0 0 12px;
+  border-radius: 14px 0 0 14px;
   color: #ffffff;
   text-decoration: none;
-  /* Uniform subtle translucent border on top/left/bottom — eliminates discolored corner bevel artifacts */
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-right: none;
   cursor: pointer;
   overflow: hidden;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), -4px 6px 16px rgba(0, 0, 0, 0.22);
-  transition: width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.24s ease;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), -4px 6px 18px rgba(0, 0, 0, 0.25);
+  /* Kept flush to right edge without translateX offset to prevent mouse jitter oscillation */
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.24s ease,
+              filter 0.2s ease;
   white-space: nowrap;
   padding: 0;
   margin: 0;
@@ -47,18 +46,31 @@
   line-height: normal;
   appearance: none;
   -webkit-appearance: none;
+  will-change: width, box-shadow;
+  transform: translateZ(0); /* Force GPU layer */
 }
 
-/* Hover: Smoothly widens to reveal the label drawer */
+/* Invisible hit-area anchor on right edge to guarantee continuous mouse hover */
+.quick-dock-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 20px;
+  height: 100%;
+  pointer-events: auto;
+}
+
+/* Hover: Smoothly widens to reveal the label drawer cleanly */
 .quick-dock-btn:hover {
-  width: 172px; /* Explicit pixel value ensures smooth 60fps CSS animation */
-  transform: translateX(-4px);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5), -6px 8px 22px rgba(0, 0, 0, 0.32);
+  width: 178px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), -8px 10px 26px rgba(0, 0, 0, 0.35);
+  filter: brightness(1.05);
 }
 
 /* Tactile Click/Press State */
 .quick-dock-btn:active {
-  transform: translateX(-2px) scale(0.97);
+  transform: scale(0.97) translateZ(0);
 }
 
 /* Fixed icon box: Stays pinned on the leading edge */
@@ -84,33 +96,33 @@
 .dock-label-box {
   display: flex;
   align-items: center;
-  padding-right: 16px;
-  padding-left: 2px;
+  padding-right: 18px;
+  padding-left: 4px;
   color: #ffffff;
   font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   font-weight: 700;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(10px);
-  transition: opacity 0.2s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none; /* Prevents text from intercepting or cancelling parent click */
+  transform: translateX(8px);
+  transition: opacity 0.2s ease, transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
 }
 
 .quick-dock-btn:hover .dock-label-box {
   opacity: 1;
   transform: translateX(0);
-  transition-delay: 0.04s;
+  transition-delay: 0.03s;
 }
 
-/* WhatsApp Button - Vibrant Emerald Green */
+/* 1. WhatsApp / Contact Button - Vibrant Emerald Green */
 .quick-dock-btn.dock-whatsapp {
-  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
 .quick-dock-btn.dock-whatsapp:hover {
-  background: linear-gradient(135deg, #2fe06f 0%, #0d7065 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #047857 100%);
 }
 
 .dock-whatsapp-icon {
@@ -118,7 +130,7 @@
   line-height: 1;
 }
 
-/* 1. Fee Structure Button - Vibrant Gold/Amber (Matching reference screenshot) */
+/* 2. Fee Structure Button - Vibrant Gold/Amber */
 .quick-dock-btn.dock-fee {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
@@ -127,22 +139,13 @@
   background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
 }
 
-/* 2. Campus Location Button - Vibrant Warm Orange (Matching reference screenshot) */
+/* 3. Campus Location Button - Vibrant Warm Orange */
 .quick-dock-btn.dock-location {
   background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
 }
 
 .quick-dock-btn.dock-location:hover {
   background: linear-gradient(135deg, #fb923c 0%, #c2410c 100%);
-}
-
-/* 3. Admissions Call/Enquiry Button - Vibrant Royal Blue (Matching reference screenshot) */
-.quick-dock-btn.dock-phone {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-}
-
-.quick-dock-btn.dock-phone:hover {
-  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
 }
 
 /* Mobile Responsiveness (Bottom-right floating action group) */
