@@ -3,66 +3,66 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  <!-- Homepage: Primary Academic Prospectus & Admissions Portal -->
+  <!-- 1. Homepage: Primary Academic Prospectus & Admissions Portal -->
   <url>
     <loc>https://motherteresaacademy.edu.in/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
   </url>
 
-  <!-- Academics & Senior Secondary Streams (Science, Commerce, Humanities, Board Results) -->
+  <!-- 2. Academics & Senior Secondary Streams (Science, Commerce, Humanities, Board Results) -->
   <url>
     <loc>https://motherteresaacademy.edu.in/academics</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
 
-  <!-- Admissions & Contact Information (Baraut Campus Location, Helpline) -->
+  <!-- 3. Admissions & Contact Information (Baraut Campus Location, Helpline) -->
   <url>
     <loc>https://motherteresaacademy.edu.in/contact</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
 
-  <!-- Institutional Heritage, Vision & Foundational Pillars -->
+  <!-- 4. Institutional Heritage, Vision & Foundational Pillars -->
   <url>
     <loc>https://motherteresaacademy.edu.in/about</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
   </url>
 
-  <!-- Statutory CBSE Mandatory Public Disclosure (Appendix-IX) -->
+  <!-- 5. Statutory CBSE Mandatory Public Disclosure (Appendix-IX) -->
   <url>
     <loc>https://motherteresaacademy.edu.in/cbse-disclosure</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
 
-  <!-- Campus Infrastructure, Laboratories, Sports Arenas & Transport -->
+  <!-- 6. Campus Infrastructure, Laboratories, Sports Arenas & Transport -->
   <url>
     <loc>https://motherteresaacademy.edu.in/infrastructure</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
 
-  <!-- Academic Faculty, Department Heads & Teaching Staff -->
+  <!-- 7. Academic Faculty, Department Heads & Teaching Staff -->
   <url>
     <loc>https://motherteresaacademy.edu.in/staff</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
 
-  <!-- Photo Gallery (Laboratories, CBSE Cluster XIX Sports, Campus Architecture) -->
+  <!-- 8. Photo Gallery (Laboratories, CBSE Cluster XIX Sports, Campus Architecture) -->
   <url>
     <loc>https://motherteresaacademy.edu.in/gallery</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
