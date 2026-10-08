@@ -160,7 +160,7 @@ export const defaultContent = {
     whatsappNumber: schoolData.general.whatsappNumber || '+91 95576 67999',
     emailPrimary: schoolData.general.emailPrimary || 'motherteresaacademybaraut@gmail.com',
     emailAdmissions: schoolData.general.emailAdmissions || 'motherteresaacademybaraut@gmail.com',
-    website: schoolData.general.website || 'www.motherteresaacademy.edu.in',
+    website: schoolData.general.website || 'www.motherteresaacademybaraut.in',
     youtubeUrl: schoolData.general.youtubeUrl || 'https://www.youtube.com/@motherteresaacademy7598',
   },
 

@@ -76,4 +76,4 @@ Disallow: /admin/*
 # ==============================================================================
 # XML Sitemap Declaration
 # ==============================================================================
-Sitemap: https://motherteresaacademy.edu.in/sitemap.xml
+Sitemap: https://motherteresaacademybaraut.in/sitemap.xml

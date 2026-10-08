@@ -19,7 +19,7 @@ export const schoolData = {
     whatsappNumber: "+91 95576 67999",
     emailPrimary: "motherteresaacademybaraut@gmail.com",
     emailAdmissions: "motherteresaacademybaraut@gmail.com",
-    website: "www.motherteresaacademy.edu.in",
+    website: "www.motherteresaacademybaraut.in",
     youtubeUrl: "https://www.youtube.com/@motherteresaacademy7598",
     googleMapsUrl: "https://maps.app.goo.gl/LXHxYsqPKy6rnrNo9?g_st=ic",
     officeHours: "Monday to Saturday: 8:00 AM – 2:30 PM (Closed on Second Saturdays & Sundays)",

@@ -5,7 +5,7 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <!-- 1. Homepage: Primary Academic Prospectus & Admissions Portal -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/</loc>
+    <loc>https://motherteresaacademybaraut.in/</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
@@ -13,7 +13,7 @@
 
   <!-- 2. Academics & Senior Secondary Streams (Science, Commerce, Humanities, Board Results) -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/academics</loc>
+    <loc>https://motherteresaacademybaraut.in/academics</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
@@ -21,7 +21,7 @@
 
   <!-- 3. Admissions & Contact Information (Baraut Campus Location, Helpline) -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/contact</loc>
+    <loc>https://motherteresaacademybaraut.in/contact</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
@@ -29,7 +29,7 @@
 
   <!-- 4. Institutional Heritage, Vision & Foundational Pillars -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/about</loc>
+    <loc>https://motherteresaacademybaraut.in/about</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.90</priority>
@@ -37,7 +37,7 @@
 
   <!-- 5. Statutory CBSE Mandatory Public Disclosure (Appendix-IX) -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/cbse-disclosure</loc>
+    <loc>https://motherteresaacademybaraut.in/cbse-disclosure</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
@@ -45,7 +45,7 @@
 
   <!-- 6. Campus Infrastructure, Laboratories, Sports Arenas & Transport -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/infrastructure</loc>
+    <loc>https://motherteresaacademybaraut.in/infrastructure</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -53,7 +53,7 @@
 
   <!-- 7. Academic Faculty, Department Heads & Teaching Staff -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/staff</loc>
+    <loc>https://motherteresaacademybaraut.in/staff</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -61,7 +61,7 @@
 
   <!-- 8. Photo Gallery (Laboratories, CBSE Cluster XIX Sports, Campus Architecture) -->
   <url>
-    <loc>https://motherteresaacademy.edu.in/gallery</loc>
+    <loc>https://motherteresaacademybaraut.in/gallery</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>

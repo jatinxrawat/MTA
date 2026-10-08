@@ -25,7 +25,7 @@ export const schoolFaqs = [
   {
     question: "How do I apply for admission at Mother Teresa Academy, Baraut for Session 2025–2026?",
     answer:
-      "Admissions are open for Academic Session 2025–2026 from Pre-Primary (Nursery, LKG, UKG) through Class IX and Class XI. Parents can submit an online inquiry through the official website (motherteresaacademy.edu.in) or visit the School Admissions Desk on Chhaprauli Road, Baraut between 8:00 AM and 2:30 PM (Monday to Saturday). The admissions team facilitates entrance evaluation schedules and registration counseling.",
+      "Admissions are open for Academic Session 2025–2026 from Pre-Primary (Nursery, LKG, UKG) through Class IX and Class XI. Parents can submit an online inquiry through the official website (motherteresaacademybaraut.in) or visit the School Admissions Desk on Chhaprauli Road, Baraut between 8:00 AM and 2:30 PM (Monday to Saturday). The admissions team facilitates entrance evaluation schedules and registration counseling.",
     category: "Admissions",
   },
   {

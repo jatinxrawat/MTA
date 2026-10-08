@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const SITE_URL = 'https://motherteresaacademy.edu.in';
+const SITE_URL = 'https://motherteresaacademybaraut.in';
 const DEFAULT_TITLE = 'Mother Teresa Academy | Best CBSE School in Baraut, Baghpat (Senior Secondary)';
 const DEFAULT_DESCRIPTION =
   'Mother Teresa Academy (MTA) is rated among the best CBSE schools in Baraut, Baghpat (UP). Co-educational Senior Secondary schooling across Science, Commerce & Humanities streams. Admissions open 2025-26.';
