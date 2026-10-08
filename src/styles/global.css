@@ -12,6 +12,8 @@ html {
   background-color: var(--bg-parchment);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 body {
@@ -22,6 +24,21 @@ body {
   background-color: var(--bg-parchment);
   background-image: var(--texture-paper-grain);
   background-repeat: repeat;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Remove ugly broad default OS scrollbars across all WebKit and Chromium browsers */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar,
+.school-prospectus-app::-webkit-scrollbar,
+.modal-overlay::-webkit-scrollbar,
+.modal-card::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* On mobile the SVG feTurbulence texture is imperceptible at 0.035 opacity
