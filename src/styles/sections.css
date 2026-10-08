@@ -248,9 +248,16 @@
 /* 3. Teaching Staff Section */
 .leadership-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-bottom: 3.5rem;
+}
+
+.leadership-grid.single-leader {
+  display: block;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .leadership-card {

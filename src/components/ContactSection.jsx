@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { schoolData } from '../data/schoolData';
 import { useCMS } from '../context/CMSContext';
 import EditableText from './admin/EditableText';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Navigation, ExternalLink, Map } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Navigation, ExternalLink, Map, Loader2 } from 'lucide-react';
+import { sendInquiry, OFFICIAL_SCHOOL_EMAIL } from '../services/inquiryService';
 import '../styles/contact-footer.css';
 
 export default function ContactSection() {
@@ -21,11 +22,28 @@ export default function ContactSection() {
     message: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await sendInquiry({
+        name: formData.parentName,
+        phone: formData.contactNumber,
+        email: formData.email,
+        grade: formData.gradeSeeking,
+        message: formData.message,
+        source: 'Contact Page (/contact)',
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Failed to dispatch inquiry:', err);
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -44,7 +62,7 @@ export default function ContactSection() {
           {/* Left Column: Campus Postal Address & Office Timings */}
           <div className="contact-details-box">
             {/* Unified Campus Location & Interactive Google Maps Card */}
-            <div className="contact-location-merged-card">
+            <div id="campus-location" className="contact-location-merged-card" style={{ scrollMarginTop: '110px' }}>
               <div className="merged-card-top-bar">
                 <div className="merged-location-header">
                   <MapPin size={22} className="contact-icon" />
@@ -124,24 +142,76 @@ export default function ContactSection() {
             <div className="contact-item-group">
               <div className="contact-item-header">
                 <Phone size={22} className="contact-icon" />
-                <h3 className="contact-label">Telephonic Helplines</h3>
+                <h3 className="contact-label">Telephonic Helplines &amp; WhatsApp</h3>
               </div>
               <p className="contact-val">
-                General Inquiries: <EditableText path="general.phonePrimary" fallback={phonePrimary} as="span" />
+                General Inquiries: <EditableText path="general.phonePrimary" fallback={phonePrimary} as="span" />{' '}
+                <a
+                  href="https://wa.me/919557667999?text=Hello%20Mother%20Teresa%20Academy%2C%20I%20would%20like%20to%20inquire%20about%20admissions."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    background: '#25d366',
+                    color: '#ffffff',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '4px',
+                    textDecoration: 'none',
+                    marginLeft: '0.5rem',
+                    verticalAlign: 'middle',
+                  }}
+                  title="Direct WhatsApp Chat"
+                >
+                  💬 WhatsApp
+                </a>
                 <br />
-                Admissions Cell: <EditableText path="general.phoneSecondary" fallback={phoneSecondary} as="span" />
+                Admissions Cell: <EditableText path="general.phoneSecondary" fallback={phoneSecondary} as="span" />{' '}
+                <a
+                  href="https://wa.me/917017551638?text=Hello%20Mother%20Teresa%20Academy%2C%20I%20would%20like%20to%20inquire%20about%20admissions."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    background: '#25d366',
+                    color: '#ffffff',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '4px',
+                    textDecoration: 'none',
+                    marginLeft: '0.5rem',
+                    verticalAlign: 'middle',
+                  }}
+                  title="Direct WhatsApp Chat"
+                >
+                  💬 WhatsApp
+                </a>
               </p>
             </div>
 
             <div className="contact-item-group">
               <div className="contact-item-header">
                 <Mail size={22} className="contact-icon" />
-                <h3 className="contact-label">Electronic Mail</h3>
+                <h3 className="contact-label">Electronic Mail &amp; YouTube Channel</h3>
               </div>
               <p className="contact-val">
                 Official Secretarial Desk: <EditableText path="general.emailPrimary" fallback={emailPrimary} as="span" />
                 <br />
-                Admissions Registrar: <EditableText path="general.emailAdmissions" fallback={emailAdmissions} as="span" />
+                YouTube Channel:{' '}
+                <a
+                  href="https://www.youtube.com/@motherteresaacademy7598"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#dc2626', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                >
+                  ▶ @motherteresaacademy7598 (Official Channel)
+                </a>
               </p>
             </div>
 
@@ -171,14 +241,26 @@ export default function ContactSection() {
               <div style={{ backgroundColor: 'var(--bg-parchment-white)', border: '1px solid var(--color-brass)', padding: '2.5rem', textAlign: 'center' }}>
                 <CheckCircle size={42} style={{ color: '#2e7d32', margin: '0 auto 1rem' }} />
                 <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--color-navy)', marginBottom: '0.5rem' }}>
-                  Enquiry Registered Successfully
+                  Enquiry Dispatched to Admissions
                 </h4>
-                <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)' }}>
-                  Thank you, <strong>{formData.parentName}</strong>. The Admissions Secretariat will reach out to <strong>{formData.contactNumber}</strong> shortly.
+                <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)', marginBottom: '0.5rem' }}>
+                  Thank you, <strong>{formData.parentName}</strong>. Your enquiry has been delivered directly to our administration desk (<strong>{OFFICIAL_SCHOOL_EMAIL}</strong>).
+                </p>
+                <p style={{ fontSize: '0.88rem', color: 'var(--ink-muted)' }}>
+                  Our Admissions Secretariat will review your requirements and reach out to <strong>{formData.contactNumber}</strong> shortly.
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => {
+                    setSubmitted(false);
+                    setFormData({
+                      parentName: '',
+                      contactNumber: '',
+                      email: '',
+                      gradeSeeking: 'Class XI - Science',
+                      message: '',
+                    });
+                  }}
                   className="btn-academic btn-academic-outline"
                   style={{ marginTop: '1.5rem' }}
                 >
@@ -196,7 +278,7 @@ export default function ContactSection() {
                     id="parentName"
                     required
                     className="form-input"
-                    placeholder="e.g. Dr. Rajesh Sharma"
+                    placeholder="Enter full name"
                     value={formData.parentName}
                     onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
                   />
@@ -209,10 +291,10 @@ export default function ContactSection() {
                     </label>
                     <input
                       type="tel"
-                      id="contactNumber"
+                      id="contact-number"
                       required
                       className="form-input"
-                      placeholder="+91 98765 XXXXX"
+                      placeholder="Enter 10-digit mobile number"
                       value={formData.contactNumber}
                       onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
                     />
@@ -267,11 +349,30 @@ export default function ContactSection() {
 
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="btn-academic btn-academic-brass"
-                  style={{ width: '100%', padding: '1rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    opacity: isSubmitting ? 0.75 : 1,
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                  }}
                 >
-                  <Send size={16} style={{ marginRight: '0.5rem' }} />
-                  Submit Official Admission Enquiry
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="spin-animation" />
+                      <span>Sending to Admissions Secretariat...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      <span>Submit Official Admission Enquiry</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}

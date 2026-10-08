@@ -7,11 +7,28 @@ import { NEUTRAL_PLACEHOLDER_IMAGE } from '../lib/media';
 
 export default function InfrastructureSection() {
   const { content } = useCMS();
-  const infraData = content.infrastructure || schoolData.infrastructure;
-  const campusOverview = infraData.campusOverview || schoolData.infrastructure.campusOverview;
-  const metrics = infraData.metrics || schoolData.infrastructure.metrics;
-  const sanitation = infraData.sanitation || schoolData.infrastructure.sanitation;
-  const gallery = (content.gallery || schoolData.infrastructure.gallery).filter((g) => g.isVisible !== false);
+  const defaultInfra = schoolData.infrastructure;
+  const infraData = content.infrastructure || defaultInfra;
+  const campusOverview = infraData.campusOverview || defaultInfra.campusOverview;
+  
+  // Ensure verified fallback data is always used if any cached placeholder exists
+  const rawMetrics = infraData.metrics || defaultInfra.metrics;
+  const metrics = rawMetrics.map((item, idx) => {
+    const def = defaultInfra.metrics[idx] || {};
+    const val = (item?.value && !item.value.includes('to be added') && !item.value.includes('[—')) ? item.value : def.value;
+    const sub = (item?.sub && !item.sub.includes('to be added') && !item.sub.includes('[—')) ? item.sub : def.sub;
+    const label = item?.label || def.label;
+    return { ...def, ...item, value: val, sub, label };
+  }).filter((item) => item.value && !item.value.includes('to be added') && !item.value.includes('[—'));
+
+  const rawSanitation = infraData.sanitation || defaultInfra.sanitation;
+  const sanitation = rawSanitation.map((item, idx) => {
+    const def = defaultInfra.sanitation[idx] || {};
+    const count = (item?.count && !item.count.includes('to be added') && !item.count.includes('[—')) ? item.count : def.count;
+    return { ...def, ...item, count };
+  }).filter((item) => item.count && !item.count.includes('to be added') && !item.count.includes('[—'));
+
+  const gallery = (content.gallery || defaultInfra.gallery).filter((g) => g.isVisible !== false);
   const [activePhoto, setActivePhoto] = useState(null);
 
   return (

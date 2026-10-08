@@ -808,20 +808,76 @@
 .house-item-box {
   background-color: #ffffff;
   border: 1px solid var(--bg-paper-rule);
-  padding: 1.35rem 1rem;
+  padding: 1.25rem 1rem 1.35rem;
   text-align: center;
   border-top: 4px solid var(--house-color, var(--color-navy));
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: border-color 280ms ease, background-color 280ms ease, box-shadow 280ms ease;
+  box-shadow: 0 4px 12px rgba(11, 27, 61, 0.04);
+  transition: border-color 280ms ease, background-color 280ms ease, box-shadow 280ms ease, transform 280ms ease;
+}
+
+.house-item-box:hover {
+  border-color: rgba(var(--house-color-rgb, 11, 27, 61), 0.45);
+  box-shadow: 0 12px 28px -4px rgba(var(--house-color-rgb, 11, 27, 61), 0.18);
+  transform: translateY(-3px);
 }
 
 .house-item-box.is-toggled {
-  border-color: rgba(var(--house-color-rgb, 11, 27, 61), 0.35);
-  box-shadow: 0 10px 24px -4px rgba(var(--house-color-rgb, 11, 27, 61), 0.18) !important;
-  background: linear-gradient(180deg, #ffffff 50%, rgba(var(--house-color-rgb, 11, 27, 61), 0.04) 100%);
+  border-color: rgba(var(--house-color-rgb, 11, 27, 61), 0.5);
+  box-shadow: 0 14px 30px -4px rgba(var(--house-color-rgb, 11, 27, 61), 0.22) !important;
+  background: linear-gradient(180deg, #ffffff 40%, rgba(var(--house-color-rgb, 11, 27, 61), 0.06) 100%);
+}
+
+/* Explicit House Color Header Pill */
+.house-color-header-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(var(--house-color-rgb, 11, 27, 61), 0.08);
+  border: 1px solid rgba(var(--house-color-rgb, 11, 27, 61), 0.22);
+  margin-bottom: 0.75rem;
+  transition: all 0.25s ease;
+}
+
+.house-item-box:hover .house-color-header-pill {
+  background: rgba(var(--house-color-rgb, 11, 27, 61), 0.15);
+  border-color: var(--house-color);
+  transform: translateY(-1px);
+}
+
+.house-color-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--house-color);
+  box-shadow: 0 0 6px var(--house-color);
+}
+
+.house-color-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--house-color);
+}
+
+.house-color-sub-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--house-color);
+  margin-top: 0.15rem;
+  margin-bottom: 0.35rem;
+  background: rgba(var(--house-color-rgb, 11, 27, 61), 0.07);
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
 }
 
 .house-toggle-wrapper {

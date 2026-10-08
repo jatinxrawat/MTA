@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Phone } from 'lucide-react';
+import { MapPin, Phone, MessageSquare } from 'lucide-react';
 import '../styles/floating-actions.css';
 
 /**
- * FloatingQuickActions: Right-docked quick-contact pills inspired by reference school site.
+ * FloatingQuickActions: Right-docked quick-contact pills (WhatsApp, Contact Now, Fee, Location).
  * Renders on public pages, automatically hidden in admin area.
  */
 export default function FloatingQuickActions({ onOpenInquiry }) {
@@ -13,30 +13,54 @@ export default function FloatingQuickActions({ onOpenInquiry }) {
     return null;
   }
 
-  const handleNavClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleScrollToSection = (targetPath, targetHash) => {
+    if (location.pathname === targetPath) {
+      const el = document.getElementById(targetHash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
   };
 
   return (
     <aside className="floating-quick-dock" aria-label="Quick Action Contacts">
-      {/* 1. Fee Structure / Statutory Fees (Gold/Amber) */}
+      {/* 1. Single Unified Contact / WhatsApp Button (Vibrant Emerald Green) */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          if (onOpenInquiry) onOpenInquiry();
+        }}
+        className="quick-dock-btn dock-whatsapp"
+        title="Contact Admissions Desk / WhatsApp (+91 95576 67999)"
+        aria-label="Contact & WhatsApp Admissions"
+      >
+        <span className="dock-icon-box">
+          <span className="dock-whatsapp-icon">💬</span>
+        </span>
+        <span className="dock-label-box">Contact / WhatsApp</span>
+      </button>
+
+      {/* 2. Fee Structure / Statutory Fees (Gold/Amber) -> Directly to #fee-structure */}
       <Link
-        to="/cbse-disclosure"
-        onClick={handleNavClick}
+        to="/cbse-disclosure#fee-structure"
+        onClick={() => handleScrollToSection('/cbse-disclosure', 'fee-structure')}
         className="quick-dock-btn dock-fee"
-        title="CBSE Fee Structure (2025–26)"
+        title="CBSE Approved Fee Structure (2025–26)"
         aria-label="View Fee Structure"
       >
         <span className="dock-icon-box">
           <span className="dock-icon-symbol">₹</span>
         </span>
-        <span className="dock-label-box">Fee Structure</span>
+        <span className="dock-label-box">Fee Schedule</span>
       </Link>
 
-      {/* 2. Campus Location (Vibrant Orange) */}
+      {/* 3. Campus Location (Vibrant Orange) -> Directly to #campus-location */}
       <Link
-        to="/contact"
-        onClick={handleNavClick}
+        to="/contact#campus-location"
+        onClick={() => handleScrollToSection('/contact', 'campus-location')}
         className="quick-dock-btn dock-location"
         title="Campus Coordinates & Directions (Baraut)"
         aria-label="Campus Location"
@@ -44,25 +68,9 @@ export default function FloatingQuickActions({ onOpenInquiry }) {
         <span className="dock-icon-box">
           <MapPin size={20} strokeWidth={2.2} />
         </span>
-        <span className="dock-label-box">Location</span>
+        <span className="dock-label-box">Location / Map</span>
       </Link>
-
-      {/* 3. Admissions Helpline / Call (Royal Blue) */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          if (onOpenInquiry) onOpenInquiry();
-        }}
-        className="quick-dock-btn dock-phone"
-        title="Admissions Helpline: +91 98765 43210"
-        aria-label="Admissions Enquiry"
-      >
-        <span className="dock-icon-box">
-          <Phone size={19} strokeWidth={2.2} />
-        </span>
-        <span className="dock-label-box">Enquire Now</span>
-      </button>
     </aside>
   );
 }
+

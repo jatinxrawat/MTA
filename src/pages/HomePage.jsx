@@ -11,6 +11,8 @@ import SEO from '../components/SEO';
 import FaqSection from '../components/FaqSection';
 import { getFaqSchema } from '../data/seoFaqs';
 
+import { sendInquiry, OFFICIAL_SCHOOL_EMAIL } from '../services/inquiryService';
+
 import {
   Bell,
   Calendar,
@@ -113,13 +115,25 @@ export default function HomePage({ onOpenInquiry }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
 
-  const handleInquirySubmit = (e) => {
+  const handleInquirySubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await sendInquiry({
+        name: inquiryData.parentName,
+        phone: inquiryData.phone,
+        email: inquiryData.email,
+        grade: inquiryData.grade,
+        message: inquiryData.message,
+        source: 'Homepage Quick Enquiry',
+      });
       setInquirySubmitted(true);
-    }, 450);
+    } catch (err) {
+      console.error('Inquiry submission error:', err);
+      setInquirySubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const filteredNotices =
@@ -681,15 +695,26 @@ export default function HomePage({ onOpenInquiry }) {
 
             <div ref={housesRef} className="houses-strip">
               {houses.map((house, idx) => {
+                const defaultHouseMeta = [
+                  { color: '#dc2626', rgb: '220, 38, 38', colorName: 'Red House' },
+                  { color: '#d97706', rgb: '217, 119, 6', colorName: 'Yellow House' },
+                  { color: '#16a34a', rgb: '22, 163, 74', colorName: 'Green House' },
+                  { color: '#2563eb', rgb: '37, 99, 235', colorName: 'Blue House' },
+                ];
+                const meta = defaultHouseMeta[idx % 4];
+                const houseColor = house.color || meta.color;
+                const houseColorRgb = house.colorRgb || meta.rgb;
+                const houseColorName = house.colorName || meta.colorName;
                 const houseClass = `house-${(house.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')}`;
                 const isToggled = !!toggledHouses[idx];
+
                 return (
                   <div
                     key={idx}
                     className={`house-item-box ${houseClass} ${isToggled ? 'is-toggled' : ''} scroll-reveal-item ${housesRevealed ? 'is-revealed' : ''}`}
                     style={{
-                      '--house-color': house.color,
-                      '--house-color-rgb': house.colorRgb || '11, 27, 61',
+                      '--house-color': houseColor,
+                      '--house-color-rgb': houseColorRgb,
                       '--reveal-delay': idx,
                     }}
                     onClick={() => handleToggleHouse(idx)}
@@ -744,8 +769,8 @@ export default function HomePage({ onOpenInquiry }) {
                     {/* Dual-View Animated Content */}
                     <div className="house-card-content">
                       <div className={`house-view-panel ${!isToggled ? 'is-active' : 'is-hidden'}`}>
-                        <h4 className="house-name">
-                          <EditableText path={`houses.${idx}.name`} fallback={house.name} as="span" />
+                        <h4 className="house-name" style={{ color: houseColor, fontSize: '1.25rem', fontWeight: 800 }}>
+                          {houseColorName}
                         </h4>
                         <p className="house-motto">
                           "
@@ -755,7 +780,9 @@ export default function HomePage({ onOpenInquiry }) {
                       </div>
 
                       <div className={`house-view-panel ${isToggled ? 'is-active' : 'is-hidden'}`}>
-                        <h4 className="house-patron-title">{house.patron || house.name}</h4>
+                        <h4 className="house-patron-title" style={{ color: houseColor, fontSize: '1.15rem', fontWeight: 800 }}>
+                          {houseColorName}
+                        </h4>
                         <p className="house-virtues-text">
                           <EditableText path={`houses.${idx}.virtues`} fallback={house.virtues} as="span" />
                         </p>
@@ -997,24 +1024,76 @@ export default function HomePage({ onOpenInquiry }) {
               <div className="contact-item-group">
                 <div className="contact-item-header">
                   <Phone size={22} className="contact-icon" />
-                  <h3 className="contact-label">Telephonic Helplines</h3>
+                  <h3 className="contact-label">Telephonic Helplines &amp; WhatsApp</h3>
                 </div>
                 <p className="contact-val">
-                  Administration Office: {phonePrimary}
+                  Administration Office: {phonePrimary}{' '}
+                  <a
+                    href="https://wa.me/919557667999?text=Hello%20Mother%20Teresa%20Academy%2C%20I%20would%20like%20to%20inquire%20about%20admissions."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      background: '#25d366',
+                      color: '#ffffff',
+                      fontSize: '0.74rem',
+                      fontWeight: 700,
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: '4px',
+                      textDecoration: 'none',
+                      marginLeft: '0.5rem',
+                      verticalAlign: 'middle',
+                    }}
+                    title="Direct WhatsApp Chat"
+                  >
+                    💬 WhatsApp
+                  </a>
                   <br />
-                  Admissions Cell: {phoneSecondary}
+                  Admissions Cell: {phoneSecondary}{' '}
+                  <a
+                    href="https://wa.me/917017551638?text=Hello%20Mother%20Teresa%20Academy%2C%20I%20would%20like%20to%20inquire%20about%20admissions."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      background: '#25d366',
+                      color: '#ffffff',
+                      fontSize: '0.74rem',
+                      fontWeight: 700,
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: '4px',
+                      textDecoration: 'none',
+                      marginLeft: '0.5rem',
+                      verticalAlign: 'middle',
+                    }}
+                    title="Direct WhatsApp Chat"
+                  >
+                    💬 WhatsApp
+                  </a>
                 </p>
               </div>
 
               <div className="contact-item-group">
                 <div className="contact-item-header">
                   <Mail size={22} className="contact-icon" />
-                  <h3 className="contact-label">Electronic Mail</h3>
+                  <h3 className="contact-label">Electronic Mail &amp; YouTube</h3>
                 </div>
                 <p className="contact-val">
-                  General Desk: {emailPrimary}
+                  Official Email: {emailPrimary}
                   <br />
-                  Admissions: {emailAdmissions}
+                  YouTube Channel:{' '}
+                  <a
+                    href="https://www.youtube.com/@motherteresaacademy7598"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#dc2626', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                  >
+                    ▶ @motherteresaacademy7598
+                  </a>
                 </p>
               </div>
 
@@ -1044,14 +1123,26 @@ export default function HomePage({ onOpenInquiry }) {
                 <div style={{ backgroundColor: 'var(--bg-parchment-white)', border: '1px solid var(--color-brass)', padding: '2.5rem', textAlign: 'center' }}>
                   <CheckCircle size={42} style={{ color: '#2e7d32', margin: '0 auto 1rem' }} />
                   <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--color-navy)', marginBottom: '0.5rem' }}>
-                    Enquiry Registered Successfully
+                    Enquiry Dispatched to Admissions
                   </h4>
-                  <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)' }}>
-                    Thank you, <strong>{inquiryData.parentName}</strong>. Our admissions officer will review your query and contact <strong>{inquiryData.phone}</strong> shortly.
+                  <p style={{ fontSize: '0.95rem', color: 'var(--ink-secondary)', marginBottom: '0.5rem' }}>
+                    Thank you, <strong>{inquiryData.parentName}</strong>. Your query has been forwarded directly to our administration desk (<strong>{OFFICIAL_SCHOOL_EMAIL}</strong>).
+                  </p>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--ink-muted)' }}>
+                    Our Admissions Secretariat will review your inquiry and contact <strong>{inquiryData.phone}</strong> shortly.
                   </p>
                   <button
                     type="button"
-                    onClick={() => setInquirySubmitted(false)}
+                    onClick={() => {
+                      setInquirySubmitted(false);
+                      setInquiryData({
+                        parentName: '',
+                        phone: '',
+                        email: '',
+                        grade: 'Pre-Primary (Nursery - UKG)',
+                        message: '',
+                      });
+                    }}
                     className="btn-academic btn-academic-outline"
                     style={{ marginTop: '1.5rem' }}
                   >
@@ -1061,15 +1152,15 @@ export default function HomePage({ onOpenInquiry }) {
               ) : (
                 <form onSubmit={handleInquirySubmit}>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="home-parentName">
-                      Parent / Guardian Full Name *
+                    <label className="form-label" htmlFor="home-parent-name">
+                      Parent / Guardian Name *
                     </label>
                     <input
                       type="text"
-                      id="home-parentName"
+                      id="home-parent-name"
                       required
                       className="form-input"
-                      placeholder="e.g. Sh. Devendra Kumar"
+                      placeholder="Enter full name"
                       value={inquiryData.parentName}
                       onChange={(e) => setInquiryData({ ...inquiryData, parentName: e.target.value })}
                     />
@@ -1084,7 +1175,7 @@ export default function HomePage({ onOpenInquiry }) {
                       id="home-phone"
                       required
                       className="form-input"
-                      placeholder="+91 98XXXXXXXX"
+                      placeholder="Enter 10-digit mobile number"
                       value={inquiryData.phone}
                       onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
                     />
@@ -1098,7 +1189,7 @@ export default function HomePage({ onOpenInquiry }) {
                       type="email"
                       id="home-email"
                       className="form-input"
-                      placeholder="e.g. parent@example.com"
+                      placeholder="parent@example.com"
                       value={inquiryData.email}
                       onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
                     />

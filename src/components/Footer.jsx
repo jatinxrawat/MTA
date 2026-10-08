@@ -9,7 +9,27 @@ import '../styles/contact-footer.css';
 export default function Footer() {
   const { content } = useCMS();
   const general = content.general || schoolData.general;
-  const { name, mottoTranslation, affiliationNo, schoolCode, postalAddress, phonePrimary, emailPrimary } = general;
+  const {
+    name = schoolData.general.name,
+    mottoTranslation = schoolData.general.mottoTranslation,
+    affiliationNo = schoolData.general.affiliationNo,
+    schoolCode = schoolData.general.schoolCode,
+    postalAddress = schoolData.general.postalAddress,
+    phonePrimary = schoolData.general.phonePrimary,
+    phoneSecondary = schoolData.general.phoneSecondary,
+    emailPrimary = schoolData.general.emailPrimary,
+  } = general;
+
+  const isInvalid = (val) =>
+    !val ||
+    typeof val !== 'string' ||
+    val.includes('12345') ||
+    val.includes('98765') ||
+    val.includes('xxxxx') ||
+    val.includes('to be added');
+
+  const safePhonePrimary = isInvalid(phonePrimary) ? '+91 95576 67999' : phonePrimary;
+  const safePhoneSecondary = isInvalid(phoneSecondary) ? '+91 70175 51638' : phoneSecondary;
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -66,16 +86,60 @@ export default function Footer() {
           <div>
             <h4 className="footer-column-title">CBSE Credentials</h4>
             <div style={{ fontSize: '0.88rem', color: 'rgba(255, 255, 255, 0.8)', lineHeight: '1.7' }}>
-              <div><strong>Affiliation No:</strong> {affiliationNo}</div>
-              <div><strong>School Code:</strong> {schoolCode}</div>
-              <div style={{ marginTop: '0.75rem' }}>
-                <strong>Campus:</strong> {postalAddress}
+              <div><strong>Affiliation No:</strong> {affiliationNo || '2134272'}</div>
+              <div><strong>School Code:</strong> {schoolCode || '61658'}</div>
+              <div style={{ marginTop: '0.65rem' }}>
+                <strong>Campus:</strong> {postalAddress || 'Chhaprauli Road, Near Tarar Bhatta, Baraut, District Baghpat, Uttar Pradesh 250611'}
               </div>
-              <div style={{ marginTop: '0.75rem' }}>
-                <strong>Helpline:</strong> {phonePrimary}
+              <div style={{ marginTop: '0.65rem' }}>
+                <strong>Helplines:</strong> {safePhonePrimary} / {safePhoneSecondary}
               </div>
               <div>
-                <strong>Email:</strong> {emailPrimary}
+                <strong>Email:</strong> {emailPrimary || 'motherteresaacademybaraut@gmail.com'}
+              </div>
+              <div style={{ marginTop: '0.85rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <a
+                  href="https://www.youtube.com/@motherteresaacademy7598"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    color: '#ff4b4b',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    background: 'rgba(255,255,255,0.1)',
+                    padding: '0.3rem 0.65rem',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(255,75,75,0.3)',
+                  }}
+                  title="Official YouTube Channel"
+                >
+                  ▶ YouTube Channel
+                </a>
+                <a
+                  href="https://wa.me/919557667999?text=Hello%20Mother%20Teresa%20Academy%2C%20I%20would%20like%20to%20inquire%20about%20admissions."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    color: '#25d366',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    background: 'rgba(255,255,255,0.1)',
+                    padding: '0.3rem 0.65rem',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(37,211,102,0.3)',
+                  }}
+                  title="Chat on WhatsApp"
+                >
+                  💬 WhatsApp
+                </a>
               </div>
             </div>
           </div>
