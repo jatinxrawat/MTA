@@ -7,6 +7,7 @@ import {
   ArrowRight, ArrowLeft, AlertCircle, Loader2 
 } from 'lucide-react';
 import '../../styles/admin.css';
+import SEO from '../../components/SEO';
 
 export default function AdminLogin() {
   const [pin, setPin] = useState('');
@@ -62,6 +63,11 @@ export default function AdminLogin() {
 
   return (
     <div className="cms-login-viewport">
+      <SEO
+        title="Admin Login | Mother Teresa Academy Baraut"
+        description="Restricted administrative access portal."
+        noindex={true}
+      />
       <div className={`cms-login-card ${isShaking ? 'cms-card-shake' : ''}`} style={{ maxWidth: '460px' }}>
         {/* Header */}
         <div className="cms-login-header">

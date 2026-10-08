@@ -6,6 +6,7 @@ import CrestLogo from '../components/CrestLogo';
 import { 
   FileText, Download, ExternalLink, ArrowLeft 
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function CustomPageView() {
   const { slug } = useParams();
@@ -21,6 +22,11 @@ export default function CustomPageView() {
   if (!page || (!page.isPublished && !isAdmin)) {
     return (
       <div className="subpage-view">
+        <SEO
+          title="Page Under Preparation | Mother Teresa Academy, Baraut"
+          description="This circular or feature page is currently being updated by the administration."
+          noindex={true}
+        />
         <PageHeader
           title="Page Under Preparation"
           subtitle="This institutional circular or feature page is currently being updated by the administration."
@@ -52,6 +58,16 @@ export default function CustomPageView() {
 
   return (
     <div className="subpage-view">
+      <SEO
+        title={`${page.title} | Mother Teresa Academy, Baraut`}
+        description={page.subtitle || `${page.title} - Official information from Mother Teresa Academy, Baraut (CBSE Affiliated).`}
+        canonical={`/pages/${page.slug || slug}`}
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: page.menuLabel || page.title, item: `/pages/${page.slug || slug}` },
+        ]}
+        noindex={!page.isPublished}
+      />
       {/* 1. Header with Breadcrumb & Brass Rule */}
       <PageHeader
         title={page.title}

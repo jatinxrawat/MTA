@@ -4,6 +4,7 @@ import { schoolData } from '../data/schoolData';
 import { useCMS } from '../context/CMSContext';
 import { Image as ImageIcon, ZoomIn, X, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import { NEUTRAL_PLACEHOLDER_IMAGE } from '../lib/media';
+import SEO from '../components/SEO';
 
 export default function GalleryPage() {
   const { content } = useCMS();
@@ -40,6 +41,16 @@ export default function GalleryPage() {
 
   return (
     <div className="subpage-view">
+      <SEO
+        title="Campus Photo & Sports Gallery | Mother Teresa Academy, Baraut"
+        description="View authentic photographs of Mother Teresa Academy: campus architecture, modern science laboratories, CBSE Cluster XIX athletics championships, and student life in Baraut."
+        keywords="Mother Teresa Academy gallery, school photos Baraut, sports tournament photos Baghpat, science lab pictures Baraut"
+        canonical="/gallery"
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Campus Gallery', item: '/gallery' },
+        ]}
+      />
       <PageHeader
         title="Our Campus Gallery"
         subtitle="Visual photographic archives of our authentic campus architecture, senior physics & composite laboratories, faculty CBP training workshops, and inter-house sports competitions."

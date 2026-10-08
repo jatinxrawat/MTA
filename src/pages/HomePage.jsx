@@ -7,6 +7,9 @@ import { useCMS } from '../context/CMSContext';
 import EditableText from '../components/admin/EditableText';
 import EditableImage from '../components/admin/EditableImage';
 import { NEUTRAL_PLACEHOLDER_IMAGE } from '../lib/media';
+import SEO from '../components/SEO';
+import FaqSection from '../components/FaqSection';
+import { getFaqSchema } from '../data/seoFaqs';
 
 import {
   Bell,
@@ -132,6 +135,14 @@ export default function HomePage({ onOpenInquiry }) {
 
   return (
     <div className="home-page-view">
+      <SEO
+        title="Mother Teresa Academy | Best CBSE School in Baraut, Baghpat (Senior Secondary)"
+        description="Mother Teresa Academy (MTA) is rated among the best CBSE schools in Baraut, Baghpat (UP). Co-educational Senior Secondary schooling across Science, Commerce & Humanities streams. Advanced labs, sports complex, and admissions open for 2025-26."
+        keywords="Best schools in Baraut, CBSE school in Baraut, top schools in Baraut Baghpat, Mother Teresa Academy Baraut, best CBSE school Baghpat, schools in Baraut Uttar Pradesh, CBSE Senior Secondary school Baraut, school admission Baraut, MTA Baraut, top CBSE schools in Western UP"
+        canonical="/"
+        schema={getFaqSchema()}
+      />
+
       {/* 1. Full-Screen 100vh Hero Opening Photo */}
       <Hero
         onScrollClick={() => {
@@ -885,7 +896,10 @@ export default function HomePage({ onOpenInquiry }) {
         </div>
       </section>
 
-      {/* 6. CONNECT WITH US / GET IN TOUCH */}
+      {/* 6. BARAUT EDUCATIONAL BENCHMARK & FAQ ACCORDION (SEO & AI OVERVIEWS) */}
+      <FaqSection />
+
+      {/* 7. CONNECT WITH US / GET IN TOUCH */}
       <section id="connect" className="section-padding home-connect-section" aria-label="Connect With Us">
         <div className="container">
           <header className="editorial-section-header text-center">

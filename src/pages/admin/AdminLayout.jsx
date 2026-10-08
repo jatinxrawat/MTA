@@ -26,6 +26,7 @@ import {
   FileCheck, Users
 } from 'lucide-react';
 import '../../styles/admin.css';
+import SEO from '../../components/SEO';
 
 export default function AdminLayout() {
   const { 
@@ -119,6 +120,11 @@ export default function AdminLayout() {
 
   return (
     <div className="cms-admin-root">
+      <SEO
+        title="Admin CMS Dashboard | Mother Teresa Academy Baraut"
+        description="Restricted administrative access portal."
+        noindex={true}
+      />
       {/* 1. Global Admin Topbar (Responsive for Mobile & Desktop) */}
       <header className="cms-admin-topbar">
         {/* Left: Hamburger + Brand + Mode Switch */}

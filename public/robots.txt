@@ -1,0 +1,79 @@
+# ==============================================================================
+# MOTHER TERESA ACADEMY, BARAUT (CBSE AFFILIATED)
+# Official robots.txt - Crawl Directives for Search Engines & Generative AI Bots
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /academics
+Allow: /infrastructure
+Allow: /cbse-disclosure
+Allow: /staff
+Allow: /gallery
+Allow: /contact
+Allow: /pages/
+
+# Explicitly Disallow All Admin, Authentication & CMS Management Pages
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /admin/login
+
+# ==============================================================================
+# AI Search & LLM Web Crawlers (Generative Engine Optimization)
+# Allow crawling of public academic content for AI Overviews & Knowledge Graphs
+# ==============================================================================
+
+# Google AI Overviews & Gemini Search
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# OpenAI Search & ChatGPT Knowledge Crawler
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# Perplexity AI Engine
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# Anthropic Claude Search
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# Apple Intelligence / Siri Search
+User-agent: Applebot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# Microsoft Bing & Copilot
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# ==============================================================================
+# XML Sitemap Declaration
+# ==============================================================================
+Sitemap: https://motherteresaacademy.edu.in/sitemap.xml

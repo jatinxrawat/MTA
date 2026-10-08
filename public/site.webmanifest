@@ -1,0 +1,26 @@
+{
+  "name": "Mother Teresa Academy | Best CBSE School in Baraut",
+  "short_name": "MTA Baraut",
+  "description": "Premier CBSE Affiliated Senior Secondary School in Baraut, District Baghpat, Uttar Pradesh",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1b2a",
+  "theme_color": "#1b2a4a",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

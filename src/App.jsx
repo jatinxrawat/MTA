@@ -8,6 +8,7 @@ import BackToTop from './components/BackToTop';
 import FloatingQuickActions from './components/FloatingQuickActions';
 import { useGlobalScrollReveal } from './hooks/useGlobalScrollReveal';
 import { CMSProvider } from './context/CMSContext';
+import SEO from './components/SEO';
 
 // Specific Pages
 import HomePage from './pages/HomePage';
@@ -61,6 +62,11 @@ function AppContent() {
   if (isAdminRoute) {
     return (
       <div className="cms-app-wrapper">
+        <SEO
+          title="Restricted Administration Portal | Mother Teresa Academy Baraut"
+          description="Restricted administrative access."
+          noindex={true}
+        />
         <ScrollToTop />
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
